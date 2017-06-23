@@ -1,0 +1,22 @@
+# LaTeX
+
+*.aux
+*.out
+*.toc
+*.tdo
+*.log
+*.synctex.gz
+*.blg
+*.bbl
+*.bcf
+*.run.xml
+*-blx.bib
+tmp/
+
+# Eclipse
+
+.metadata/
+.classpath
+.project
+.settings/
+bin/
