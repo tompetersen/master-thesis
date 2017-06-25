@@ -180,47 +180,80 @@
 
 \chapter{Einführung}
 
-Irgendein zufälliges \cite{Lamp1981} Zitat. Und hier kommt auch noch ein Zitat hin: \cite{Beut2009}!
+Im Folgenden soll zuerst das Thema der Arbeit motiviert und anschließend auf mögliche Schwerpunkte, die für die Arbeit gesetzt werden können, eingegangen werden.
 
 \section{Motivation}
 
-- Insiderangriffe 
+%- Insiderangriffe 
 
-- SIEM-Systeme in aktueller Form keine adäquate Lösung
+%- SIEM-Systeme in aktueller Form keine adäquate Lösung
 
-- Datenschutzrecht Arbeitnehmer
+%- Datenschutzrecht Arbeitnehmer
 
-- Mögliche Lösung: Pseudonymisierung und Schwellwertschemata mit verteilten Schlüsseln
+%- Mögliche Lösung: Pseudonymisierung und Schwellwertschemata mit verteilten Schlüsseln
 
-- Spannungsfeld Aufdeckbarkeit und Datenschutz
+%- Spannungsfeld Aufdeckbarkeit und Datenschutz
+
+
+
+Liest man von erfolgreichen Angriffen auf Unternehmensnetzwerke, so ist die implizite Annahme von außenstehenden, unternehmensfremden Angreifern weit verbreitet. Doch häufig sind die Angreifer bereits im Netzwerk unterwegs. Es handelt sich um (ehemalige) Mitarbeiter oder zumindest Personen mit legitimem Zugriff auf das Netzwerk, wie Geschäftspartnern oder Kunden. Und dies sind keine Einzelfälle. 
+
+In dem \textit{IBM Cyber Security Intelligence Report} von 2015 werden 55\% der Angriffe als aus dem internen Netz stammend angegeben \cite{ibm2015}. Zu beachten ist, dass nicht nur mit Absicht ausgeführte Angriffe hierunter erfasst wurden, sondern auch unbeabsichtigte wie das versehentliche Veröffentlichen schützenswerter Kundendaten.
+
+Auch der Branchenverband bitkom führt in seiner \textit{Spezialstudie Wirtschaftsschutz} aus dem Jahr 2016 nach einer Befragung von über 1000 Unternehmen aus, dass etwa 60\% der erfolgten Handlungen aus dem Bereich Datendiebstahl, Industriespionage oder Sabotage durch (ehemalige) Mitarbeiter erfolgten \cite{bitkom2016}.
+
+\todo{Schadenshöhe (siehe Antrag)?}
+
+Auch wenn die genauen Zahlen aufgrund von unterschiedlichen Annahmen und der in diesem Bereich nicht zu vernachlässigenden Dunkelziffer\footnote{Insbesondere die Angst vor Imageschäden, die auch in der \textit{Spezialstudie Wirtschaftsschutz} erwähnt wird, könnte ein Grund für das Geheimhalten von Vorfällen sein.} mit Vorsicht zu betrachten sind, so zeigen sie doch, dass Angriffe von Innentätern weit verbreitet sind und ein hohes Schadenspotenzial aufweisen. Die Erkennung und Verhinderung solcher Angriffe sollte daher ein wichtiger Teil des IT-Sicherheitskonzepts eines Unternehmens sein.
+
+Zur Erkennung von Angriffen in Netzwerken werden häufig SIEM-Systeme eingesetzt (siehe Abschnitt \ref{sec_siem}). Diese sind jedoch in erster Linie auf das Erkennen von externen Angriffen ausgelegt und in ihrer derzeitigen Form kaum sinnvoll für das Erkennen von Innentätern zu nutzen. 
+
+Hierfür würden zusätzliche Datenquellen und Erkennungslogiken nötig sein. Zusätzlich spielen auch  datenschutzrechtliche Bedenken im Bezug auf das Sammeln von großen Datenmengen über Mitarbeiter des eigenen Unternehmens hier eine entscheidende Rolle. \todo{Beispiel für Datenschutz für Arbeitnehmer}\\
+Ein Ansatz, der diese Bedenken ausräumen oder zumindest lindern könnte, ist die Nutzung von Pseudonymen bei der Datenerfassung. Anstatt direkt identifizierende Merkmale eines Arbeitnehmers abzuspeichern, werden diese Merkmale durch ein Pseudonym ersetzt. Eine Liste dieser Ersetzungen wird verschlüsselt abgelegt. Im Fall eines Angriffs durch einen Innentäter kann die Liste entschlüsselt werden und relevante Ereignisse de-pseudonymisiert, also ihrem ursprünglichen Verursacher wieder zweifelsfrei zugeordnet, werden.\\
+Um die Entschlüsselung nicht einzelnen (möglicherweise auch bösartigen) Personen zu ermöglichen, können sogenannte Schwellwertschemata eingesetzt werden (siehe Abschnitt \ref{sec_threshold}). Durch sie wird die Entschlüsselung erst durch die Kooperation mehrerer Parteien möglich gemacht.
+
+Bei diesem Ansatz muss jedoch auch beachtet werden, dass durch den Einsatz von Pseudonymen die Erkennung von Angriffen erschwert werden könnte. Beispielsweise könnte das Ändern von Pseudonymen in regelmäßigen Zeitintervallen und die dadurch entstehende Nicht-Verkettbarkeit von Ereignissen dafür sorgen, dass längfristig angelegte Angriffe nicht aufgedeckt werden.
 
 \section{Ziele der Arbeit}
 
-In dieser Arbeit soll es darum gehen prototypisch...
+%- OSSIM: wo ansetzen? Agent, Client, dazwischen (eigene Komponente) Performancemessungen
 
-- OSSIM: wo ansetzen? Agent, Client, dazwischen (eigene Komponente) Performancemessungen
+%- Schlüsselmanagement (Clientseitig erzeugen, wie verteilen, etc.)
 
-- Schlüsselmanagement (Clientseitig erzeugen, wie verteilen, etc.)
+%- Welche kryptographischen Schwellwertschemata? Performancemessungen
 
-- Welche kryptographischen Schwellwertschemata? Performancemessungen
+%- Welche Funktionen? (Reine Verschlüsselung, Pseudonymisierung mit Mappingtabelle, ... -> erweiterbar)
 
-- Welche Funktionen? (Reine Verschlüsselung, Pseudonymisierung mit Mappingtabelle, ... -> erweiterbar)
 
+In dieser Arbeit soll es darum gehen, prototypisch ein solches Szenario auf Basis eines Open-Source-SIEM-Systems umzusetzen. Hierbei müssen einige Fragen betrachtet werden:
+
+\begin{itemize}
+\item An welcher Stelle des Systems kann eingegriffen werden, um die erfassten Daten zu verändern, und welche Auswirkungen hat dies?
+\item Wie erfolgt die angesprochene Pseudonymisierung technisch?
+\item Welche kryptographischen Schwellwertschemata können genutzt werden? Gibt es bereits quelloffene Implementierungen? Was muss selbst entwickelt werden? Wie erfolgt das Schlüsselmanagement?
+\item Können neben der Pseudonymisierung noch weitere Funktionen sinnvoll sein und wie könnten diese umgesetzt werden?
+\end{itemize}
+
+Gerade die letzte Frage sorgt dafür, dass zusätzliche Anforderungen an den zu entwickelnden Prototypen gestellt werden. Es sollte möglich sein, abhängig von den eingehenden Daten die entsprechend gewünschten Funktionen konfigurieren und den Prototypen in aufbauenden Arbeiten auch um zusätzliche Funktionen ergänzen zu können.
 
 
 \chapter{Inhalte}
 
 \section{SIEM-Systeme}
 
+\label{sec_siem}
+
 - Was ist das?
 
 - OSSIM als Open-Source-Vertreter
 
-\section{Pseudonymisierung}
+%\section{Pseudonymisierung}
 
-Pseudonymisierung als Möglichkeit der Verschleierung und Nicht-Verkettbarkeit.
+%Pseudonymisierung als Möglichkeit der Verschleierung und Nicht-Verkettbarkeit.
 
 \section{Schwellwertschemata}
+
+\label{sec_threshold}
 
 - Shamir How to share a secret?
 
