@@ -274,13 +274,14 @@ Eine quelloffene SIEM-Lösung, die im Rahmen dieser Arbeit genutzt werden wird, 
 	AlienVault OSSIM: The World’s Most Widely Used Open Source SIEM - https://www.alienvault.com/products/ossim
 }.
 
-\section{Pseudonymisierung - TBD}
+\section{Pseudonymisierung}
 
 \label{sec_pseudonym}
 
+%- Pseudonymisierung als Möglichkeit der Verschleierung und Nicht-Verkettbarkeit.
+
 Eine erste Quelle: \cite{pfitzmann2001, pfitzmann2010}
 
-- Pseudonymisierung als Möglichkeit der Verschleierung und Nicht-Verkettbarkeit.
 
 \section{Schwellwertschemata}
 
@@ -322,7 +323,10 @@ In \cite{boneh2006} werden diese Systeme formalisiert. Ein \textit{Threshold-Pub
 \end{enumerate}
 Anforderungen an diese Schritte sind \cite{boneh2006} zu entnehmen. \todo{Hier ergänzen.}
 
+Ein solches System, das auf dem ElGamal-Algorithmus und damit dem Diskreten-Logarithmus-Problem basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. \todo{details} Dieser Ansatz setzt auch in der \textit{Setup}-Phase auf eine zentrale vertrauenswürdige Stelle zur Erzeugung der Schlüssel und \textit{Shares}. In \cite{pedersen1991} stellt der Autor basierend auf diesen Ergebnissen ein Verfahren vor, das bei der Schlüsselgenerierung ohne eine vertrauenswürdige Instanz auskommt. Dieses Verfahren wird in \cite{gennaro1999} noch einmal verbessert.\\
+Basierend auf dem jetzigen Recherchestand würde sich diese Kombination von Verfahren gut für den angestrebten Anwendungszweck eignen. Konkrete offene Implementierungen wurden jedoch bisher nicht gefunden, so dass möglicherweise eine eigene Implementierung umgesetzt werden muss.
 
+Neben diesem Verfahren gibt es noch weitere Ansätze basierend auf RSA \cite{desmedt1993, nguyen2005} oder dem Paillier-Kryptosystem \cite{paillier1999, damgard2001}, die jedoch deutlich komplexer zu sein scheinen. 
 
 
 % ================================Literature==============================
