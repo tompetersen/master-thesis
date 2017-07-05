@@ -209,7 +209,7 @@ Auch wenn die genauen Zahlen aufgrund von unterschiedlichen Annahmen und der in 
 Zur Erkennung von Angriffen in Netzwerken werden häufig SIEM-Systeme eingesetzt (siehe Abschnitt \ref{sec_siem}). Diese sind jedoch in erster Linie auf das Erkennen von externen Angriffen ausgelegt und in ihrer derzeitigen Form kaum sinnvoll für das Erkennen von Innentätern zu nutzen. 
 
 Hierfür würden zusätzliche Datenquellen und Erkennungslogiken nötig sein. Zusätzlich spielen auch  datenschutzrechtliche Bedenken im Bezug auf das Sammeln von großen Datenmengen über Mitarbeiter des eigenen Unternehmens hier eine entscheidende Rolle. \todo{Beispiel für Datenschutz für Arbeitnehmer}\\
-Ein Ansatz, der diese Bedenken ausräumen oder zumindest lindern könnte, ist die Nutzung von Pseudonymen bei der Datenerfassung. Anstatt direkt identifizierende Merkmale eines Arbeitnehmers abzuspeichern, werden diese Merkmale durch ein Pseudonym ersetzt. Eine Liste dieser Ersetzungen wird verschlüsselt abgelegt. Im Fall eines Angriffs durch einen Innentäter kann die Liste entschlüsselt werden und relevante Ereignisse de-pseudonymisiert, also ihrem ursprünglichen Verursacher wieder zweifelsfrei zugeordnet, werden.\\
+Ein Ansatz, der diese Bedenken ausräumen oder zumindest lindern könnte, ist die Nutzung von Pseudonymen bei der Datenerfassung (siehe Abschnitt \ref{sec_pseudonym}). Anstatt direkt identifizierende Merkmale eines Arbeitnehmers abzuspeichern, werden diese Merkmale durch ein Pseudonym ersetzt. Eine Liste dieser Ersetzungen wird verschlüsselt abgelegt. Im Fall eines Angriffs durch einen Innentäter kann die Liste entschlüsselt werden und relevante Ereignisse de-pseudonymisiert, also ihrem ursprünglichen Verursacher wieder zweifelsfrei zugeordnet, werden.\\
 Um die Entschlüsselung nicht einzelnen (möglicherweise auch bösartigen) Personen zu ermöglichen, können sogenannte Schwellwertschemata eingesetzt werden (siehe Abschnitt \ref{sec_threshold}). Durch sie wird die Entschlüsselung erst durch die Kooperation mehrerer Parteien möglich gemacht.
 
 Bei diesem Ansatz muss jedoch auch beachtet werden, dass durch den Einsatz von Pseudonymen die Erkennung von Angriffen erschwert werden könnte. Beispielsweise könnte das Ändern von Pseudonymen in regelmäßigen Zeitintervallen und die dadurch entstehende Nicht-Verkettbarkeit von Ereignissen dafür sorgen, dass längfristig angelegte Angriffe nicht aufgedeckt werden.
@@ -243,25 +243,87 @@ Gerade die letzte Frage sorgt dafür, dass zusätzliche Anforderungen an den zu 
 
 \label{sec_siem}
 
-- Was ist das?
+%- Was ist das?
 
-- OSSIM als Open-Source-Vertreter
+%- OSSIM als Open-Source-Vertreter
 
-%\section{Pseudonymisierung}
+Der Begriff SIEM (Security Information and Event Management) setzt sich aus SEM (Security Event Management), das sich mit Echtzeitüberwachung und Ereigniskorrelation befasst, sowie SIM (Security Information Management), in dessen Fokus Langzeiterfassung und Analyse von Log-Daten steht, zusammen \cite{gartner2011}. SIEM-Systeme dienen dazu Daten in Netzwerken zu sammeln, um so einen zentralisierten Überblick über das Netzwerk zu erhalten und Bedrohungen erkennen und verhindern zu können. 
 
-%Pseudonymisierung als Möglichkeit der Verschleierung und Nicht-Verkettbarkeit.
+Ein SIEM-System sollte unter anderem die folgenden Aufgaben erfüllen: 
+\begin{itemize}
+	\item Event-Behandlung
+	\item Erkennung von Anomalien auf Netzwerkebene
+	%\item Identity Mapping
+	%\item Key Performance Indication
+	\item Überprüfung der Einhaltung von Richtlinien (Compliance Reporting)
+	\item Bereitstellung von Schnittstellen zur Integration heterogener Systeme im Netzwerk % API
+	\item Nutzerabhängige Sichten auf sicherheitsrelevante Ereignisse % Role based access control
+\end{itemize}} 
+Details dazu sind \cite{detken2015} zu entnehmen.
+
+Eine besondere Bedeutung kommt der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detectionen-Systemen oder aus den Log-Daten von Firewalls, Switches,... stammen können. Hier muss ein SIEM-System nach \cite{detken2014} insbesondere drei Aufgaben erfüllen:
+\begin{itemize}
+	\item \textbf{Extraktion:} Die Daten werden aus Logeinträgen oder empfangenen Systemmeldungen extrahiert. 
+	\item \textbf{Mapping:} Die extrahierten Daten werden in ein SIEM-spezifisches Format übersetzt, um eine sinnvolle Weiterverarbeitung zu gewährleisten.
+	\item \textbf{Aggregation:} Gleichartige Events können in manchen Fällen anschließend zusammengefasst werden, um aussagekräftigere Informationen zu erhalten.
+\end{itemize}
+
+Weiterhin können SIEM-Systeme noch zusätzliche Aufgaben wie Schwachstellenscans oder Netzwerk-Monitoring übernehmen.
+
+Eine quelloffene SIEM-Lösung, die im Rahmen dieser Arbeit genutzt werden wird, ist OSSIM, ein SIEM-System der Firma AlienVault, das auf Basis weiterer quelloffener Lösungen aus dem Netzwerksicherheits-Bereich unter anderem die oben genannten Funktionen bereitstellt\footnote{
+	AlienVault OSSIM: The World’s Most Widely Used Open Source SIEM - https://www.alienvault.com/products/ossim
+}.
+
+\section{Pseudonymisierung - TBD}
+
+\label{sec_pseudonym}
+
+Eine erste Quelle: \cite{pfitzmann2001, pfitzmann2010}
+
+- Pseudonymisierung als Möglichkeit der Verschleierung und Nicht-Verkettbarkeit.
 
 \section{Schwellwertschemata}
 
 \label{sec_threshold}
 
-- Shamir How to share a secret?
+%- Shamir How to share a secret?
 
-- Public Key Problematik
+%- Public Key Problematik
 
-- Was ist das? (siehe auch Paper für Definition)
+%- Was ist das? (siehe auch Paper für Definition)
 
-- Fünde (RSA, Paillier, ...) und Desmedt/Frankel evtl. hier schon Pedersen/...
+%- Fünde (RSA, Paillier, ...) und Desmedt/Frankel evtl. hier schon Pedersen/...
+
+\todo{Einführung kryptographische Schlüssel? Oder}
+
+1976 entwickelte Shamir das erste \((k,n)\)-Schwellwert-Schema: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) zerlegt, dass durch Kenntniss von \(k\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus \(k-1\) Teilen keine Informationen über \(D\) bringt. Shamirs Lösung bediente sich der Polynominterpolation auf der Basis modularer Arithmetik \cite{shamir1979}.\\
+Im selben Jahr veröffentlichte auch Blakley eine Lösung dieses Problems, die auf den Schnittpunkten von Hyperebenen über endlichen Feldern beruht \cite{blakley1979}.
+
+Das Problem dieser Lösungen bezogen auf den hier behandelten Anwendungsfall ist jedoch, dass das Geheimnis nach erstmaligem Aufdecken bekannt ist. Wünschenswert wäre es, nur das entsprechend gewünschte Datum (bspw. den gesuchten Eintrag in der Pseudonym-Tabelle) aufdecken zu können, ohne dass der Schlüssel selber bekannt wird. 
+
+%- 87 SocietyOriented \cite{desmedt1987}
+%- 93 Threshold decryption (non-interactive) \cite{desmedt1993}
+%- Def. nach 96 Boneh \cite{boneh2006}
+%- Desmedt, Frankel: ElGamal \cite{DesmedtFrankel1990}
+%- setzt zentralen "Dealer" voraus
+%- Pedersen und verbesserte Variante 
+%- Andere Möglichkeiten: Paillier, RSA, ...
+
+In \cite{desmedt1987} wird dieses Problem das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet. Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird auch eine zentrale Forderung aufgestellt, die den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung untersagt. \\
+In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{threshold decryption} und fordert weiterhin, dass praktisch einsatzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Teilnehmern notwendig machen.
+
+In \cite{boneh2006} werden diese Systeme formalisiert. Ein \textit{Threshold-Public-Key-Encryption}-System besteht aus fünf Schritten:
+\begin{enumerate}
+	\item \(Setup(n,k,\Lambda)\) liefert ein Tripel \((PK, VK, SK)\), bestehend aus dem öffenltichen Schlüssel \(PK\), einem Verifikationsschlüssel \(VK\) und einer \(n\)-elementigen Liste aus \textit{Private Key Shares}, von denen jeder Teilnehmer einen \textit{Share} erhält. \(\Lambda\) wird als initialer Sicherheitsparameter bezeichnet.
+	\item \(Encrypt(PK, M)\) liefert die verschlüsselte Nachricht \(C\).
+	\item \(ShareDecrypt(PK, i, SK_i, C)\) liefert ein \textit{Decryption Share} \(\mu=(i, \mu^i)\) des \(i\)-ten Teilnehmers.
+	\item \(ShareVerify(PK, VK, C, \mu)\) überprüft ein \textit{Decryption Share} auf Validität.
+	\item \(Combine(PK, VK, C, {\mu_1, \dots,\mu_k, \dots})\) verknüpft die \textit{Decryption Shares} von mindestens \(k\) Teilnehmern und liefert die Nachricht \(M\) zurück.
+\end{enumerate}
+Anforderungen an diese Schritte sind \cite{boneh2006} zu entnehmen. \todo{Hier ergänzen.}
+
+
+
 
 % ================================Literature==============================
 
