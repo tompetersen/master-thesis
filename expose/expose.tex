@@ -6,7 +6,7 @@
     bibliography=totoc,
     numbers=noenddot,       % Entfernt den letzten Punkt der Kapitelnummern.
     open=any,               % Kapitel kann auf jeder Seite beginnen.
-%   final                   % Entfernt alle todonotes und den Entwurfstempel.
+   final                   % Entfernt alle todonotes und den Entwurfstempel.
     ]{scrreprt}
 
 % ===================================Praeambel==================================
@@ -196,21 +196,23 @@ Im Folgenden soll zuerst das Thema der Arbeit motiviert und anschließend auf m�
 
 
 
-Liest man von erfolgreichen Angriffen auf Unternehmensnetzwerke, so ist die implizite Annahme von außenstehenden, unternehmensfremden Angreifern weit verbreitet. Doch häufig sind die Angreifer bereits im Netzwerk unterwegs. Es handelt sich um (ehemalige) Mitarbeiter oder zumindest Personen mit legitimem Zugriff auf das Netzwerk, wie Geschäftspartnern oder Kunden. Und dies sind keine Einzelfälle. 
+Liest man von erfolgreichen Angriffen auf Unternehmensnetzwerke, so ist die implizite Annahme von außenstehenden, unternehmensfremden Angreifern weit verbreitet. Doch häufig sind die Angreifer bereits im Netzwerk ansässig. Es handelt sich um (ehemalige) Mitarbeiter oder zumindest Personen mit legitimem Zugriff auf das Netzwerk, wie Geschäftspartnern oder Kunden. Hierbei geht es keineswegs lediglich um Einzelfälle. 
 
-In dem \textit{IBM Cyber Security Intelligence Report} von 2015 werden 55\% der Angriffe als aus dem internen Netz stammend angegeben \cite{ibm2015}. Zu beachten ist, dass nicht nur mit Absicht ausgeführte Angriffe hierunter erfasst wurden, sondern auch unbeabsichtigte wie das versehentliche Veröffentlichen schützenswerter Kundendaten.
+In dem \textit{IBM Cyber Security Intelligence Report} von 2015 werden 55\% der Angriffe als aus dem internen Netz stammend angegeben \cite{ibm2015}. Zu beachten ist allerdings, dass nicht nur mit Absicht ausgeführte Angriffe hierunter erfasst wurden, sondern auch unbeabsichtigte wie das versehentliche Veröffentlichen schützenswerter Kundendaten.
 
 Auch der Branchenverband bitkom führt in seiner \textit{Spezialstudie Wirtschaftsschutz} aus dem Jahr 2016 nach einer Befragung von über 1000 Unternehmen aus, dass etwa 60\% der erfolgten Handlungen aus dem Bereich Datendiebstahl, Industriespionage oder Sabotage durch (ehemalige) Mitarbeiter erfolgten \cite{bitkom2016}.
 
 \todo{Schadenshöhe (siehe Antrag)?}
 
-Auch wenn die genauen Zahlen aufgrund von unterschiedlichen Annahmen und der in diesem Bereich nicht zu vernachlässigenden Dunkelziffer\footnote{Insbesondere die Angst vor Imageschäden, die auch in der \textit{Spezialstudie Wirtschaftsschutz} erwähnt wird, könnte ein Grund für das Geheimhalten von Vorfällen sein.} mit Vorsicht zu betrachten sind, so zeigen sie doch, dass Angriffe von Innentätern weit verbreitet sind und ein hohes Schadenspotenzial aufweisen. Die Erkennung und Verhinderung solcher Angriffe sollte daher ein wichtiger Teil des IT-Sicherheitskonzepts eines Unternehmens sein.
+Auch wenn die genauen Zahlen aufgrund von unterschiedlichen Annahmen und der in diesem Bereich nicht zu vernachlässigenden Dunkelziffer\footnote{
+	Insbesondere die Angst vor Imageschäden, die auch in der \textit{Spezialstudie Wirtschaftsschutz} erwähnt wird, könnte ein Grund für das Geheimhalten von Vorfällen sein.
+} mit Vorsicht zu betrachten sind, so geben sie doch Hinweise darauf, dass Angriffe von Innentätern weit verbreitet sind und ein hohes Schadenspotenzial aufweisen. Die Erkennung und Verhinderung solcher Angriffe sollte daher ein wichtiger Teil des IT-Sicherheitskonzepts eines Unternehmens sein.
 
-Zur Erkennung von Angriffen in Netzwerken werden häufig SIEM-Systeme eingesetzt (siehe Abschnitt \ref{sec_siem}). Diese sind jedoch in erster Linie auf das Erkennen von externen Angriffen ausgelegt und in ihrer derzeitigen Form kaum sinnvoll für das Erkennen von Innentätern zu nutzen. 
+Zur Erkennung von Angriffen in Netzwerken können SIEM-Systeme eingesetzt werden (siehe Abschnitt \ref{sec_siem}). Diese sind jedoch in erster Linie auf das Erkennen von externen Angriffen ausgelegt und in ihrer derzeitigen Form kaum sinnvoll für das Erkennen von Innentätern zu nutzen. \\
+Hierfür würden zusätzliche Datenquellen und Erkennungslogiken nötig sein. Zusätzlich spielen auch  datenschutzrechtliche Bedenken im Bezug auf das Sammeln von großen Datenmengen über Mitarbeiter des eigenen Unternehmens hier eine entscheidende Rolle. \todo{Beispiel für Datenschutz für Arbeitnehmer}
 
-Hierfür würden zusätzliche Datenquellen und Erkennungslogiken nötig sein. Zusätzlich spielen auch  datenschutzrechtliche Bedenken im Bezug auf das Sammeln von großen Datenmengen über Mitarbeiter des eigenen Unternehmens hier eine entscheidende Rolle. \todo{Beispiel für Datenschutz für Arbeitnehmer}\\
 Ein Ansatz, der diese Bedenken ausräumen oder zumindest lindern könnte, ist die Nutzung von Pseudonymen bei der Datenerfassung (siehe Abschnitt \ref{sec_pseudonym}). Anstatt direkt identifizierende Merkmale eines Arbeitnehmers abzuspeichern, werden diese Merkmale durch ein Pseudonym ersetzt. Eine Liste dieser Ersetzungen wird verschlüsselt abgelegt. Im Fall eines Angriffs durch einen Innentäter kann die Liste entschlüsselt werden und relevante Ereignisse de-pseudonymisiert, also ihrem ursprünglichen Verursacher wieder zweifelsfrei zugeordnet, werden.\\
-Um die Entschlüsselung nicht einzelnen (möglicherweise auch bösartigen) Personen zu ermöglichen, können sogenannte Schwellwertschemata eingesetzt werden (siehe Abschnitt \ref{sec_threshold}). Durch sie wird die Entschlüsselung erst durch die Kooperation mehrerer Parteien möglich gemacht.
+Um die Entschlüsselung nicht einzelnen (möglicherweise bösartig agierenden) Personen zu ermöglichen, können sogenannte Schwellwertschemata eingesetzt werden (siehe Abschnitt \ref{sec_threshold}). Durch sie wird die Entschlüsselung erst durch die Kooperation mehrerer Parteien möglich gemacht.
 
 Bei diesem Ansatz muss jedoch auch beachtet werden, dass durch den Einsatz von Pseudonymen die Erkennung von Angriffen erschwert werden könnte. Beispielsweise könnte das Ändern von Pseudonymen in regelmäßigen Zeitintervallen und die dadurch entstehende Nicht-Verkettbarkeit von Ereignissen dafür sorgen, dass längfristig angelegte Angriffe nicht aufgedeckt werden.
 
@@ -231,13 +233,15 @@ In dieser Arbeit soll es darum gehen, prototypisch ein solches Szenario auf Basi
 \item An welcher Stelle des Systems kann eingegriffen werden, um die erfassten Daten zu verändern, und welche Auswirkungen hat dies?
 \item Wie erfolgt die angesprochene Pseudonymisierung technisch?
 \item Welche kryptographischen Schwellwertschemata können genutzt werden? Gibt es bereits quelloffene Implementierungen? Was muss selbst entwickelt werden? Wie erfolgt das Schlüsselmanagement?
-\item Können neben der Pseudonymisierung noch weitere Funktionen sinnvoll sein und wie könnten diese umgesetzt werden?
+\item Können neben der Pseudonymisierung noch weitere Funktionen zur Veränderung von Daten sinnvoll sein und wie könnten diese umgesetzt werden?
 \end{itemize}
 
-Gerade die letzte Frage sorgt dafür, dass zusätzliche Anforderungen an den zu entwickelnden Prototypen gestellt werden. Es sollte möglich sein, abhängig von den eingehenden Daten die entsprechend gewünschten Funktionen konfigurieren und den Prototypen in aufbauenden Arbeiten auch um zusätzliche Funktionen ergänzen zu können.
+Gerade die letzte Frage sorgt dafür, dass zusätzliche Anforderungen an den zu entwickelnden Prototypen gestellt werden. Es sollte möglich sein, abhängig von den eingehenden Daten die entsprechend gewünschten Funktionen konfigurieren und den Prototypen in eventuell aufbauenden Arbeiten auch um zusätzliche Funktionen ergänzen zu können.
 
 
 \chapter{Inhalte}
+
+In diesem Kapitel sollen einige theoretische Hintergründe für die für diese Arbeit relevanten Themen dargelegt werden.
 
 \section{SIEM-Systeme}
 
@@ -258,10 +262,10 @@ Ein SIEM-System sollte unter anderem die folgenden Aufgaben erfüllen:
 	\item Überprüfung der Einhaltung von Richtlinien (Compliance Reporting)
 	\item Bereitstellung von Schnittstellen zur Integration heterogener Systeme im Netzwerk % API
 	\item Nutzerabhängige Sichten auf sicherheitsrelevante Ereignisse % Role based access control
-\end{itemize}} 
+\end{itemize} 
 Details dazu sind \cite{detken2015} zu entnehmen.
 
-Eine besondere Bedeutung kommt der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detectionen-Systemen oder aus den Log-Daten von Firewalls, Switches,... stammen können. Hier muss ein SIEM-System nach \cite{detken2014} insbesondere drei Aufgaben erfüllen:
+Eine besondere Bedeutung kommt hier der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detectionen-Systemen oder aus den Log-Daten von Firewalls, Switches,... stammen können. Hier muss ein SIEM-System nach \cite{detken2014} insbesondere drei Aufgaben erfüllen:
 \begin{itemize}
 	\item \textbf{Extraktion:} Die Daten werden aus Logeinträgen oder empfangenen Systemmeldungen extrahiert. 
 	\item \textbf{Mapping:} Die extrahierten Daten werden in ein SIEM-spezifisches Format übersetzt, um eine sinnvolle Weiterverarbeitung zu gewährleisten.
@@ -280,8 +284,20 @@ Eine quelloffene SIEM-Lösung, die im Rahmen dieser Arbeit genutzt werden wird, 
 
 %- Pseudonymisierung als Möglichkeit der Verschleierung und Nicht-Verkettbarkeit.
 
-Eine erste Quelle: \cite{pfitzmann2001, pfitzmann2010}
+Pseudonymisierung beschreibt nach \cite{pfitzmann2001, pfitzmann2010} die Benutzung von Pseudonymen zur Identifizierung von Subjekten, wobei ein Pseudonym\footnote{
+	ursprünglich aus dem Griechischen stammend: \textit{pseudonumon} - falsch benannt
+} als Identifikator eines Subjekts ungleich seinem echten Bezeichner definiert wird. \todo{Pseudonymtypen}
 
+Pseudonymität sagt dabei erst einmal lediglich etwas über die Verwendung eines Verfahrens aus, jedoch nichts über die daraus entstehenden Auswirkungen auf die Identifizierbarkeit eines Subjekts oder die Zurechenbarkeit bestimmter Aktionen. Hierfür spielen weitere Eigenschaften von Pseudonymen wie die folgenden eine Rolle:
+\begin{itemize}
+  \item garantierte Eindeutigkeit von Pseudonymen
+  \item Möglichkeit von Pseudonymänderungen
+  \item begrenzt häufige Verwendung von Pseudonymen
+  \item zeitlich begrenzte Verwendung von Pseudonymen
+  \item Art der Pseudonymserstellung
+\end{itemize}
+
+Die Ausprägungen dieser Eigenschaften werden auch im Rahmen dieser Arbeit für das umzusetzende System zu bewerten sein.
 
 \section{Schwellwertschemata}
 
@@ -297,10 +313,10 @@ Eine erste Quelle: \cite{pfitzmann2001, pfitzmann2010}
 
 \todo{Einführung kryptographische Schlüssel? Oder}
 
-1976 entwickelte Shamir das erste \((k,n)\)-Schwellwert-Schema: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) zerlegt, dass durch Kenntniss von \(k\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus \(k-1\) Teilen keine Informationen über \(D\) bringt. Shamirs Lösung bediente sich der Polynominterpolation auf der Basis modularer Arithmetik \cite{shamir1979}.\\
+1976 entwickelte Shamir das erste \((k,n)\)-Schwellwert-Schema: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) zerlegt, dass durch Kenntnis von mindestens \(k\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus höchstens \(k-1\) Teilen keine Informationen über \(D\) liefert. Shamirs Lösung bediente sich der Polynominterpolation auf der Basis modularer Arithmetik \cite{shamir1979}.\\
 Im selben Jahr veröffentlichte auch Blakley eine Lösung dieses Problems, die auf den Schnittpunkten von Hyperebenen über endlichen Feldern beruht \cite{blakley1979}.
 
-Das Problem dieser Lösungen bezogen auf den hier behandelten Anwendungsfall ist jedoch, dass das Geheimnis nach erstmaligem Aufdecken bekannt ist. Wünschenswert wäre es, nur das entsprechend gewünschte Datum (bspw. den gesuchten Eintrag in der Pseudonym-Tabelle) aufdecken zu können, ohne dass der Schlüssel selber bekannt wird. 
+Das Problem dieser Lösungen bezogen auf den hier behandelten Anwendungsfall ist jedoch, dass das Geheimnis nach erstmaligem Aufdecken bekannt ist. Wünschenswert wäre ein Verfahren, bei dem nur ein entsprechend verschlüsseltes Datum (bspw. der gesuchte Eintrag in einer Pseudonym-Tabelle) aufgedeckt werden kann, ohne dass der kombinierte Schlüssel selbst bekannt wird. 
 
 %- 87 SocietyOriented \cite{desmedt1987}
 %- 93 Threshold decryption (non-interactive) \cite{desmedt1993}
@@ -310,20 +326,20 @@ Das Problem dieser Lösungen bezogen auf den hier behandelten Anwendungsfall ist
 %- Pedersen und verbesserte Variante 
 %- Andere Möglichkeiten: Paillier, RSA, ...
 
-In \cite{desmedt1987} wird dieses Problem das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet. Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird auch eine zentrale Forderung aufgestellt, die den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung untersagt. \\
+In \cite{desmedt1987} wird dieses Problem das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird auch die zentrale Forderung aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. \\
 In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{threshold decryption} und fordert weiterhin, dass praktisch einsatzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Teilnehmern notwendig machen.
 
 In \cite{boneh2006} werden diese Systeme formalisiert. Ein \textit{Threshold-Public-Key-Encryption}-System besteht aus fünf Schritten:
 \begin{enumerate}
-	\item \(Setup(n,k,\Lambda)\) liefert ein Tripel \((PK, VK, SK)\), bestehend aus dem öffenltichen Schlüssel \(PK\), einem Verifikationsschlüssel \(VK\) und einer \(n\)-elementigen Liste aus \textit{Private Key Shares}, von denen jeder Teilnehmer einen \textit{Share} erhält. \(\Lambda\) wird als initialer Sicherheitsparameter bezeichnet.
+	\item \(Setup(n,k,\Lambda)\) liefert ein Tripel \((PK, VK, SK)\), bestehend aus dem öffentlichen Schlüssel \(PK\), einem Verifikationsschlüssel \(VK\) und einer \(n\)-elementigen Liste aus \textit{Private Key Shares}, von denen jeder Teilnehmer einen \textit{Share} erhält. \(\Lambda\) wird als initialer Sicherheitsparameter bezeichnet.
 	\item \(Encrypt(PK, M)\) liefert die verschlüsselte Nachricht \(C\).
-	\item \(ShareDecrypt(PK, i, SK_i, C)\) liefert ein \textit{Decryption Share} \(\mu=(i, \mu^i)\) des \(i\)-ten Teilnehmers.
+	\item \(ShareDecrypt(PK, i, SK_i, C)\) liefert ein \textit{Decryption Share} \(\mu=(i, \mu^i)\) des \(i\)-ten Teilnehmers, das im 5. Schritt zusammen mit weiteren \textit{Shares} zur Entschlüsselung der Nachricht genutzt wird.
 	\item \(ShareVerify(PK, VK, C, \mu)\) überprüft ein \textit{Decryption Share} auf Validität.
 	\item \(Combine(PK, VK, C, {\mu_1, \dots,\mu_k, \dots})\) verknüpft die \textit{Decryption Shares} von mindestens \(k\) Teilnehmern und liefert die Nachricht \(M\) zurück.
 \end{enumerate}
 Anforderungen an diese Schritte sind \cite{boneh2006} zu entnehmen. \todo{Hier ergänzen.}
 
-Ein solches System, das auf dem ElGamal-Algorithmus und damit dem Diskreten-Logarithmus-Problem basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. \todo{details} Dieser Ansatz setzt auch in der \textit{Setup}-Phase auf eine zentrale vertrauenswürdige Stelle zur Erzeugung der Schlüssel und \textit{Shares}. In \cite{pedersen1991} stellt der Autor basierend auf diesen Ergebnissen ein Verfahren vor, das bei der Schlüsselgenerierung ohne eine vertrauenswürdige Instanz auskommt. Dieses Verfahren wird in \cite{gennaro1999} noch einmal verbessert.\\
+Ein solches System, das auf dem ElGamal-Algorithmus und damit dem Diskreten-Logarithmus-Problem basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. \todo{Details} Dieser Ansatz setzt in der \textit{Setup}-Phase auf eine zentrale vertrauenswürdige Stelle zur Erzeugung der Schlüssel und \textit{Shares}. In \cite{pedersen1991} stellt der Autor basierend auf diesen Ergebnissen ein Verfahren vor, das bei der Schlüsselgenerierung ohne eine vertrauenswürdige Instanz auskommt. Dieses Verfahren wird in \cite{gennaro1999} noch einmal verbessert.\\
 Basierend auf dem jetzigen Recherchestand würde sich diese Kombination von Verfahren gut für den angestrebten Anwendungszweck eignen. Konkrete offene Implementierungen wurden jedoch bisher nicht gefunden, so dass möglicherweise eine eigene Implementierung umgesetzt werden muss.
 
 Neben diesem Verfahren gibt es noch weitere Ansätze basierend auf RSA \cite{desmedt1993, nguyen2005} oder dem Paillier-Kryptosystem \cite{paillier1999, damgard2001}, die jedoch deutlich komplexer zu sein scheinen. 
