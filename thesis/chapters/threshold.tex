@@ -1,0 +1,59 @@
+\chapter{Schwellwertschemata}
+
+\begin{itemize}
+  \item \textbf{Grundlagen} Von Shamirs Secret Sharing bis heute
+  \item \textbf{Konkretes Verfahren} Im Detail erläutern - vmtl. Desmedt auf Basis von ElGamal
+\end{itemize}
+
+
+
+
+
+\label{cha_threshold}
+
+\section{Grundlagen}
+
+%- Shamir How to share a secret?
+
+%- Public Key Problematik
+
+%- Was ist das? (siehe auch Paper für Definition)
+
+%- Fünde (RSA, Paillier, ...) und Desmedt/Frankel evtl. hier schon Pedersen/...
+
+\todo{Einführung kryptographische Schlüssel? Oder}
+
+1976 entwickelte Shamir das erste \((k,n)\)-Schwellwert-Schema: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) zerlegt, dass durch Kenntnis von mindestens \(k\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus höchstens \(k-1\) Teilen keine Informationen über \(D\) liefert. Shamirs Lösung bediente sich der Polynominterpolation auf der Basis modularer Arithmetik \cite{shamir1979}.\\
+Im selben Jahr veröffentlichte auch Blakley eine Lösung dieses Problems, die auf den Schnittpunkten von Hyperebenen über endlichen Feldern beruht \cite{blakley1979}.
+
+Das Problem dieser Lösungen bezogen auf den hier behandelten Anwendungsfall ist jedoch, dass das Geheimnis nach erstmaligem Aufdecken bekannt ist. Wünschenswert wäre ein Verfahren, bei dem nur ein entsprechend verschlüsseltes Datum (bspw. der gesuchte Eintrag in einer Pseudonym-Tabelle) aufgedeckt werden kann, ohne dass der kombinierte Schlüssel selbst bekannt wird. 
+
+%- 87 SocietyOriented \cite{desmedt1987}
+%- 93 Threshold decryption (non-interactive) \cite{desmedt1993}
+%- Def. nach 96 Boneh \cite{boneh2006}
+%- Desmedt, Frankel: ElGamal \cite{DesmedtFrankel1990}
+%- setzt zentralen "Dealer" voraus
+%- Pedersen und verbesserte Variante 
+%- Andere Möglichkeiten: Paillier, RSA, ...
+
+In \cite{desmedt1987} wird dieses Problem das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird auch die zentrale Forderung aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. \\
+In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{threshold decryption} und fordert weiterhin, dass praktisch einsatzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Teilnehmern notwendig machen.
+
+In \cite{boneh2006} werden diese Systeme formalisiert. Ein \textit{Threshold-Public-Key-Encryption}-System besteht aus fünf Schritten: \todo{EZ zu Schritt 3: \(u_i = (i, ...)\) ???}
+\begin{enumerate}
+	\item \(Setup(n,k,\Lambda)\) liefert ein Tripel \((PK, VK, SK)\), bestehend aus dem öffentlichen Schlüssel \(PK\), einem Verifikationsschlüssel \(VK\) und einer \(n\)-elementigen Liste aus \textit{Private Key Shares}, von denen jeder Teilnehmer einen \textit{Share} erhält. \(\Lambda\) wird als initialer Sicherheitsparameter bezeichnet.
+	\item \(Encrypt(PK, M)\) liefert die verschlüsselte Nachricht \(C\).
+	\item \(ShareDecrypt(PK, i, SK_i, C)\) liefert ein \textit{Decryption Share} \(\mu=(i, \mu^i)\) des \(i\)-ten Teilnehmers, das im 5. Schritt zusammen mit weiteren \textit{Shares} zur Entschlüsselung der Nachricht genutzt wird. 
+	\item \(ShareVerify(PK, VK, C, \mu)\) überprüft ein \textit{Decryption Share} auf Validität.
+	\item \(Combine(PK, VK, C, {\mu_1, \dots,\mu_k, \dots})\) verknüpft die \textit{Decryption Shares} von mindestens \(k\) Teilnehmern und liefert die Nachricht \(M\) zurück.
+\end{enumerate}
+Anforderungen an diese Schritte sind \cite{boneh2006} zu entnehmen. \todo{Hier ergänzen.}
+
+Ein solches System, das auf dem ElGamal-Algorithmus und damit dem Diskreten-Logarithmus-Problem basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. \todo{Details} Dieser Ansatz setzt in der \textit{Setup}-Phase auf eine zentrale vertrauenswürdige Stelle zur Erzeugung der Schlüssel und \textit{Shares}. In \cite{pedersen1991} stellt der Autor basierend auf diesen Ergebnissen ein Verfahren vor, das bei der Schlüsselgenerierung ohne eine vertrauenswürdige Instanz auskommt. Dieses Verfahren wird in \cite{gennaro1999} noch einmal verbessert.\\
+Basierend auf dem jetzigen Recherchestand würde sich diese Kombination von Verfahren gut für den angestrebten Anwendungszweck eignen. Konkrete offene Implementierungen wurden jedoch bisher nicht gefunden, so dass möglicherweise eine eigene Implementierung umgesetzt werden muss.
+
+Neben diesem Verfahren gibt es noch weitere Ansätze basierend auf RSA \cite{desmedt1993, nguyen2005} oder dem Paillier-Kryptosystem \cite{paillier1999, damgard2001}, die jedoch deutlich komplexer zu sein scheinen. 
+
+\section{Ein Schwellwertschema auf Basis von ElGamal}
+
+\todo{TBW}

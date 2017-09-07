@@ -1,0 +1,48 @@
+\chapter{SIEM-Systeme}
+
+\begin{itemize}
+  \item \textbf{Grundlagen} Was und warum sind SIEM-Systeme und was tun sie?
+  \item \textbf{OSSIM} Was ist OSSIM und wie sieht die Architektur aus?
+\end{itemize}
+
+
+
+
+
+\label{cha_siem}
+
+%- Was ist das?
+
+%- OSSIM als Open-Source-Vertreter
+
+\section{Aufgaben von SIEM-Systemen}
+
+Der Begriff SIEM (Security Information and Event Management) setzt sich aus SEM (Security Event Management), das sich mit Echtzeitüberwachung und Ereigniskorrelation befasst, sowie SIM (Security Information Management), in dessen Fokus Langzeiterfassung und Analyse von Log-Daten steht, zusammen \cite{gartner2011}. SIEM-Systeme dienen dazu Daten in Netzwerken zu sammeln, um so einen zentralisierten Überblick über das Netzwerk zu erhalten und Bedrohungen erkennen und verhindern zu können. 
+
+Ein SIEM-System sollte unter anderem die folgenden Aufgaben erfüllen: 
+\todo{EZ: Eine jeweilige kurze Erklaerung waere hilfreich}
+\begin{itemize}
+	\item Event-Behandlung
+	\item Erkennung von Anomalien auf Netzwerkebene
+	%\item Identity Mapping
+	%\item Key Performance Indication
+	\item Überprüfung der Einhaltung von Richtlinien (Compliance Reporting)
+	\item Bereitstellung von Schnittstellen zur Integration heterogener Systeme im Netzwerk % API
+	\item Nutzerabhängige Sichten auf sicherheitsrelevante Ereignisse % Role based access control
+\end{itemize} 
+Details dazu sind \cite{detken2015} zu entnehmen.
+
+Eine besondere Bedeutung kommt hier der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detectionen-Systemen oder aus den Log-Daten von Firewalls, Switches,... stammen können. Hier muss ein SIEM-System nach \cite{detken2014} insbesondere drei Aufgaben erfüllen:
+\begin{itemize}
+	\item \textbf{Extraktion:} Die Daten werden aus Logeinträgen oder empfangenen Systemmeldungen extrahiert. 
+	\item \textbf{Mapping:} Die extrahierten Daten werden in ein SIEM-spezifisches Format übersetzt, um eine sinnvolle Weiterverarbeitung zu gewährleisten.
+	\item \textbf{Aggregation:} Gleichartige Events können in manchen Fällen anschließend zusammengefasst werden, um aussagekräftigere Informationen zu erhalten.
+\end{itemize}
+
+Weiterhin können SIEM-Systeme noch zusätzliche Aufgaben wie Schwachstellenscans oder Netzwerk-Monitoring übernehmen.
+
+\section{OSSIM}
+
+Eine quelloffene SIEM-Lösung, die im Rahmen dieser Arbeit genutzt werden wird, ist OSSIM, ein SIEM-System der Firma AlienVault, das auf Basis weiterer quelloffener Lösungen aus dem Netzwerksicherheits-Bereich unter anderem die oben genannten Funktionen bereitstellt.\footnote{
+	AlienVault OSSIM: The World’s Most Widely Used Open Source SIEM\\https://www.alienvault.com/products/ossim
+}

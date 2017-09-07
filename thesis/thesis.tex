@@ -5,8 +5,8 @@
     parskip=half,           % Ersetzt manuelles setzten von parskip/parindent.
     bibliography=totoc,
     numbers=noenddot,       % Entfernt den letzten Punkt der Kapitelnummern.
-    open=any,               % Kapitel kann auf jeder Seite beginnen.
-%   final                   % Entfernt alle todonotes und den Entwurfstempel.
+    open=any               % Kapitel kann auf jeder Seite beginnen.
+   %,final                   % Entfernt alle todonotes und den Entwurfstempel.
     ]{scrreprt}
 
 % ===================================Praeambel==================================
@@ -126,7 +126,7 @@
 
 % ===================================Dokument===================================
 
-\title{Exposé zur Masterarbeit - Pseudonymisierung von und Einsatz von Schwellwertschemata für Logeinträge}
+\title{Datenschutzfreundliche Speicherung\\unternehmensinterner Überwachungsdaten mittels\\Pseudonymisierung und kryptographischer\\Schwellwertschemata}
 \author{Tom Petersen}
 % \date{01.01.2015} % falls ein bestimmter Tag eingesetzt werden soll, einfach
                     %  diese Zeile aktivieren
@@ -163,8 +163,8 @@
 	\makeatother
 	\vfill
 	Betreuer: Dipl.-Inf. Ephraim Zimmer\par
-	Erstgutachter: - \par
-	Zweitgutachter: -
+	Erstgutachter: Prof. Dr. Hannes Federrath \par
+	Zweitgutachter: Prof. Dr. Mathias Fischer\par
 \end{center}
 \ifoptionfinal{}{
 	\begin{tikzpicture}[remember picture, overlay]
@@ -176,13 +176,29 @@
 
 % ================================Content==============================
 
+
+
+\input{chapters/task.tex}
+
+\input{chapters/abstract.tex}
+
 \tableofcontents
 
-\chapter{Kapitel}
+\input{chapters/introduction.tex}
 
-\cite{Lamp1981}
+\input{chapters/threshold.tex}
 
-\chapter{Kapitel}
+\input{chapters/siem.tex}
+
+\input{chapters/pseudonymity.tex}
+
+\input{chapters/implementation.tex}
+
+\input{chapters/alternatives.tex}
+
+\input{chapters/final.tex}
+
+
 
 % ================================Literature==============================
 
