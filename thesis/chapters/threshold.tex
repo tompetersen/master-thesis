@@ -3,6 +3,7 @@
 \begin{itemize}
   \item \textbf{Grundlagen} Von Shamirs Secret Sharing bis heute
   \item \textbf{Konkretes Verfahren} Im Detail erläutern - vmtl. Desmedt auf Basis von ElGamal
+  \item Zusätzlich Erweiterungen dieses Verfahrens wie verteilte Schlüsselgenerierung.
 \end{itemize}
 
 
@@ -21,7 +22,7 @@
 
 %- Fünde (RSA, Paillier, ...) und Desmedt/Frankel evtl. hier schon Pedersen/...
 
-\todo{Einführung kryptographische Schlüssel? Oder}
+\todo{Einführung Schutz kryptographischer Schlüssel?}
 
 1976 entwickelte Shamir das erste \((k,n)\)-Schwellwert-Schema: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) zerlegt, dass durch Kenntnis von mindestens \(k\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus höchstens \(k-1\) Teilen keine Informationen über \(D\) liefert. Shamirs Lösung bediente sich der Polynominterpolation auf der Basis modularer Arithmetik \cite{shamir1979}.\\
 Im selben Jahr veröffentlichte auch Blakley eine Lösung dieses Problems, die auf den Schnittpunkten von Hyperebenen über endlichen Feldern beruht \cite{blakley1979}.

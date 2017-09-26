@@ -14,7 +14,11 @@
 
 %- Spannungsfeld Aufdeckbarkeit und Datenschutz
 
-
+\todo{
+Wo passen Abschnitte zu folgenden Stichworten hin?
+- Verschiedene Datenarten: Identifizierend, Traffic, nicht relevant, ...
+- Grundlegende Definition Insiderangriff
+}
 
 Liest man von erfolgreichen Angriffen auf Unternehmensnetzwerke, so ist die implizite Annahme von außenstehenden, unternehmensfremden Angreifern weit verbreitet. Doch häufig sind die Angreifer bereits im Netzwerk ansässig. Es handelt sich um (ehemalige) Mitarbeiter oder zumindest Personen mit legitimem Zugriff auf das Netzwerk, wie Geschäftspartnern oder Kunden. Hierbei geht es keineswegs lediglich um Einzelfälle. 
 
@@ -30,8 +34,7 @@ Auch wenn die genauen Zahlen aufgrund von unterschiedlichen Annahmen und der in 
 
 Zur Erkennung von Angriffen in Netzwerken können SIEM-Systeme eingesetzt werden (siehe Abschnitt \ref{cha_siem}). Diese sind jedoch in erster Linie auf das Erkennen von externen Angriffen ausgelegt und in ihrer derzeitigen Form kaum sinnvoll für das Erkennen von Innentätern zu nutzen. \todo{EZ: Warum nicht? Einige werben damit, Innentaeter erkennen zu koennen, z.B. IBM QRadar} \\
 Hierfür würden zusätzliche Datenquellen und Erkennungslogiken nötig sein.\todo{EZ: Warum? Welche?} 
-Zusätzlich spielen auch  datenschutzrechtliche Bedenken im Bezug auf das Sammeln von großen Datenmengen über Mitarbeiter des eigenen Unternehmens hier eine entscheidende Rolle. \todo{Beispiel für Datenschutz für Arbeitnehmer}
-\todo{EZ: Wieso?}
+Zusätzlich spielen auch  datenschutzrechtliche Bedenken im Bezug auf das Sammeln von großen Datenmengen über Mitarbeiter des eigenen Unternehmens hier eine entscheidende Rolle. Details hierzu sind im folgenden Kapitel \ref{cha_employee_privacy} zu finden.
 
 Ein Ansatz, der diese Bedenken ausräumen oder zumindest lindern könnte, ist die Nutzung von Pseudonymen bei der Datenerfassung (siehe Abschnitt \ref{cha_pseudonym}). Anstatt direkt identifizierende Merkmale eines Arbeitnehmers abzuspeichern, werden diese Merkmale durch ein Pseudonym ersetzt. Eine Liste dieser Ersetzungen wird verschlüsselt abgelegt. Im Fall eines Angriffs durch einen Innentäter kann die Liste entschlüsselt werden und relevante Ereignisse de-pseudonymisiert, also ihrem ursprünglichen Verursacher wieder zweifelsfrei zugeordnet, werden.\\
 Um die Entschlüsselung nicht einzelnen (möglicherweise bösartig agierenden) Personen zu ermöglichen, können sogenannte Schwellwertschemata eingesetzt werden (siehe Abschnitt \ref{cha_threshold}). Durch sie wird die Entschlüsselung erst durch die Kooperation mehrerer Parteien möglich gemacht.
@@ -60,3 +63,5 @@ Hierbei müssen einige Fragen betrachtet werden:
 \end{itemize}
 
 Gerade die letzte Frage sorgt dafür, dass zusätzliche Anforderungen an den zu entwickelnden Prototypen gestellt werden. Es sollte möglich sein, abhängig von den eingehenden Daten die entsprechend gewünschten Funktionen konfigurieren und den Prototypen in eventuell aufbauenden Arbeiten auch um zusätzliche Funktionen ergänzen zu können.
+
+\todo{Zu ergänzen: Aufbau der Arbeit, Literatur}
