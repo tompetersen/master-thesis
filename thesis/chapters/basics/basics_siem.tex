@@ -1,39 +1,31 @@
 \section{SIEM-Systeme}
 
-\begin{itemize}
-  \item Was und warum sind SIEM-Systeme und was tun sie?
-  \item Was gibt es evtl. gerade im Bereich der Insider-Angriffe schon?
-  \item Was ist OSSIM und wie sieht die Architektur aus?
-\end{itemize}
-
 \label{sec_basics_siem}
 
-%- Was ist das?
+SIEM-Systeme dienen dazu Daten in Netzwerken zu sammeln, um so einen zentralisierten Überblick über das Netzwerk zu erhalten und Bedrohungen erkennen und verhindern zu können. 
 
-%- OSSIM als Open-Source-Vertreter
+Der Begriff \textit{Security Information and Event Management} (SIEM) wurde von zwei Analysten des IT-Marktforschungsunternehmens Gartner geprägt, das auch jährlich einen Bericht über aktuelle Trends im Bereich der SIEM-Systeme veröffentlicht.
+Er setzt sich zusammen aus \textit{Security Event Management} (SEM), das sich mit Echtzeitüberwachung und Ereigniskorrelation befasst, sowie \textit{Security Information Management} (SIM), in dessen Fokus Langzeiterfassung und Analyse von Log-Daten steht \cite{gartner2011}. 
 
-
-Der Begriff SIEM (Security Information and Event Management) setzt sich aus SEM (Security Event Management), das sich mit Echtzeitüberwachung und Ereigniskorrelation befasst, sowie SIM (Security Information Management), in dessen Fokus Langzeiterfassung und Analyse von Log-Daten steht, zusammen \cite{gartner2011}. SIEM-Systeme dienen dazu Daten in Netzwerken zu sammeln, um so einen zentralisierten Überblick über das Netzwerk zu erhalten und Bedrohungen erkennen und verhindern zu können. 
-
-Ein SIEM-System sollte unter anderem die folgenden Aufgaben erfüllen: 
-\todo{EZ: Eine jeweilige kurze Erklaerung waere hilfreich}
+Ein SIEM-System sollte nach \cite{detken2015} die folgenden Aufgaben erfüllen können: 
 \begin{itemize}
-	\item Event-Behandlung
-	\item Erkennung von Anomalien auf Netzwerkebene
-	%\item Identity Mapping
-	%\item Key Performance Indication
-	\item Überprüfung der Einhaltung von Richtlinien (Compliance Reporting)
-	\item Bereitstellung von Schnittstellen zur Integration heterogener Systeme im Netzwerk % API
-	\item Nutzerabhängige Sichten auf sicherheitsrelevante Ereignisse % Role based access control
+	\item \textbf{Event Correlation:} Da diese Aufgabe zentral für den Inhalt der Arbeit ist, wird sie unten stehend näher erläutert.
+	\item \textbf{Network Behaviour Anomaly Detection:} Beschreibt die Erkennung von Anomalien auf Netzwerkebene durch die Erkennung von vom Normalzustand abweichenden Kommunikationsverhalten.
+	\item \textbf{Identity Mapping:} Abbildung von Netzwerkadressen auf Nutzeridentitäten. 
+	\item \textbf{Key Performance Indication:} Zentrale Analyse sicherheitsrelevanter Informationen und Netzwerkdetails.
+	\item \textbf{Compliance Reporting:} Überprüfung der Einhaltung von durch Regelungen vorgeschriebenen Anforderungen wie Integrität, Risiko und Effektivität.
+	\item \textbf{API:} Bereitstellung von Schnittstellen zur Integration heterogener Systeme im Netzwerk.
+	\item \textbf{Role based access control:} Zuständigkeitsabhängige Sichten auf sicherheitsrelevante Ereignisse.
 \end{itemize} 
-Details dazu sind \cite{detken2015} zu entnehmen.
 
-Eine besondere Bedeutung kommt hier der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detectionen-Systemen oder aus den Log-Daten von Firewalls, Switches,... stammen können. Hier muss ein SIEM-System nach \cite{detken2014} insbesondere drei Aufgaben erfüllen:
-\begin{itemize}
-	\item \textbf{Extraktion:} Die Daten werden aus Logeinträgen oder empfangenen Systemmeldungen extrahiert. 
-	\item \textbf{Mapping:} Die extrahierten Daten werden in ein SIEM-spezifisches Format übersetzt, um eine sinnvolle Weiterverarbeitung zu gewährleisten.
-	\item \textbf{Aggregation:} Gleichartige Events können in manchen Fällen anschließend zusammengefasst werden, um aussagekräftigere Informationen zu erhalten.
-\end{itemize}
+Eine besondere Bedeutung im Kontext dieser Arbeit kommt hier der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detectionen-Systemen oder aus den Log-Daten von Firewalls, Switches oder anderen Netzwerkgeräten stammen können. 
 
-Weiterhin können SIEM-Systeme noch zusätzliche Aufgaben wie Schwachstellenscans oder Netzwerk-Monitoring übernehmen.
+Um diese Ereignisse zu erhalten, muss ein SIEM-System nach \cite{detken2014} vor ihrer Speicherung insbesondere drei Aufgaben wahrnehmen. Zu Beginn werden die Daten aus Logeinträgen oder empfangenen Systemmeldungen herausgelesen (Extraktion).\\
+Anschließend müssen die extrahierten Daten in ein SIEM-spezifisches Format übersetzt werden, um eine sinnvolle Weiterverarbeitung zu gewährleisten (Homogenisierung). Hierbei werden relevante Felder eines SIEM-Events wie Datumsangaben, Adressen oder Aktionen aus den empfangenen Daten befüllt. Dieser Schritt wird in anderen Quellen auch als Normalisierung oder Mapping bezeichnet.\\
+Optional können darauf folgend gleichartige Events in bestimmten Fällen anschließend zusammengefasst werden, um aussagekräftigere Informationen zu erhalten (Aggregation).
 
+Liegen die Events nun in einem vorgebenen Format im System vor, so können sie weiterhin mit dem System bekannten Umgebungsdaten über Benutzer, Geräte oder Bedrohungen verknüpft werden, um ihre Relevanz besser einschätzen zu können. 
+
+Anschließend lassen sich vorgegebene Regeln anwenden, um aus der Korrelation von Ereignissen aus verschiedenen Datenquellen auf eine Bedrohung schließen zu können, die in den einzelnen Events nicht erkennbar wäre (Event Correlation).
+
+\tbc{Wäre hier ein Beispiel für Event Correlation nötig/hilfreich?}
