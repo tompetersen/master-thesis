@@ -1,5 +1,16 @@
 \section{Schwellwertschemata}
 
+\begin{itemize}
+  \item \textbf{Grundlagen} Von Shamirs Secret Sharing bis heute
+  \item \textbf{Konkretes Verfahren} Im Detail erläutern - vmtl. Desmedt auf Basis von ElGamal
+  \item Zusätzlich Erweiterungen dieses Verfahrens wie verteilte Schlüsselgenerierung.
+\end{itemize}
+
+%- Desmedt, Frankel: ElGamal \cite{DesmedtFrankel1990}
+%- setzt zentralen "Dealer" voraus
+%- Pedersen und verbesserte Variante 
+%- Andere Möglichkeiten: Paillier, RSA, ...
+
 \label{sec_state_threshold}
 
 Ein solches System, das auf dem ElGamal-Algorithmus und damit dem Diskreten-Logarithmus-Problem basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. \todo{Details} Dieser Ansatz setzt in der \textit{Setup}-Phase auf eine zentrale vertrauenswürdige Stelle zur Erzeugung der Schlüssel und \textit{Shares}. In \cite{pedersen1991} stellt der Autor basierend auf diesen Ergebnissen ein Verfahren vor, das bei der Schlüsselgenerierung ohne eine vertrauenswürdige Instanz auskommt. Dieses Verfahren wird in \cite{gennaro1999} noch einmal verbessert.\\
