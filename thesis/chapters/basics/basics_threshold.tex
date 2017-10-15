@@ -7,11 +7,11 @@
 %- Was ist das? (siehe auch Paper für Definition)
 %- Fünde (RSA, Paillier, ...) und Desmedt/Frankel evtl. hier schon Pedersen/...
 
-Mit der Verbreitung technischer Systeme, die kryptographische Verfahren nutzen, musste auch das Problem der sicheren Aufbewahrung und Verteilung kryptographischer Schlüssel betrachtet werden. Die Sicherheit dieser Schlüssel ist essentiell für den Betrieb solcher Systemen. Das einfache Speichern eines Schlüssels an einem Ort besitzt eine hohe Verlustwahrscheinlichkeit, da ein einzelner Fehler wie unbeabsichtigtes Löschen oder Speichermedienausfall den Schlüssel unwiederbringlich zerstören kann. Das mehrfache Speichern eines Schlüssels an verschiedenen Orten erhöht hingegen die Gefahr eines Schlüsseldiebstahls oder -missbrauchs, da auch die Angriffsoberfläche vergrößert wird. Bei möglichen Lösungen dieses Problems müssen also immer die Integrität und die Vertraulichkeit eines Schlüssels gegeneinander abgewogen werden. \cite{gemmell1997}
+Mit der Verbreitung technischer Systeme, die kryptographische Verfahren nutzen, in den 70er Jahren musste auch das Problem der sicheren Aufbewahrung und Verteilung kryptographischer Schlüssel betrachtet werden. Die Sicherheit dieser Schlüssel ist essentiell für den Betrieb solcher Systemen. Das einfache Speichern eines Schlüssels an einem einzigen Ort resultiert in einer hohen Verlustwahrscheinlichkeit, da ein einzelner Fehler wie unbeabsichtigtes Löschen oder Speichermedienausfall den Schlüssel unwiederbringlich verloren gehen lassen kann. Das mehrfache Speichern eines Schlüssels an verschiedenen Orten erhöht hingegen die Gefahr eines Schlüsseldiebstahls oder -missbrauchs, da auch die Angriffsoberfläche vergrößert wird. Bei möglichen Lösungen dieses Problems müssen also immer die Integrität und die Vertraulichkeit eines Schlüssels gegeneinander abgewogen werden. \cite{gemmell1997}
 
-Ausgehend von diesen Überlegungen entwickelte Shamir das erste \((k,n)\)-Schwellwert-Schema\footnote{
+Ausgehend von diesen Überlegungen entwickelte Shamir das erste \((k,n)\)-Schwellwert-Schema: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) (\textit{shares}) zerlegt, dass durch Kenntnis von mindestens \(k\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus höchstens \(k-1\) Teilen keine Informationen über \(D\) liefert \cite{shamir1979}.\footnote{
   Im selben Jahr veröffentlichte auch Blakley eine Lösung dieses Problems, die auf den Schnittpunkten von Hyperebenen über endlichen Feldern beruht \cite{blakley1979}.
-}: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) (\textit{shares}) zerlegt, dass durch Kenntnis von mindestens \(k\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus höchstens \(k-1\) Teilen keine Informationen über \(D\) liefert \cite{shamir1979}. 
+} 
 
 Auf Basis dieses Verfahrens kann also die Integrität eines Schlüssels erhöht werden, da nun selbst bei Verlust von \(n-k\) Teilen der Schlüssel noch wiederhergestellt werden kann. Auf der anderen Seite ist die Vertraulichkeit jedoch höher als bei der mehrfachen Speicherung des Schlüssels im Original, da mindestens \(k\) Teile des Schlüssels zur Wiederherstellung vorliegen müssen.
 
@@ -27,11 +27,11 @@ jeweils modulo \(p\) berechnet, wobei die \(x_i\) paarweise unterschiedlich aus 
 
 Um nun aus diesen einzelnen Teilen wieder das ursprüngliche Geheimnis zu erhalten, wird das Verfahren der Langrange'schen Polynominterpolation verwendet, das ausgehend von einer Menge von Punkten ein Polynom findet, das durch diese Punke verläuft. Hierbei wird die Tatsache ausgenutzt, dass jedes Polynom vom maximalen Grad \(t-1\) in einem mathematischen Körper durch \(t\) Punkte exakt bestimmt wird.
 
-Für die verwendeten \(t\) Teile \(D_1'=(x_1',q(x_1')),\dots,D_t'=(x_t',q(x_t'))\) werden \(t\) Werte \todo{mod p irgendwo erwähnen}
+Für die zur Rekonstruktion verwendeten \(t\) Teile \(D_1'=(x_1',q(x_1')),\dots,D_t'=(x_t',q(x_t'))\) werden \(t\) Werte \todo{mod p irgendwo erwähnen}
 \[\lambda_i := \prod_{j=1, j \not= i}^{t} \; \frac{- x_j'}{x_i' - x_j'} \text{ für } i \in \{1,\dots,t\}\] 
 definiert. Das gesuchte Geheimnis \(D\) kann nun als
 \[D = \sum_{i=1}^{t}\lambda_i \cdot q(x_i')\]
-berechnet werden. Da \(\lambda_i\) nicht von \(q(x_i)\) abhängt, können diese Werte in der Praxis bereits vorberechnet werden. Details zu der Herleitung dieses Verfahrens sind \cite{boneh2016} zu entnehmen.
+berechnet werden. Da \(\lambda_i\) nicht von \(q(x_i)\) abhängt, können diese Werte in der Praxis bereits vorberechnet werden. Details zu der Korrektheit dieses Verfahrens sind \cite{boneh2016} zu entnehmen.
 
 Das Problem dieser Lösung bezogen auf den in dieser Arbeit behandelten Anwendungsfall ist jedoch, dass das Geheimnis nach erstmaligem Aufdecken bekannt ist. Wünschenswert wäre ein Verfahren, bei dem nur ein entsprechend verschlüsseltes Datum (bspw. der gesuchte Eintrag in einer Pseudonym-Tabelle) aufgedeckt werden kann, ohne dass der kombinierte Schlüssel selbst bekannt wird. 
 
@@ -41,13 +41,13 @@ Das Problem dieser Lösung bezogen auf den in dieser Arbeit behandelten Anwendun
 %- 93 Threshold decryption (non-interactive) \cite{desmedt1993}
 %- Def. nach 96 Boneh \cite{boneh2006}
 
-In \cite{desmedt1987} wird das erwähnte Problem das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird auch die zentrale Forderung aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. 
+In \cite{desmedt1987} wird das erwähnte Problem das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird auch die zentrale Forderung an mögliche Lösungen des Problems aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. 
 
-In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{threshold decryption} und fordert weiterhin, dass praktisch einsatzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Teilnehmern notwendig machen.
+In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{threshold decryption} und fordert weiterhin, dass praktisch einsatzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Besitzern der \textit{shares} notwendig machen.
 
 \begin{figure}[]
     \centering
-        \includegraphics[clip, trim=0cm 21.2cm 0cm 2cm, width=1.00\textwidth]{img/threshold_decryption_excerpt.pdf}
+        \includegraphics[clip, trim=3cm 21.2cm 3cm 2cm, width=1.00\textwidth]{img/threshold_decryption_excerpt.pdf}
     \caption{Übersicht über den Entschlüsselungsvorgang bei der Nutzung eines (3,5)-Schwellwertschemas. Entnommen aus \cite{boneh2016}.}
     \label{fig:threshold_decryption_combiner}
 \end{figure}
@@ -64,7 +64,7 @@ In \cite{boneh2016} werden diese Systeme formalisiert. Ein \textit{Threshold-Pub
   \item \(C(c, c_1', \dots, c_t')\) ist der Algorithmus, der aus dem Schlüsseltext \(c\) und aus \(t\) durch \(D\) generierten partiellen Verschlüsselungen wieder die Nachricht \(m\) liefert. Dieser Algorithmus wird auch \textit{combiner} genannt. 
 \end{itemize}
 
-Zusätzlich wird von diesen Algorithmen die folgende Eigenschaft verlangt. Sie beschreibt die korrekte Entschlüsselung von validen Schlüsseltexten im Kontext eines Schwellwertschemas: Für alle möglichen Ergebnisse \((pk, \{sk_1, \dots, sk_n\})\) von \(G\), alle möglichen Nachrichten \(m\) und alle \(t\)-elementigen Teilmengen der \textit{shares} \(\{sk_1', \dots, sk_t'\}\) soll für alle möglichen Schlüsseltexte \(c=E(pk, m, r)\) gelten: \(C(c, D(sk_1', c), \dots, D(sk_t', c) = m\).
+Zusätzlich wird von diesen Algorithmen die folgende Eigenschaft verlangt. Sie beschreibt die korrekte Entschlüsselung von validen Schlüsseltexten im Kontext eines Schwellwertschemas: Für alle möglichen Ergebnisse \((pk, \{sk_1, \dots, sk_n\})\) von \(G\), alle möglichen Nachrichten \(m\) und alle \(t\)-elementigen Teilmengen der \textit{shares} \(\{sk_1', \dots, sk_t'\}\) soll für alle möglichen Schlüsseltexte \(c=E(pk, m, r)\) gelten: \(C(c, D(sk_1', c), \dots, D(sk_t', c)) = m\).
 
 Eine Übersicht über den Entschlüsselungsvorgang ist in Abbildung \ref{fig:threshold_decryption_combiner} zu finden. Dort sind die partiellen Entschlüsselungen und der \textit{combine}-Vorgang eines \((3,5)\)-Schwellwertschemas dargestellt. Der Algorithmus \(D\) für die partielle Entschlüsselung läuft dabei auf den einzelnen \textit{Key-Servern} ab.
 
