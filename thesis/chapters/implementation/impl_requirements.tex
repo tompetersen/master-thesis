@@ -11,6 +11,10 @@ Der umgesetzte Prototyp soll es ermöglichen, aufbauend auf dem bestehenden Open
 
 \subsection*{Zugrundeliegendes Angreifermodell}
 
+Logdaten kommen nicht-pseudonymisiert und unverschlüsselt über das Netzwerk (Nicht Fokus dieser Arbeit). Solange dies nicht geändert werden kann, liegt der Fokus auf sicherer Speicherung und geschütztem Zugriff auf die Daten in OSSIM.
+
+\todo{Modell formulieren}
+
 
 \subsection*{Ansätze zum Eingriff in den OSSIM-Datenfluss(?)}
 
@@ -31,7 +35,7 @@ Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene St
   Bei diesem Ansatz werden die Daten bereits pseudonymisiert, bevor sie die Datenquelle verlassen. Auch wenn dieser Ansatz aus datenschutztechnischer Sicht die beste Möglichkeit darstellen würde, so ist er doch nicht umsetzbar, da hierzu jede mögliche Quelle von Logdaten universell verändert werden müsste.
 
 \item \textbf{Syslog-Proxy}\\
-  Dieser Ansatz pseudonymisiert die Daten vor dem ersten Kontakt mit einer OSSIM-Komponente, indem Datenquellen ihre Logdaten an einen Proxy senden, der die Daten pseudonymisiert und erst anschließend an OSSIM weiterreicht. Hierdurch wird erreicht, dass die Daten zu keiner Zeit nicht-pseudonymisiert in OSSIM vorliegen. Ein Nachteil dieser Lösung ist, dass sie das Parsen und Neuzusammensetzen der Logdaten im Proxy erfordert. \todo{Beschreibung erweitern - "analog zu Plugins in OSSIM"}
+  Dieser Ansatz pseudonymisiert die Daten vor dem ersten Kontakt mit einer OSSIM-Komponente, indem Datenquellen ihre Logdaten an einen Proxy senden, der die Daten pseudonymisiert und erst anschließend an OSSIM weiterreicht. Hierdurch wird erreicht, dass die Daten zu keiner Zeit nicht-pseudonymisiert in OSSIM vorliegen. Ein Nachteil dieser Lösung ist, dass sie das Parsen und Neuzusammensetzen der Logdaten im Proxy erfordert. \todo{Beschreibung erweitern - analog zu Plugins in OSSIM}
 
 \item \textbf{Patchen des OSSIM-Sensor-Agents}\\
   Bei dieser Lösung müsste der OSSIM-Agent des Sensors so verändert werden, dass vor dem Senden der Events an den Server die Pseudonymisierung stattfindet. Daten erreichen den OSSIM-Server nur pseudonymisiert und mehrfaches Parsen wie in der zweiten Lösung wird verhindert. Auf der anderen Seite erfordert diese Lösung einen Eingriff in die Funktionsweise von OSSIM, was beispielsweise bei Updates von OSSIM zu Problemen führen kann. Außerdem liegen die Daten zu Beginn in nicht-pseudonymisierter Form im Sensor vor. \todo{Syslog-Problematik erwähnen} Zusätzlich erfordert diese Lösung die verteilte Installation von OSSIM-Sensor und -Server, schließt also die Ein-Maschinen-Installation aus \todo{Wording anpassen}.
@@ -46,5 +50,22 @@ Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene St
 
 \end{enumerate}
 
-\subsection*{Erweiterbarkeit}
+Insbesondere der aus dentenschutztechnischer Sicht relevante Vorteil, dass die Daten bereits pseudonymisiert in allen OSSIM-Komponenten eintreffen, ließ die Entscheidung auf die zweite Möglichkeit fallen. Dass die Lösung außerdem noch für beide Varianten der OSSIM-Installation möglich ist und keine Anpassungen an OSSIM selbst benötigt, wiegt den Nachteil des zusätzlichen Parsens und wieder Zusammensetzens der Lognachricht bei Weitem auf.\todo{Auch auf Angreifermodell beziehen}
 
+
+\subsection*{Anforderungen um Bezug auf den Einsatz eines kryptographischen Schwellwertschemas}
+
+- Verteiltes Modell 
+- Kommunikation
+- ...
+
+
+\subsection*{Erweiterbarkeit um neue Datenquellen}
+
+- Erweiterbar für neue Datenquellen
+
+\subsection*{Erweiterbarkeit um neue Datenschutztechniken}
+
+Neben der im Fokus dieser Arbeit stehenden Pseudonymisierung und dem Einsatz von kryptographischen Schwellwertschemata zum Schutz der Logdaten gibt es weitere Datenschutztechniken, die für den Anwendungsfall genutzt werden könnten (siehe Kapitel \ref{cha_alternatives}). Der umgesetzte Prototyp sollte leicht um diese Techniken erweiterbar sein.
+
+\todo{Resultate}
