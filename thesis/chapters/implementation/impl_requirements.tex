@@ -21,41 +21,35 @@ Der umgesetzte Prototyp soll es ermöglichen, aufbauend auf dem bestehenden Open
 %  •  unbeschränkt: informationstheoretisch 
 %  •  beschränkt: komplexitätstheoretisch 
 
+Ein Angreifermodell beschreibt die maximale Stärke eines Angreifers im Bezug auf verschiedene Faktoren, gegen die ein System abgesichert ist. Enthalten sind die Rolle eines Angreifers, seine Verbreitung im System, aktives oder passives Verhalten und die Rechenkapazität, die der Angreifer zum Überwinden der schützenden Verfahren aufbringen kann. Es bildet die Basis für alle Folgeüberlegungen im Bezug auf die Sicherheit des zu entwickelnden Systems.
 
+Im Kontext dieser Arbeit, die sich mit der datenschutzfreundlichen Speicherung von Überwachungsdaten beschäftigt, muss zuerst folgende Vorüberlegung getroffen werden: Logdaten erreichen das verwendete SIEM-System abhängig von den verwendeten Protokollen im allgemeinen nicht-pseudonymisiert und oftmals weder verschlüsselt noch mit geschützer Integrität über das Netzwerk. \todo{Angriffsmöglichkeiten erläutern: Mitschneiden aller Daten und damit  Aufdecken von Pseudonymen, ...}
+Diese Angriffsmöglichkeiten zu verhindern, liegt nicht im Bereich dieser Arbeit. Daher bezieht sich das Angreifermodell auf die Bearbeitung und Speicherung von Logdaten, erst sobald sie das zu entwickelnde System erreichen, jedoch nicht vorher.
 
-\todo{Modell formulieren}
+Das Ziel des Systems bezogen auf seine Sicherheit lässt sich folgendermaßen definieren: Das Pseudonym eines Nutzers erlaubt (ohne Anwendung von Hintergrundwissen) keinen Rückschluss auf die Identität eines Nutzers. Erst die Kollaboration berechtigter Akteure ermöglicht das Aufdecken eines Pseudonyms.\todo{? aßerdem erweitern um aktive Angreifer?}
 
-Ein Angreifermodell beschreibt die maximale Stärke eines Angreifers im Bezug auf verschiedene Faktoren, gegen die ein System abgesichert ist. Enthalten sind die Rolle eines Angreifers, die Verbreitung im System, aktives oder passives Verhalten und die Rechenkapazität, die der Angreifer zum Überwinden der schützenden Verfahren aufbringen kann. Es bildet die Basis für alle Folgeüberlegungen im Bezug auf die Sicherheit des zu entwickelnden Systems.
-
-Logdaten kommen nicht-pseudonymisiert und unverschlüsselt über das Netzwerk (Nicht Fokus dieser Arbeit). Solange dies nicht geändert werden kann, liegt der Fokus auf sicherer Speicherung und geschütztem Zugriff auf die Daten in OSSIM.
-
-- Prämisse: Das Pseudonym eines Nutzers erlaubt (ohne Anwendung von Hintergrundwissen) keinen Rückschluss auf die Identität eines Nutzers. Erst die Kollaboration ermöglicht das Aufdecken eines Pseudonyms.
-
-- Rollen: Außenstehende, Benutzer/Administratoren mit OSSIM-Zugriff, Administratoren mit physischem Zugriff auf Rechner im Netz (auch P-Store)
-
-- Verbreitung: Fokus liegt auf Speicherung, daher wird ungesicherte Übertragung von Logdaten, die vor der Pseudonymisierung stattfindet und in der Benutzerinformationen noch im Originalformat vorliegen, nicht betrachtet. Ein Ziel der Architektur ist natürlich trotzdem diesen Anteil/Weg möglichst gering zu halten.
-
-- Verhalten: \todo{Aktive Angreifer?}
-
-- Rechenkapazität: Verbreitete kryptographische Algorithmen werden als nicht mit vertretbarem Aufwand zu brechend angesehen, daher handelt es sich um die Annahme von komplexitätstheoretischer Sicherheit und einem in seiner Rechenleistung beschränkten Angreifer.
-
-
-
-
+Für das Angreifermodell werden folgende Annahmen getroffen: Bei dem Angreifer kann es sich um einen Außenstehenden, um einen Berechtigten mit Zugriff auf das SIEM-System oder sogar um einen Administrator mit physischem Zugriff auf Rechner im Netz handeln. Wie bereits beschrieben, wird die ungesicherte Übertragung nicht-pseudonymisierter Daten zu dem System nicht betrachtet. Insofern wird von einem Angreifer ausgegangen, der erst Zugriff auf das zu entwickelnde System oder das SIEM-System beseitzt oder erlangt. Das zu entwickelnde System soll in der Lage sein, sich auch gegen aktive Angreifer zur Wehr zu setzen. \todo{Denial of Service etc?}
+Bezogen auf die verfügbare Rechenleistung des Angreifers sollen verbreitete und nach heutigem Wissensstand für sicher befundene kryptographische Algorithmen als nicht mit vertretbarem Aufwand zu brechen angesehen werden. Es handelt sich daher um die Annahme von komplexitätstheoretischer Sicherheit.
 
 
 \subsection*{Anforderungen an die Integration in OSSIM}
 
-Mögliche Eigenschaften, die gegeneinander abzuwägen sind:
+Um zu beurteilen, an welcher Stelle in den Datenfluss der Logdaten in OSSIM (vergleiche Abschnitt \ref{sec_state_siem}) eingegriffen wird, um die Daten zu verändern, müssen Vor- bzw. Nachteile der verschiedenen Möglichkeiten gegeneinander abgewogen werden. Folgende Eigenschaften einer Möglichkeit sollten betrachtet werden:
 
-- Abhängigkeit von der OSSIM-Konfiguration
+\begin{itemize}
 
-- Erfordert Veränderung des SIEM-Systems
+  \item \textbf{Abhängigkeit von der OSSIM-Konfiguration: } Ist die Lösung sowohl in der verteilten als auch in der All-in-One-Installation von OSSIM umsetzbar? Eine Lösung, die unabhängig von der gewählten Installationsmethode funktioniert, ist zu bevorzugen, da sie universell einsetzbar ist.
+  
+  \item \textbf{Veränderung des SIEM-Systems: } Muss OSSIM für die Umsetzung der Lösung verändert werden? Dies wäre im Hinblick auf zukünftige Updates, die OSSIM durch den Entwickler erfährt, nicht wünschenswert, da jedes dieser Updates dafür sorgen könnte, dass die umgesetzte Lösung angepasst werden muss. Hierbei können sowohl direkte Änderungen an dem OSSIM-Quellcode als auch Eingriff in die interne Kommunikation betrachtet werden.  
+  
+  \item \textbf{Nicht-pseudonymisierte Daten im SIEM-System: } Um das Ziel der Arbeit - die Pseudonymisierung, die nur durch Kollaboration aufgedeckt werden kann - zu erreichen, muss sichergestellt sein, dass Logdaten nirgendwo in nicht pseudonymisierter Form vorliegen. Da insbesondere das zukünftige Verhalten von OSSIM nicht beeinflusst werden kann, wäre es wünschenswert, dass die Logdaten bereits in pseudonymisierter Form das SIEM-System erreichen.\\
+  Die Relevanz dieser Eigenschaft lässt sich bereits an einem einfachen Beispiel erkennen: Wird das Syslog-Protokoll genutzt, um Logdaten in OSSIM aufzunehmen, so werden die Einträge im Sensor erst in eine Logdatei gespeichert und von dort aus geparst, normalisiert und in der Datenbank gespeichert. Das Datum verbleibt in der Logdatei. Kommen die Daten in nicht-pseudonymisierter Form in dem OSSIM-Sensor an, so muss sichergestellt werden, dass verarbeitete Einträge gelöscht/verändert werden.
+  
+  \item \textbf{Mehrfaches Parsen von Logdaten: } Durch den OSSIM-Agenten werden die Logdaten - wie in Abschnitt \ref{sec_state_siem} beschrieben - geparst und normalisiert. Aus Performancegründen ist eine Lösung zu bevorzugen, die dieses Parsen nicht mehrfach voraussetzt.
+  
+%  \item \textbf{Manipulierbarkeit auf den Übertragungswegen(?): }
 
-- Daten liegen temporär in nicht-pseudonymisierter Form in OSSIM vor
-
-- Logdaten müssen mehrfach geparst werden
-
+\end{itemize}
 
 \subsection*{Anforderungen an die Pseudonymisierung}
 
@@ -81,3 +75,10 @@ Das umzusetzende System sollte es ermöglichen, Daten aus verschiedenen Quellen 
 
 Neben der im Fokus dieser Arbeit stehenden Pseudonymisierung und dem Einsatz von kryptographischen Schwellwertschemata zum Schutz der Logdaten gibt es weitere Datenschutztechniken, die für den Anwendungsfall genutzt werden könnten (siehe Kapitel \ref{cha_alternatives}). Der umgesetzte Prototyp sollte leicht um diese Techniken erweiterbar sein, d.h. so gestaltet sein, dass andere Techniken ohne große Änderungen am System integriert und auf eingehende Logdaten angewendet werden können.
 
+\subsection*{Benutzerinteraktion}
+
+- Proxy: Konfiguration der Plugins
+
+- Pseudo-App: Statusanzeige angemeldeter Benutzer(Admin), Initialisierung der Schlüsselgenerierung nach Nutzerauswahl(Admin), Anlegen von Aufdeckanfragen, Statusanzeige von Aufdeckanfragen, Systemstatus
+
+- Einzelne Teilnehmer sollten Client-Anwendungen besitzen, um auf Anfragen reagieren zu können (Generation eigener Schlüssel, gemeinsame Schlüsselgenerierung, ... ) Konsolenanwendung? 
