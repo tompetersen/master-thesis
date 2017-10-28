@@ -2,22 +2,19 @@
 
 \label{sec_state_siem}
 
-\begin{itemize}
-  \item Was gibt es evtl. gerade im Bereich der Insider-Angriffe schon?
-  \item Was ist OSSIM und wie sieht die Architektur aus?
-\end{itemize}
+Zur Zeit gibt es eine vielfältige Auswahl an SIEM-Systemen auf dem Markt, die die grundsätzlichen Aufgaben eines SIEM-Systems erfüllen und über diese hinausgehen: Splunk\footnote{
+  https://www.splunk.com
+}, QRadar von IBM\footnote{
+  https://www.ibm.com/us-en/marketplace/ibm-qradar-siem
+} oder ArcSight von Micro Focus\footnote{
+  https://software.microfocus.com/en-us/software/siem-security-information-event-management
+} sind nur einige Beispiele aus diesem Bereich. 
 
-
-Was steht hier so?
-
-Übersicht über andere SIEM-Systeme und so...
-
+Die Auswahl an Open-Source-Software in diesem Bereich ist jedoch sehr gering. Eine der wenigen Ausnahmen stellt OSSIM - ein SIEM-System der Firma AlienVault\footnote{
+	AlienVault OSSIM: The World’s Most Widely Used Open Source SIEM\\https://www.alienvault.com/products/ossim
+} - dar, das auf Basis weiterer quelloffener Lösungen aus dem Netzwerksicherheits-Bereich unter anderem die in Abschnitt \ref{sec_basics_siem} beschriebenen Funktionen bereitstellt. AlienVault bietet zusätzliche eine kommerzielle Variante seines Produkts namens USM an, das insbesondere in den Bereichen Event-Korrelation und Compliance-Reporting die Funktionalität von OSSIM übersteigt. Von der Entwicklungsarbeit die in USM fließt, profitiert jedoch auch OSSIM, beispielsweise durch die Aktualisierung von Plugins für die Einbindung von aktuellen Netzwerkgeräten.
 
 \subsection*{OSSIM-Überblick}
-
-Im Rahmen dieser Arbeit wird eine quelloffene SIEM-Lösung dazu genutzt, das Gerüst für eine datenschutzgerechte Speicherung von Überwachungsdaten bereitzustellen. Hierbei handelt es sich um OSSIM - ein SIEM-System der Firma AlienVault\footnote{
-	AlienVault OSSIM: The World’s Most Widely Used Open Source SIEM\\https://www.alienvault.com/products/ossim
-}, das auf Basis weiterer quelloffener Lösungen aus dem Netzwerksicherheits-Bereich unter anderem die in Abschnitt \ref{sec_basics_siem} beschriebenen Funktionen bereitstellt.
 
 Im Folgenden soll eine Übersicht über die für diese Arbeit relevanten Komponenten von OSSIM und deren Zusammenspiel gegeben werden. Diese ist auch in Abbildung \ref{fig:ossim_log_flow} dargestellt.
 
@@ -35,7 +32,7 @@ Eine OSSIM-Umgebung kann optional ein oder mehrere Sensoren nutzen, auf denen je
 \end{figure}
 
 
-\subsection*{Parsen von Logdaten}
+\subsection*{Parsen von Logdaten in OSSIM}
 
 % Quellenarten
 % Plugins
@@ -49,4 +46,4 @@ Besonders von Bedeutung für diese Arbeit ist die Verarbeitung von Logdaten. OSS
   \item Beschaffen von Daten durch Datenbankabfragen 
 \end{itemize}
 
-Unabhängig von der Datenquelle funktioniert die Verarbeitung der Logdaten nach dem immer gleichen Schema. OSSIM bietet die Möglichkeit mitgelieferte oder selber entwickelte Plugins für verschiedene Datenquellen zu aktivieren. Für eintreffende Logdaten überprüft der Agent anhand von regulären Audrücken, ob ein Plugin für das entsprechende Datum zuständig ist. Ist so ein Plugin gefunden, so wird ein neues OSSIM-Event angelegt und anhand der Angaben im Plugin die entsprechenden vorgegebenen Felder des Events gesetzt. Hierbei kann es sich beispielsweise um den Zeitpunkt des Events, IP-Adresse und Port der Datenquelle, einen zu dem Event gehörigen Netzwerkbenutzer oder ereignisabhängige selbstgesetzte Felder handeln.
+Unabhängig von der Datenquelle funktioniert die Verarbeitung der Logdaten nach dem immer gleichen Schema. OSSIM bietet die Möglichkeit mitgelieferte oder selber entwickelte Plugins für verschiedene Datenquellen zu aktivieren. Für eintreffende Logdaten überprüft der Agent anhand von regulären Audrücken, ob ein Plugin für das entsprechende Datum zuständig ist. Ist so ein Plugin gefunden, so wird ein neues OSSIM-Event angelegt und anhand der Angaben im Plugin die entsprechenden vorgegebenen Felder des Events gesetzt. Hierbei kann es sich beispielsweise um den Zeitpunkt des Events, IP-Adresse und Port der Datenquelle, einen zu dem Event gehörigen Netzwerkbenutzer oder ereignisabhängige selbstgesetzte Felder handeln. Anschließend folgt die Weiterleitung des Events an den Server.
