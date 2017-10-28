@@ -2,12 +2,7 @@
 
 \label{sec_impl_requirements}
 
-Der umgesetzte Prototyp soll es ermöglichen, aufbauend auf dem bestehenden Open-Source-SIEM-System OSSIM Logdaten mittels Pseudonymisierung und Schwellwertschemata so zu verändern, dass diese erst durch Kollaboration einer bestimmten Anzahl an Teilnehmern wieder aufgedeckt werden können.
-
-
-
-
-
+Der umgesetzte Prototyp soll es ermöglichen, aufbauend auf dem bestehenden Open-Source-SIEM-System OSSIM Logdaten mittels Pseudonymisierung und Schwellwertschemata so zu verändern, dass diese erst durch Kollaboration einer bestimmten Anzahl an Teilnehmern wieder aufgedeckt werden können. Neben dieser primären Anforderung sollte er noch weitere wie die Erweiterbarkeit um weitere Dateschutztechniken erfüllen. Alle diese Anforderungen sollen im folgenden Abschnitt näher erläutert werden.
 
 \subsection*{Zugrundeliegendes Angreifermodell}
 
@@ -53,10 +48,16 @@ Um zu beurteilen, an welcher Stelle in den Datenfluss der Logdaten in OSSIM (ver
 
 \subsection*{Anforderungen an die Pseudonymisierung}
 
-- Lang genug für geringe Kollisionswsk.
-- Eindeutig
-- Durchsuchbar (mim Hinblick auf threshold)
-- Anwendungsfallabhängige Parameter für Nutzzeit, ... (Rückblick auf Kapitel 3)
+%- Lang genug für geringe Kollisionswsk.
+%- Eindeutig
+%- Durchsuchbar (mim Hinblick auf threshold)
+%- Anwendungsfallabhängige Parameter für Nutzzeit, ... (Rückblick auf Kapitel 3)
+
+Die Pseudonymisierung muss es ermöglichen nach Aufdecken eines Eintrags wieder auf den ursprünglichen Dateninhalt schließen zu können. Daher müssen die Pseudonyme für die Zeit ihrer Speicherung eindeutig sein, d.h. es darf zu keiner gleichzeitigen Mehrfachverwendung von Pseudonymen kommen. 
+
+Weiterhin muss es eine Möglichkeit beim Pseudonymisieren von Logeinträgen geben, zu überprüfen, ob für ein Datum bereits ein Pseudonym vergeben wurde. So kann sichergestellt werden, dass in einem bestimmten Zeitraum Logeinträge zu einer Person mit dem gleichen Pseudonym versehen werden, um über die Verknüpfung von Einträgen die gewünschte Erkennung von Insider-Angriffen erreichen zu können.
+
+Außerdem muss es eine Möglichkeit geben, die Parameter der Pseudonymisierung wie den Zeitraum ihrer Verwendung (vergleiche Abschnitt \ref{sec_state_pseudonymity}) konfigurierbar zu machen.
 
 \subsection*{Anforderungen im Bezug auf den Einsatz eines kryptographischen Schwellwertschemas}
 
@@ -65,7 +66,22 @@ Um zu beurteilen, an welcher Stelle in den Datenfluss der Logdaten in OSSIM (ver
 - Schlüsselmanagement
 - ...
 
+\subsection*{Benutzerinteraktion}
 
+%- Proxy: Konfiguration der Plugins
+
+%- Pseudo-App: Statusanzeige angemeldeter Benutzer(Admin), Initialisierung der Schlüsselgenerierung nach Nutzerauswahl(Admin), Anlegen von Aufdeckanfragen, Statusanzeige von Aufdeckanfragen, Systemstatus
+
+%- Einzelne Teilnehmer sollten Client-Anwendungen besitzen, um auf Anfragen reagieren zu können (Generation eigener Schlüssel, gemeinsame Schlüsselgenerierung, ... ) Konsolenanwendung? 
+
+Die zu entwickelnde verteilte Anwendung wird an verschiedenen Stellen Benutzerinteraktion erfordern.
+
+Das Konfigurieren des Systems zur Integration verschiedener Datenquellen und deren Beschreibung muss einem berechtigten Nutzer zugägnlich gemacht werden.
+
+...
+
+
+\todo{Performance?}
 
 \subsection*{Erweiterbarkeit um neue Datenquellen}
 
@@ -75,10 +91,3 @@ Das umzusetzende System sollte es ermöglichen, Daten aus verschiedenen Quellen 
 
 Neben der im Fokus dieser Arbeit stehenden Pseudonymisierung und dem Einsatz von kryptographischen Schwellwertschemata zum Schutz der Logdaten gibt es weitere Datenschutztechniken, die für den Anwendungsfall genutzt werden könnten (siehe Kapitel \ref{cha_alternatives}). Der umgesetzte Prototyp sollte leicht um diese Techniken erweiterbar sein, d.h. so gestaltet sein, dass andere Techniken ohne große Änderungen am System integriert und auf eingehende Logdaten angewendet werden können.
 
-\subsection*{Benutzerinteraktion}
-
-- Proxy: Konfiguration der Plugins
-
-- Pseudo-App: Statusanzeige angemeldeter Benutzer(Admin), Initialisierung der Schlüsselgenerierung nach Nutzerauswahl(Admin), Anlegen von Aufdeckanfragen, Statusanzeige von Aufdeckanfragen, Systemstatus
-
-- Einzelne Teilnehmer sollten Client-Anwendungen besitzen, um auf Anfragen reagieren zu können (Generation eigener Schlüssel, gemeinsame Schlüsselgenerierung, ... ) Konsolenanwendung? 
