@@ -13,10 +13,15 @@
 *-blx.bib
 tmp/
 
-# Eclipse
+# Eclipse and IDEA
 
 .metadata/
 .classpath
 .project
 .settings/
 bin/
+.idea/
+
+# Python
+
+__pycache__/
