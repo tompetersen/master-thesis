@@ -23,8 +23,11 @@ class ConfigAction:
             self._parameters = {}
             params = [p.strip() for p in parameters[:-1].split(',')]
             for p in params:
-                key, value = p.split('=')
-                self._parameters[key.strip()] = value.strip()
+                if len(p) > 0:
+                    key, value = [s.strip() for s in p.split('=')]
+                    if value.startswith('\'') or value.startswith('"'):
+                        value = value[1:-1] # Remove possible quotes
+                    self._parameters[key] = value.strip()
         else:
             raise InvalidConfigActionError('Invalid action given: ' + action_str)
 
