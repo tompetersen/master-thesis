@@ -8,9 +8,6 @@ class InvalidSyslogMessageException(Exception):
 
 class SyslogMessage:
     """ A class representing syslog messages. """
-    facility = None
-    priority = None
-    message = None
 
     @classmethod
     def from_logdata(cls, logdata:str):
@@ -26,9 +23,9 @@ class SyslogMessage:
             raise InvalidSyslogMessageException("Invalid syslog message format")
 
     def __init__(self, priority: int, facility: int, message: str):
-        self.facility = facility
-        self.priority = priority
-        self.message = message
+        self._facility = facility
+        self._priority = priority
+        self._message = message
 
     def _dict_key_for_value(self, dict, search_value):
         for key, value in dict.items():
@@ -36,14 +33,23 @@ class SyslogMessage:
                 return key
         return None
 
+    @property
+    def facility(self) -> int:
+        return self._facility
+
+    @property
+    def priority(self):
+        return self._priority
+
     def get_facility_name(self)->str:
         return self._dict_key_for_value(SysLogHandler.facility_names, self.facility)
 
     def get_priority_name(self)->str:
         return self._dict_key_for_value(SysLogHandler.priority_names, self.priority)
 
-    def get_message(self)->str:
-        return self.message
+    @property
+    def message_content(self)->str:
+        return self._message
 
     def __str__(self):
-        return "Syslog message [%s,%s]: %s", (self.get_facility_name(), self.get_priority_name(), self.message)
+        return "Syslog message [%s,%s]: %s", (self.get_facility_name(), self.get_priority_name(), self.message_content)

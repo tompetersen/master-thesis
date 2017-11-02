@@ -1,5 +1,6 @@
 import re
 
+from PluginRegistry import PluginRegistry
 from SyslogMessage import SyslogMessage
 from SyslogSourceConfig import SyslogSourceConfig
 
@@ -10,48 +11,55 @@ class CannotHandleSyslogMessageError(Exception):
 
 class SyslogSourceHandler:
 
-    _pattern = None
-    _config = None
-
-    def __init__(self, config_file_path: str):
+    def __init__(self, config_file_path: str, plugin_registry: PluginRegistry):
+        self._plugin_registry = plugin_registry
         self._config = SyslogSourceConfig(config_file_path)
 
     def can_handle_syslog_message(self, message: SyslogMessage) -> bool:
-        """ TBD """
-        return bool(re.match(self._config.pattern, message.get_message()))
+        """ TBW """
+        return bool(re.match(self._config.pattern, message.message_content))
 
     def handle_syslog_message(self, message: SyslogMessage) -> SyslogMessage:
-        """ TBD """
-        m = re.match(self._config.pattern, message.get_message())
+        """ TBW """
+        m = re.match(self._config.pattern, message.message_content)
 
         if m:
             orig_message = m.group(0)
-
-            # Build update list from match groups.
-            update_list = [(key, m.group(key), m.start(key), m.end(key)) for key in m.groupdict()]
-            update_list.sort(key=lambda group: group[2])
-
-            altered_message = self._get_altered_message(orig_message, update_list)
+            altered_message = self._get_altered_message(orig_message, m)
             return SyslogMessage(message.priority, message.facility, altered_message)
         else:
             raise CannotHandleSyslogMessageError('Handler can not handle syslog message: pattern not matching.')
 
-    def _get_altered_message(self, orig_message: str, update_list:[]) -> str:
+    def _get_altered_message(self, orig_message: str, m) -> str:
+        # Build update list from match groups and sort it by start position
+        update_list = [(key, m.group(key), m.start(key), m.end(key)) for key in m.groupdict()]
+        update_list.sort(key=lambda group: group[2])
+
+        # Build altered message by joining parts of the original message with substituted groups
         result = []
         last_idx = 0
 
         for update in update_list:
-            name = update[0]
+            key = update[0]
             group = update[1]
             start = update[2]
             end = update[3]
 
+            # Parts of original message must be included
             if last_idx <= start:
                 result.append(orig_message[last_idx:start])
-            result.append(self._alter_group(name, group))
+
+            # group content must be substituted according to the config
+            result.append(self._alter_group(key, group))
             last_idx = end
 
         return "".join(result)
 
-    def _alter_group(self, name: str, group: str) -> str:
-        return "ALTERED[" + group + "]"
+    def _alter_group(self, key: str, group: str) -> str:
+        config_action = self._config.action_for_key(key)
+        plugin_name = config_action.plugin_name
+        parameters = config_action.parameters
+
+        altered_data = self._plugin_registry.alter_data(plugin_name, group, **parameters)
+
+        return altered_data

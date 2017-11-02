@@ -5,15 +5,19 @@ Based on: https://gist.github.com/marcelom/4218010
 """
 
 from socketserver import BaseRequestHandler, ThreadingUDPServer
-from logging.handlers import SysLogHandler
-import re
 
-from SyslogSourceConfig import SyslogSourceConfig
+from PluginRegistry import PluginRegistry
 from SyslogMessage import SyslogMessage, InvalidSyslogMessageException
 from SyslogSourceService import SyslogSourceService
 
-HOST = '169.254.65.208' #VMNET 1
+
+HOST = '169.254.65.208' # VMNET 1
 PORT = 514
+CONFIGS_DIR = './syslog_source_config/'
+PLUGIN_DIR = './plugins/'
+
+_plugin_registry = PluginRegistry(PLUGIN_DIR)
+_syslog_source_service = SyslogSourceService(CONFIGS_DIR, _plugin_registry)
 
 
 class SyslogUdpHandler(BaseRequestHandler):
@@ -28,15 +32,16 @@ class SyslogUdpHandler(BaseRequestHandler):
         try:
             syslog_message = SyslogMessage.from_logdata(logdata)
 
-            print("Message: " + syslog_message.message)
+            print("Message: " + syslog_message.message_content)
             print("Facility: %d %s" % (syslog_message.facility, str(syslog_message.get_facility_name())))
             print("Priority: %d %s" % (syslog_message.priority, str(syslog_message.get_priority_name())))
 
-            altered_message = SyslogSourceService().handle_syslog_message(syslog_message)
-            print("Altered_message: " + altered_message.get_message())
+            altered_message = _syslog_source_service.handle_syslog_message(syslog_message)
+            print("Altered_message: " + altered_message.message_content)
 
         except InvalidSyslogMessageException:
             print("Invalid syslog message: %s" % logdata)
+
 
 def main():
     try:

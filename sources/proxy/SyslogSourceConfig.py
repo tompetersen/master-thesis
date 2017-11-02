@@ -1,15 +1,56 @@
 import configparser
+import re
 
 
 class InvalidSyslogSourceConfigError(Exception):
     pass
 
 
-class SyslogSourceConfig:
+class ActionForKeyNotFoundError(Exception):
+    pass
 
-    pattern = None
-    active = None
-    actions = []
+
+class InvalidConfigActionError(Exception):
+    pass
+
+
+class ConfigAction:
+
+    def __init__(self, action_str: str):
+        if ConfigAction.is_valid_action_string(action_str):
+            self._plugin_name, parameters = action_str.split('(', 1)
+
+            self._parameters = {}
+            params = [p.strip() for p in parameters[:-1].split(',')]
+            for p in params:
+                key, value = p.split('=')
+                self._parameters[key.strip()] = value.strip()
+        else:
+            raise InvalidConfigActionError('Invalid action given: ' + action_str)
+
+    @property
+    def plugin_name(self):
+        return self._plugin_name
+
+    @property
+    def parameters(self):
+        return self._parameters
+
+    @classmethod
+    def is_valid_action_string(cls, action_str: str) -> bool:
+        """
+        Allow the following format:
+        PLUGINNAME(ARG1 = 123, ARG2='StringThis%&/)', ARG3 = "")
+        """
+        pattern = '^\w+\((\w+ *= *((\'[^\']+\'*)|("[^"]+")|\d+) *, *)*(\w+ *= *((\'[^\']+\'*)|("[^"]+")|\d+))?\)$'
+        return bool(re.match(pattern, action_str))
+
+    def __str__(self):
+        parameters = [k + "=" + self.parameters[k] for k in self.parameters]
+        return "Config action: plugin_name=" + self.plugin_name +  " parameters=[" + ", ".join(parameters) + "]"
+
+
+class SyslogSourceConfig:
 
     def __init__(self, config_file_path: str):
         config = configparser.ConfigParser()
@@ -37,8 +78,25 @@ class SyslogSourceConfig:
         general_section = config['general']
         action_section = config['actions']
 
-        self.pattern = general_section['pattern']
-        self.active = general_section.getboolean('active')
+        self._pattern = general_section['pattern']
+        self._active = general_section.getboolean('active')
 
+        self._actions = {}
         for key in action_section:
-            self.actions.append((key, action_section[key]))
+            action = ConfigAction(action_section[key])
+            self._actions[key] = action
+
+    @property
+    def pattern(self):
+        return self._pattern
+
+    @property
+    def active(self):
+        return self._active
+
+    def action_for_key(self, key: str) -> ConfigAction:
+        if key in self._actions:
+            action = self._actions.get(key)
+            return action
+        else:
+            raise ActionForKeyNotFoundError('Config contains no action for ' + key)
