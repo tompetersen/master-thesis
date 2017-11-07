@@ -1,8 +1,8 @@
 import re
 
-from proxy.PluginRegistry import PluginRegistry
-from proxy.SyslogMessage import SyslogMessage
-from proxy.SyslogSourceConfig import SyslogSourceConfig
+from proxy.plugin import PluginRegistry
+from proxy.syslog.message import SyslogMessage
+from proxy.syslog.sourceconfig import SyslogSourceConfig
 
 
 class CannotHandleSyslogMessageError(Exception):

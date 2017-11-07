@@ -6,9 +6,9 @@ Based on: https://gist.github.com/marcelom/4218010
 
 from socketserver import BaseRequestHandler, ThreadingUDPServer
 
-from proxy.PluginRegistry import PluginRegistry
-from proxy.SyslogMessage import SyslogMessage, InvalidSyslogMessageException
-from proxy.SyslogSourceService import SyslogSourceService
+from proxy.plugin import PluginRegistry
+from proxy.syslog.message import SyslogMessage, InvalidSyslogMessageException
+from proxy.syslog.sourceservice import SyslogSourceService
 
 
 HOST = '169.254.65.208' # VMNET 1

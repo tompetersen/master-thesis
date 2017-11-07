@@ -1,4 +1,4 @@
-from proxy.AbstractPlugin import AbstractPlugin
+from proxy.plugin import AbstractPlugin
 
 
 class MissingSubstituteError(Exception):

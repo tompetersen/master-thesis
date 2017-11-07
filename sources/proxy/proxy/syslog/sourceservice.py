@@ -1,9 +1,9 @@
 import os
 
-from proxy.PluginRegistry import PluginRegistry
-from proxy.SyslogMessage import SyslogMessage
-from proxy.SyslogSourceConfig import InvalidSyslogSourceConfigError
-from proxy.SyslogSourceHandler import SyslogSourceHandler
+from proxy.plugin import PluginRegistry
+from proxy.syslog.message import SyslogMessage
+from proxy.syslog.sourceconfig import InvalidSyslogSourceConfigError
+from proxy.syslog.sourcehandler import SyslogSourceHandler
 
 
 class ApplicableConfigMissingError(Exception):

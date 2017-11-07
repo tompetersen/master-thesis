@@ -1,8 +1,14 @@
 import inspect
 import os
-from importlib import machinery, util
+from importlib import util
+from abc import ABC, abstractmethod
 
-from proxy.AbstractPlugin import AbstractPlugin
+
+class AbstractPlugin(ABC):
+
+    @abstractmethod
+    def handle_data(self, data: str, **kwargs) -> str:
+        pass
 
 
 class PluginNotFoundError(Exception):

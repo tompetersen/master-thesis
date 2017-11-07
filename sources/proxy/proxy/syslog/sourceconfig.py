@@ -1,7 +1,7 @@
 import configparser
 import re
 
-from proxy.PluginRegistry import PluginRegistry
+from proxy import plugin
 
 
 class InvalidSyslogSourceConfigError(Exception):
@@ -59,7 +59,7 @@ class ConfigAction:
 
 class SyslogSourceConfig:
 
-    def __init__(self, config_file_path: str, plugin_registry: PluginRegistry):
+    def __init__(self, config_file_path: str, plugin_registry: plugin.PluginRegistry):
         config = configparser.ConfigParser()
         try:
             read_config = config.read(config_file_path)
@@ -118,7 +118,7 @@ class SyslogSourceConfig:
 
         return True, None
 
-    def _check_used_plugins(self, plugin_registry: PluginRegistry) -> (bool, str):
+    def _check_used_plugins(self, plugin_registry: plugin.PluginRegistry) -> (bool, str):
         for group in self._actions:
             action = self._actions[group]
             if not plugin_registry.has_plugin_with_name(action.plugin_name):
