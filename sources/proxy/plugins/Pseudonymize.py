@@ -1,4 +1,4 @@
-from AbstractPlugin import AbstractPlugin
+from proxy.AbstractPlugin import AbstractPlugin
 
 
 class Pseudonymize(AbstractPlugin):
