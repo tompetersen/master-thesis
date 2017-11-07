@@ -1,8 +1,8 @@
 import re
 
-from PluginRegistry import PluginRegistry
-from SyslogMessage import SyslogMessage
-from SyslogSourceConfig import SyslogSourceConfig
+from proxy.PluginRegistry import PluginRegistry
+from proxy.SyslogMessage import SyslogMessage
+from proxy.SyslogSourceConfig import SyslogSourceConfig
 
 
 class CannotHandleSyslogMessageError(Exception):
@@ -13,7 +13,7 @@ class SyslogSourceHandler:
 
     def __init__(self, config_file_path: str, plugin_registry: PluginRegistry):
         self._plugin_registry = plugin_registry
-        self._config = SyslogSourceConfig(config_file_path)
+        self._config = SyslogSourceConfig(config_file_path, plugin_registry)
 
     def can_handle_syslog_message(self, message: SyslogMessage) -> bool:
         """ TBW """

@@ -2,7 +2,7 @@ import inspect
 import os
 from importlib import machinery, util
 
-from AbstractPlugin import AbstractPlugin
+from proxy.AbstractPlugin import AbstractPlugin
 
 
 class PluginNotFoundError(Exception):
