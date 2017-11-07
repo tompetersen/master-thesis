@@ -2,27 +2,13 @@
 
 \label{sec_impl_architecture}
 
-Architektur
+\todo{Einführender Absatz}
 
+\subsection*{Eingriff in den OSSIM-Datenfluss}
 
+\todo{Hier oder in Anforderungen?}
 
-
-
-
-
-
-\subsection*{Ansätze zum Eingriff in den OSSIM-Datenfluss(?)}
-
-\todo{Hier oder in Entwurf?}
-
-Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene Stellen im Datenfluss von OSSIM an. In diesem Abschnitt sollen die verschiedenen Möglichkeiten dargestellt und gegeneinander abgewogen werden. Eine Übersicht über die verschiedenen Stellen bietet Abbildung \ref{fig:ossim_data_access_point}.
-
-\begin{figure}[]
-    \centering
-        \includegraphics[width=0.9\textwidth]{dia/ossim_data_access_point.pdf}
-    \caption{Möglichen Eingriffspunkte in den OSSIM-Datenfluss.}
-    \label{fig:ossim_data_access_point}
-\end{figure}
+Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene Stellen im Datenfluss von OSSIM an. In diesem Abschnitt sollen die verschiedenen Möglichkeiten dargestellt und gegeneinander abgewogen werden. Eine Übersicht über die verschiedenen Stellen bietet Abbildung \ref{fig:ossim_data_access_point}. Im Folgenden sollen die verschiedenen Möglichkeiten bezogen auf die in Abschnitt \ref{sec_requirements_ossim_integration} dargestellten Eigenschaften bewertet werden.
 
 \begin{enumerate}
 
@@ -45,7 +31,14 @@ Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene St
 
 \end{enumerate}
 
-Insbesondere der aus dentenschutztechnischer Sicht relevante Vorteil, dass die Daten bereits pseudonymisiert in allen OSSIM-Komponenten eintreffen, ließ die Entscheidung auf die zweite Möglichkeit fallen. Dass die Lösung außerdem noch für beide Varianten der OSSIM-Installation möglich ist und keine Anpassungen an OSSIM selbst benötigt, wiegt den Nachteil des zusätzlichen Parsens und wieder Zusammensetzens der Lognachricht bei Weitem auf.\todo{Auch auf Angreifermodell beziehen}
+\begin{figure}[]
+    \centering
+        \includegraphics[width=0.9\textwidth]{dia/ossim_data_access_point.pdf}
+    \caption{Mögliche Eingriffspunkte in den OSSIM-Datenfluss.}
+    \label{fig:ossim_data_access_point}
+\end{figure}
+
+Insbesondere der aus datenschutztechnischer Sicht relevante Vorteil, dass die Daten bereits pseudonymisiert in allen OSSIM-Komponenten eintreffen, ließ die Entscheidung auf die \textbf{zweite Möglichkeit} fallen. Dass die Lösung außerdem noch für beide Varianten der OSSIM-Installation möglich ist und keine Anpassungen an OSSIM selbst benötigt, wiegt den Nachteil des zusätzlichen Parsens und wieder Zusammensetzens der Lognachricht bei Weitem auf.\todo{Auch auf Angreifermodell beziehen}
 
 \subsection*{Architektur}
 
@@ -57,3 +50,13 @@ Einen Überblick bietet Abbildung \ref{fig:high__level_architecture}.
     \caption{Ein Überblick über die Architektur}
     \label{fig:high__level_architecture}
 \end{figure}
+
+- Beschreibung Architektur
+
+- Wie deckt dieser Ansatz die Anforderungen ab?
+  - Einbindung OSSIM
+  - Pseudonymisierung
+  - Schwellwert
+  - Benutzerinteraktion
+  - Erweiterbarkeit Datenquellen
+  - Erweiterbarkeit Datenschutztechniken
