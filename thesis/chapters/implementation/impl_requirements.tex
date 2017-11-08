@@ -4,7 +4,9 @@
 
 Der umgesetzte Prototyp soll es ermöglichen, aufbauend auf dem bestehenden Open-Source-SIEM-System OSSIM Logdaten mittels Pseudonymisierung und Schwellwertschemata so zu verändern, dass diese erst durch Kollaboration einer bestimmten Anzahl an Teilnehmern wieder aufgedeckt werden können. Neben dieser primären Anforderung sollte er noch weitere wie die Erweiterbarkeit um weitere Dateschutztechniken erfüllen. Alle diese Anforderungen sollen im folgenden Abschnitt näher erläutert werden. Zuerst wird jedoch ein Angreifermodell für die prototypische Umsetzung aufgestellt.
 
-\subsection*{Zugrundeliegendes Angreifermodell}
+\subsection{Zugrundeliegendes Angreifermodell}
+
+\label{subsec_impl_requirements_attackermodel}
 
 % Das Angreifermodell deﬁniert die	maximal	berücksichtigte	Stärke eines Angreifers, gegen den ein	Schutzmechanismus	gerade noch wirkt.	
 %Es beschreibt:
@@ -27,9 +29,9 @@ Für das Angreifermodell werden folgende Annahmen getroffen: Bei dem Angreifer k
 Bezogen auf die verfügbare Rechenleistung des Angreifers sollen verbreitete und nach heutigem Wissensstand für sicher befundene kryptographische Algorithmen als nicht mit vertretbarem Aufwand zu brechen angesehen werden. Es handelt sich daher um die Annahme von komplexitätstheoretischer Sicherheit.
 
 
-\subsection*{Anforderungen an die Integration in OSSIM}
+\subsection{Anforderungen an die Integration in OSSIM}
 
-\label{sec_requirements_ossim_integration}
+\label{subsec_impl_requirements_ossimintegration}
 
 Um zu beurteilen, an welcher Stelle in den Datenfluss der Logdaten in OSSIM (vergleiche Abschnitt \ref{sec_state_siem}) eingegriffen wird, um die Daten zu verändern, müssen Vor- bzw. Nachteile der verschiedenen Möglichkeiten gegeneinander abgewogen werden. Folgende Eigenschaften einer Möglichkeit sollten betrachtet werden:
 
@@ -48,7 +50,9 @@ Um zu beurteilen, an welcher Stelle in den Datenfluss der Logdaten in OSSIM (ver
 
 \end{itemize}
 
-\subsection*{Anforderungen an die Pseudonymisierung}
+\subsection{Anforderungen an die Pseudonymisierung}
+
+\label{subsec_impl_requirements_pseudonymity}
 
 %- Lang genug für geringe Kollisionswsk.
 %- Eindeutig
@@ -61,7 +65,9 @@ Weiterhin muss es eine Möglichkeit beim Pseudonymisieren von Logeinträgen gebe
 
 Außerdem muss es eine Möglichkeit geben, die Parameter der Pseudonymisierung wie den Zeitraum ihrer Verwendung (vergleiche Abschnitt \ref{sec_state_pseudonymity}) konfigurierbar zu machen.
 
-\subsection*{Anforderungen im Bezug auf den Einsatz eines kryptographischen Schwellwertschemas}
+\subsection{Anforderungen im Bezug auf den Einsatz eines kryptographischen Schwellwertschemas}
+
+\label{subsec_impl_requirements_threshold}
 
 %- Verteiltes Modell 
 %- Kommunikation
@@ -78,7 +84,9 @@ Der für die Verschlüsselung erforderliche öffentliche Schlüssel muss so vorl
 
 Bei der Entschlüsselung eines Eintrags, also der Aufdeckung eines Pseudonyms, muss das System wiederum die beteiligten Aktuere koordinieren und anschließend die Rolle des \textit{Combiners} übernehmen, so dass anschließend der entschlüsselte Datensatz zentral vorliegt.
 
-\subsection*{Benutzerinteraktion}
+\subsection{Benutzerinteraktion}
+
+\label{subsec_impl_requirements_userinteraction}
 
 %- Proxy: Konfiguration der Plugins
 
@@ -97,11 +105,15 @@ Die am Schwellwertschema beteiligten Nutzer müssen die Möglichkeit erhalten, e
 
 \todo{Performance?}
 
-\subsection*{Erweiterbarkeit um neue Datenquellen}
+\subsection{Erweiterbarkeit um neue Datenquellen}
+
+\label{subsec_impl_requirements_differentsources}
 
 Das umzusetzende System sollte es ermöglichen, Daten aus verschiedenen Quellen und (abhängig vom gewählten Eingriffspunkt in OSSIM auch) in verschiedenen Formaten entgegenzunehmen und mithilfe der umgesetzten Datenschutztechniken verändern zu können. Dabei muss das Format der Logdaten grundsätzlich beibehalten werden, um die Behandlung der Daten in OSSIM weiterhin zu ermöglichen.
 
-\subsection*{Erweiterbarkeit um neue Datenschutztechniken}
+\subsection{Erweiterbarkeit um neue Datenschutztechniken}
+
+\label{subsec_impl_requirements_plugins}
 
 Neben der im Fokus dieser Arbeit stehenden Pseudonymisierung und dem Einsatz von kryptographischen Schwellwertschemata zum Schutz der Logdaten gibt es weitere Datenschutztechniken, die für den Anwendungsfall genutzt werden könnten (siehe Kapitel \ref{cha_alternatives}). Der umgesetzte Prototyp sollte leicht um diese Techniken erweiterbar sein, d.h. so gestaltet sein, dass andere Techniken ohne große Änderungen am System integriert und auf eingehende Logdaten angewendet werden können.
 

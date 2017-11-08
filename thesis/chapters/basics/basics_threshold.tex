@@ -17,7 +17,7 @@ Auf Basis dieses Verfahrens kann also die Integrität eines Schlüssels erhöht 
 
 Shamirs Verfahren wird im Folgenden im Detail beschrieben, da es auch im später erläuterten und verwendeten Schwellwertschema eine wichtige Rolle spielt.
 
-\subsection*{Shamir's Secret Sharing}
+\subsection{Shamir's Secret Sharing}
 
 Die Menge aller Ganzzahlen modulo einer Primzahl \(p\) bilden den (endlichen) Körper \(\mathbb{Z}_p\), dessen Eigenschaften für das Verfahren entscheidend sind. Soll das Geheimnis \(D\) (das o.B.d.A. als Ganzzahl angenommen wird) aufgeteilt werden, so wird eine Primzahl \(p\) mit \(p > D\) und \(p > n\) gewählt. Weiterhin wird ein Polynom 
 \[q(x) = a_0 + a_1x + \dots + a_{k-1}x^{k-1} \text{ mit } a_0 = D\] 
@@ -35,7 +35,7 @@ berechnet werden. Da \(\lambda_i\) nicht von \(q(x_i)\) abhängt, können diese 
 
 Das Problem dieser Lösung bezogen auf den in dieser Arbeit behandelten Anwendungsfall ist jedoch, dass das Geheimnis nach erstmaligem Aufdecken bekannt ist. Wünschenswert wäre ein Verfahren, bei dem nur ein entsprechend verschlüsseltes Datum (bspw. der gesuchte Eintrag in einer Pseudonym-Tabelle) aufgedeckt werden kann, ohne dass der kombinierte Schlüssel selbst bekannt wird. 
 
-\subsection*{Threshold Decryption}
+\subsection{Threshold Decryption}
 
 %- 87 SocietyOriented \cite{desmedt1987}
 %- 93 Threshold decryption (non-interactive) \cite{desmedt1993}
