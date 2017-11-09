@@ -3,7 +3,7 @@ import re
 from unittest import TestCase, main
 from unittest.mock import Mock
 
-from proxy.SyslogSourceConfig import SyslogSourceConfig, InvalidSyslogSourceConfigError, ConfigAction, InvalidConfigActionError
+from proxy.syslog.sourceconfig import SyslogSourceConfig, InvalidSyslogSourceConfigError, ConfigAction, InvalidConfigActionError
 
 
 class TestSyslogSourceConfig(TestCase):
@@ -20,42 +20,48 @@ class TestSyslogSourceConfig(TestCase):
         config = SyslogSourceConfig(config_path, self.mock_plugin_registry)
 
         self.assertTrue(config)
-        self.assertEqual(config.pattern, '^(?P<time>\w+ *\d{1,2} \d{2}:\d{2}:\d{2}) (?P<device>[^:]+): Testing my device USER=(?P<user>.+)$')
         self.assertTrue(config.active)
 
     def test_valid_config_actions_section(self):
         config_path = self.file_path_for_test_config('test_config.cfg')
         config = SyslogSourceConfig(config_path, self.mock_plugin_registry)
 
-        action1 = config.action_for_key('time')
-        action2 = config.action_for_key('user')
+        group1 = config.sections['group1']
+        g1_action1 = group1.action_for_field('time')
+        g1_action3 = group1.action_for_field('user')
+        self.assertEqual(group1.pattern, '^(?P<time>\w+ *\d{1,2} \d{2}:\d{2}:\d{2}) (?P<device>[^:]+): Testing my device USER=(?P<user>.+)$')
+        self.assertEqual(g1_action1.plugin_name, 'Substitute')
+        self.assertEqual(len(g1_action1.parameters), 1)
+        self.assertEqual(g1_action1.parameters['substitute'], 'somevalue_time')
+        self.assertEqual(g1_action3.plugin_name, 'Pseudonymize')
+        self.assertEqual(len(g1_action3.parameters), 0)
 
-        self.assertEqual(action1.plugin_name, 'Substitute')
-        self.assertEqual(len(action1.parameters), 1)
-        self.assertEqual(action1.parameters['substitute'], 'somevalue_time')
-        self.assertEqual(action2.plugin_name, 'Pseudonymize')
-        self.assertEqual(len(action2.parameters), 0)
+        group2 = config.sections['group2']
+        g2_action1 = group2.action_for_field('test')
+        self.assertEqual(group2.pattern, '^(?P<test>.*)$')
+        self.assertEqual(g2_action1.plugin_name, 'Pseudonymize')
+        self.assertEqual(len(g2_action1.parameters), 0)
 
     def test_bad_config_1(self):
         config_path = self.file_path_for_test_config('bad_config_1.cfg')
 
         with self.assertRaises(InvalidSyslogSourceConfigError) as context:
             SyslogSourceConfig(config_path, self.mock_plugin_registry)
-        self.assertTrue('Config file must contain [general] and [actions] sections.' in str(context.exception))
+        self.assertTrue('Config file must contain [general] section.' in str(context.exception))
 
     def test_bad_config_2(self):
         config_path = self.file_path_for_test_config('bad_config_2.cfg')
 
         with self.assertRaises(InvalidSyslogSourceConfigError) as context:
             SyslogSourceConfig(config_path, self.mock_plugin_registry)
-        self.assertTrue('Config file must contain [general] and [actions] sections.' in str(context.exception))
+        self.assertTrue('Config file must contain [general] section.' in str(context.exception))
 
     def test_bad_config_3(self):
         config_path = self.file_path_for_test_config('bad_config_3.cfg')
 
         with self.assertRaises(InvalidSyslogSourceConfigError) as context:
             SyslogSourceConfig(config_path, self.mock_plugin_registry)
-        self.assertTrue('Config file must contain [general] and [actions] sections.' in str(context.exception))
+        self.assertTrue('Section [action1] must contain pattern field.' in str(context.exception))
 
     def test_bad_config_4(self):
         config_path = self.file_path_for_test_config('bad_config_4.cfg')
@@ -93,7 +99,7 @@ class TestSyslogSourceConfig(TestCase):
 
         with self.assertRaises(InvalidSyslogSourceConfigError) as context:
             SyslogSourceConfig(config_path, self.mock_plugin_registry)
-        self.assertTrue('[general] section must contain pattern and active values.' in str(context.exception))
+        self.assertTrue('[general] section must contain active value.' in str(context.exception))
 
     def test_bad_config_9(self):
         config_path = self.file_path_for_test_config('bad_config_9.cfg')

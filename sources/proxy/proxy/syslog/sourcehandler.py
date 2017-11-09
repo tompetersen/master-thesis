@@ -2,7 +2,7 @@ import re
 
 from proxy.plugin import PluginRegistry
 from proxy.syslog.message import SyslogMessage
-from proxy.syslog.sourceconfig import SyslogSourceConfig
+from proxy.syslog.sourceconfig import SyslogSourceConfig, PatternSection, ConfigAction
 
 
 class CannotHandleSyslogMessageError(Exception):
@@ -17,22 +17,29 @@ class SyslogSourceHandler:
 
     def can_handle_syslog_message(self, message: SyslogMessage) -> bool:
         """ TBW """
-        return bool(re.match(self._config.pattern, message.message_content))
+        return self._config_section_for_message(message.message_content) is not None
+
+    def _config_section_for_message(self, message: str) -> (str, PatternSection):
+        for key, section in self._config.sections.items():
+            if section.can_handle_message(message):
+                return key, section
+        return None
 
     def handle_syslog_message(self, message: SyslogMessage) -> SyslogMessage:
         """ TBW """
-        m = re.match(self._config.pattern, message.message_content)
+        section_key, section = self._config_section_for_message(message.message_content)
+        match = re.match(section.pattern, message.message_content)
 
-        if m:
-            orig_message = m.group(0)
-            altered_message = self._get_altered_message(orig_message, m)
+        if match:
+            orig_message = match.group(0)
+            altered_message = self._get_altered_message(orig_message, match, section)
             return SyslogMessage(message.priority, message.facility, altered_message)
         else:
             raise CannotHandleSyslogMessageError('Handler can not handle syslog message: pattern not matching.')
 
-    def _get_altered_message(self, orig_message: str, m) -> str:
+    def _get_altered_message(self, orig_message: str, match, section: PatternSection) -> str:
         # Build update list from match groups and sort it by start position
-        update_list = [(key, m.group(key), m.start(key), m.end(key)) for key in m.groupdict()]
+        update_list = [(key, match.group(key), match.start(key), match.end(key)) for key in match.groupdict()]
         update_list.sort(key=lambda group: group[2])
 
         # Build altered message by joining parts of the original message with substituted groups
@@ -50,16 +57,16 @@ class SyslogSourceHandler:
                 result.append(orig_message[last_idx:start])
 
             # group content must be substituted according to the config
-            result.append(self._alter_group(key, group))
+            result.append(self._alter_group(key, group, section))
             last_idx = end
 
         return "".join(result)
 
-    def _alter_group(self, key: str, group: str) -> str:
-        config_action = self._config.action_for_key(key)
+    def _alter_group(self, field: str, group_content: str, section: PatternSection) -> str:
+        config_action = section.action_for_field(field)
         plugin_name = config_action.plugin_name
         parameters = config_action.parameters
 
-        altered_data = self._plugin_registry.alter_data(plugin_name, group, **parameters)
+        altered_data = self._plugin_registry.alter_data(plugin_name, group_content, **parameters)
 
         return altered_data

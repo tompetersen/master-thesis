@@ -8,8 +8,7 @@ from socketserver import BaseRequestHandler, ThreadingUDPServer
 
 from proxy.plugin import PluginRegistry
 from proxy.syslog.message import SyslogMessage, InvalidSyslogMessageException
-from proxy.syslog.sourceservice import SyslogSourceService
-
+from proxy.syslog.sourceservice import SyslogSourceService, ApplicableConfigMissingError
 
 HOST = '169.254.65.208' # VMNET 1
 PORT = 514
@@ -38,10 +37,10 @@ class SyslogUdpHandler(BaseRequestHandler):
 
             altered_message = _syslog_source_service.handle_syslog_message(syslog_message)
             print("Altered_message: " + altered_message.message_content)
-
         except InvalidSyslogMessageException:
             print("Invalid syslog message: %s" % logdata)
-
+        except ApplicableConfigMissingError:
+            print("No applicable config for syslog message: %s" % logdata)
 
 def main():
     try:

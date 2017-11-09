@@ -8,7 +8,7 @@ class InvalidSyslogSourceConfigError(Exception):
     pass
 
 
-class ActionForKeyNotFoundError(Exception):
+class ActionNotFoundError(Exception):
     pass
 
 
@@ -33,14 +33,6 @@ class ConfigAction:
         else:
             raise InvalidConfigActionError('Invalid action given: ' + action_str)
 
-    @property
-    def plugin_name(self):
-        return self._plugin_name
-
-    @property
-    def parameters(self):
-        return self._parameters
-
     @classmethod
     def is_valid_action_string(cls, action_str: str) -> bool:
         """
@@ -52,9 +44,42 @@ class ConfigAction:
         pattern = '^\w+\(( *\w+ *= *((\'[^\']*\'*)|("[^"]*")|\d+) *, *)*( *\w+ *= *((\'[^\']*\')|("[^"]*")|\d+) *)?\)$'
         return bool(re.match(pattern, action_str))
 
+    @property
+    def plugin_name(self):
+        return self._plugin_name
+
+    @property
+    def parameters(self):
+        return self._parameters
+
     def __str__(self):
-        parameters = [k + "=" + self.parameters[k] for k in self.parameters]
-        return "Config action: plugin_name=" + self.plugin_name +  " parameters=[" + ", ".join(parameters) + "]"
+        parameters = [k + '=' + self.parameters[k] for k in self.parameters]
+        return 'Config action: plugin_name=%s parameters=[%s]' % (self.plugin_name, ", ".join(parameters))
+
+
+class PatternSection:
+
+    def __init__(self, pattern: str, actions: {str: ConfigAction}):
+        self._pattern = pattern
+        self._actions = actions
+
+    @property
+    def pattern(self) -> str:
+        return self._pattern
+
+    @property
+    def actions(self) -> {str: ConfigAction}:
+        return self._actions
+
+    def can_handle_message(self, message: str) -> bool:
+        return bool(re.match(self.pattern, message))
+
+    def action_for_field(self, field: str) -> ConfigAction:
+        if field in self.actions:
+            action = self.actions[field]
+            return action
+        else:
+            raise ActionNotFoundError('Section contains no action %s' % field)
 
 
 class SyslogSourceConfig:
@@ -66,88 +91,77 @@ class SyslogSourceConfig:
         except configparser.Error as e:
             raise InvalidSyslogSourceConfigError('Parsing of syslog source config [%s] failed: %s' % (config_file_path,
                                                                                                       str(e)))
-
         if len(read_config) < 1:
             raise InvalidSyslogSourceConfigError('Syslog source config [%s] could not be read.' % config_file_path)
 
-        valid_file_format, error_message = self._check_config_file_format(config)
-        if not valid_file_format:
-            raise InvalidSyslogSourceConfigError("Syslog source config [%s] has invalid format: %s" % (config_file_path,
-                                                 error_message))
-
         try:
-            self._parse_config_values(config)
+            self._parse_general_section(config)
+            self._parse_pattern_sections(config)
+            self._check_used_plugins(plugin_registry)
         except Exception as e:
-            raise InvalidSyslogSourceConfigError("Syslog source config [%s] has invalid format: %s" % (config_file_path,
-                                                 str(e)))
+            raise InvalidSyslogSourceConfigError('Syslog source config [%s] has invalid format: %s' % (config_file_path,
+                                                                                                       str(e)))
 
-        has_actions_for_groups, error_message = self._check_pattern_groups_have_actions()
-        if not has_actions_for_groups:
-            raise InvalidSyslogSourceConfigError("Syslog source config [%s] has invalid format: %s" % (config_file_path,
-                                                 error_message))
+    def _parse_general_section(self, config: configparser.ConfigParser):
+        if not('general' in config):
+            raise Exception('Config file must contain [general] section.')
 
-        uses_existing_plugins, error_message = self._check_used_plugins(plugin_registry)
-        if not uses_existing_plugins:
-            raise InvalidSyslogSourceConfigError("Syslog source config [%s] has invalid format: %s" % (config_file_path,
-                                                 error_message))
-
-    def _check_config_file_format(self, config: configparser.ConfigParser) -> (bool, str):
-        if not(('general' in config) and ('actions' in config)):
-            return False, "Config file must contain [general] and [actions] sections."
-
-        if not (('pattern' in config['general']) and ('active' in config['general'])):
-            return False, "[general] section must contain pattern and active values."
+        if not ('active' in config['general']):
+            raise Exception('[general] section must contain active value.')
 
         try:
-            re.compile(config['general']['pattern'])
-        except Exception as e:
-            return False, "Invalid pattern: %s." % str(e)
-
-        try:
-            config['general'].getboolean('active')
+            self._active = config['general'].getboolean('active')
         except Exception:
-            return False, "active field in [general] section has to be a bool value."
+            raise Exception('active field in [general] section has to be a bool value.')
 
-        return True, None
+    def _parse_pattern_sections(self, config: configparser.ConfigParser):
+        self._sections = {}
+        for key in [k for k in config.keys() if (k != 'general' and k != 'DEFAULT')]:
+            config_section = config[key]
 
-    def _check_pattern_groups_have_actions(self) -> (bool, str):
-        pattern = re.compile(self.pattern)
+        # Pattern
+            if not ('pattern' in config_section):
+                raise Exception('Section [%s] must contain pattern field.' % key)
+
+            pattern = config_section['pattern']
+
+        # Actions
+            config_actions = {}
+            for action in [a for a in config_section if a != 'pattern']:
+                value = config_section[action]
+
+                try:
+                    config_actions[action] = ConfigAction(value)
+                except InvalidConfigActionError as e:
+                    raise Exception('Invalid action %s in section [%s]: %s' % (action, key, str(e)))
+
+            section = PatternSection(pattern, config_actions)
+            try:
+                self._check_pattern_section_is_valid(section)
+            except Exception as e:
+                raise Exception('Invalid section [%s]: %s' % (key, str(e)))
+            self._sections[key] = section
+
+    def _check_pattern_section_is_valid(self, section: PatternSection):
+        try:
+            pattern = re.compile(section.pattern)
+        except Exception as e:
+            raise Exception("Invalid pattern: %s." % str(e))
+
         for groupname in pattern.groupindex:
-            if not groupname in self._actions:
-                return False, "No action found for pattern group (%s)." % groupname
+            if not groupname in section.actions:
+                raise Exception('No action found for pattern group (%s).' % groupname)
 
-        return True, None
-
-    def _check_used_plugins(self, plugin_registry: plugin.PluginRegistry) -> (bool, str):
-        for group in self._actions:
-            action = self._actions[group]
-            if not plugin_registry.has_plugin_with_name(action.plugin_name):
-                return False, "Used plugin '%s' for group (%s) not found." % (action.plugin_name, group)
-        return True, None
-
-    def _parse_config_values(self, config: configparser.ConfigParser):
-        general_section = config['general']
-        action_section = config['actions']
-
-        self._pattern = general_section['pattern']
-        self._active = general_section.getboolean('active')
-
-        self._actions = {}
-        for key in action_section:
-            action = ConfigAction(action_section[key])
-            self._actions[key] = action
+    def _check_used_plugins(self, plugin_registry: plugin.PluginRegistry):
+        for section_key, section in self.sections.items():
+            for action_key, action in section.actions.items():
+                if not plugin_registry.has_plugin_with_name(action.plugin_name):
+                    raise Exception("Plugin '%s' for entry %s in section [%s] not found." % (action.plugin_name, action_key, section_key))
 
     @property
-    def pattern(self):
-        return self._pattern
-
-    @property
-    def active(self):
+    def active(self) -> bool:
         return self._active
 
-    def action_for_key(self, key: str) -> ConfigAction:
-        if key in self._actions:
-            action = self._actions.get(key)
-            return action
-        else:
-            raise ActionForKeyNotFoundError('Config contains no action for ' + key)
+    @property
+    def sections(self) -> {str: PatternSection}:
+        return self._sections
