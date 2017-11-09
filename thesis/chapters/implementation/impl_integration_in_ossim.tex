@@ -2,15 +2,15 @@
 
 \label{sec_impl_integration_into_ossim}
 
-- Vorgehen
-
-- Nur für Syslog, keine anderen Fomate betrachtet
-
-- Syslog-Nachrichten werden entgegengenommen, geparst und Config-basiert einzelne Datenfelder bearbeitet (basierend auf RegEx)
-
-- Konfigurationsdateien für Datenquellen (leichte Erweiterbarkeit, auch im Bezug auf neue Datenquellen, ...) mit Beispiel
-
-- Plugins (leichte Erweiterbarkeit, ...)
+%- Vorgehen
+%
+%- Nur für Syslog, keine anderen Fomate betrachtet
+%
+%- Syslog-Nachrichten werden entgegengenommen, geparst und Config-basiert einzelne Datenfelder bearbeitet (basierend auf RegEx)
+%
+%- Konfigurationsdateien für Datenquellen (leichte Erweiterbarkeit, auch im Bezug auf neue Datenquellen, ...) mit Beispiel
+%
+%- Plugins (leichte Erweiterbarkeit, ...)
 
 
 
@@ -18,3 +18,39 @@
 Für die in dieser Arbeit zu leistende prototypische Umsetzung des Systems wurde sich auf den am häufigsten\footnote{
   Die in OSSIM bereits mitgelieferten Plugins bestätigen dies. Unter den Hunderten Plugins ist nur ein einziges, das einen anderen Mechanismus als das Syslog-Protokoll nutzt. Auch wenn beispielsweise Plugins, die eine Datenbankabfrage enthalten, immer dem Anwendungsfall angepasst und daher nicht in OSSIM inkludiert werden können, so unterstützt dies doch die Annahme des Syslog-Protokolls als am häufigsten genutzten Weg und damit als geeignet für den Fokus dieser Arbeit.
 } genutzten Weg des Datenerhalts in OSSIM (siehe Abschnitt \ref{subsec_state_siem_parsing}) beschränkt: Das Entgegennehmen der Daten über das Syslog-Protokoll. 
+
+
+
+
+Die Behandlung von verschiedenen Datenquellen wird durch Konfigurationsdateien ermöglicht:
+
+\begin{lstlisting}[morekeywords={general,active,pattern,group1,group2}]
+[general]
+active=True
+
+[group1]
+pattern=^(?P<time>\w+ *\d{1,2} \d{2}:\d{2}:\d{2}) (?P<device>[^:]+): Testing my device USER=(?P<user>.+)$
+time=Substitute(substitute = 'somevalue_time')
+device=Substitute(substitute = 'somevalue_device')
+user=Pseudonymize()
+
+[group2]
+pattern=^(?P<test>.*)$
+test=Pseudonymize()
+\end{lstlisting}
+
+Eine Konfigurationsdatei kann aus mehreren Bereichen bestehen. Der \texttt{general}-Bereich enthält allgemeine Angaben über das Plugin. Um unterschiedliche Lognachrichten eines Gerätes bündeln zu können, kann eine Konfigurationsdatei weiterhin mehrere Bereiche enthalten, die jeweils die Verarbeitung einer bestimmten Lognachricht beschreiben. Angegeben werden muss jeweils ein regulärer Audruck, der die Nachricht beschreibt und mehrere Gruppen (\texttt{(?P<name>...)}) enthalten kann. Für jede dieser Gruppen muss eine Angabe zu dem Plugin inklusive notwendiger Parameter gemacht werden, dass die Gruppe verarbeiten soll. Durch diese Konfigurationsdateien können Nachrichten unbekannter Formate aus neuen Datenquellen leicht in das bestehende System eingebunden werden.
+
+
+
+Die Erweiterbarkeit um neue Datenschutztechniken wird durch leicht erweiterbare Plugins ermöglicht. Ein Plugin muss lediglich die Methode \texttt{handle\_data} implementieren, die die originalen Daten und alle in der Konfiguration angegebenen Parameter erhält. Ein einfaches Plugin, das die Daten durch ein in der Konfiguration angegebenen Wert ersetzt, könnte so aussehen:
+
+\begin{lstlisting}[language=Python]
+class Substitute(AbstractPlugin):
+
+    def handle_data(self, data: str, **kwargs) -> str:
+        if 'substitute' in kwargs:
+            return kwargs['substitute']
+        else:
+            raise MissingSubstituteError
+\end{lstlisting}
