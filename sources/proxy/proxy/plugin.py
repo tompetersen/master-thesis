@@ -45,11 +45,10 @@ class PluginRegistry:
                         cls = member_class[1]
                         name = member_class[0]
                         if issubclass(cls, AbstractPlugin) and (cls.__module__ != AbstractPlugin.__module__):
-                            print("\tLoaded plugin: " + name)
+                            print("\t+ Loaded plugin: " + name)
                             self._plugins[name] = cls() # TODO: Instantiating plugin instance here or in alter_data?
-                except Exception:
-                    # TODO: error handling for plugin loading
-                    raise
+                except Exception as e:
+                    print("\t+ Could not load plugin %s\n\t\t%s" % (plugin_file, str(e)))
         print('')
 
     def has_plugin_with_name(self, plugin_name: str) -> bool:

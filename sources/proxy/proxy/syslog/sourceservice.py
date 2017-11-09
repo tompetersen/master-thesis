@@ -22,10 +22,14 @@ class SyslogSourceService:
         self._handlers = []
         for file in self.get_config_files(configs_dir):
             try:
-                self._handlers.append(SyslogSourceHandler(file, self._plugin_registry))
-                print('\tCreated handler for source config file: ' + os.path.basename(file))
+                handler = SyslogSourceHandler(file, self._plugin_registry)
+                if handler.config.active:
+                    self._handlers.append(handler)
+                    print('\t+ %s: Created handler' % os.path.basename(file))
+                else:
+                    print('\t- %s: Inactive' % os.path.basename(file))
             except InvalidSyslogSourceConfigError as e:
-                print('\tCould not create handler for source config file: %s\n%s\n' % (os.path.basename(file), str(e)))
+                print('\t- %s: Could not create handler\n\t\t%s\n' % (os.path.basename(file), str(e)))
         print('')
 
     def get_config_files(self, configs_dir: str) -> [str]:

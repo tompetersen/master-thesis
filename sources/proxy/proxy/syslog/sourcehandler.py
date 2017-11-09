@@ -20,10 +20,14 @@ class SyslogSourceHandler:
         return self._config_section_for_message(message.message_content) is not None
 
     def _config_section_for_message(self, message: str) -> (str, PatternSection):
-        for key, section in self._config.sections.items():
+        for key, section in self.config.sections.items():
             if section.can_handle_message(message):
                 return key, section
         return None
+
+    @property
+    def config(self):
+        return self._config
 
     def handle_syslog_message(self, message: SyslogMessage) -> SyslogMessage:
         """ TBW """
