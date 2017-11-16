@@ -1,0 +1,29 @@
+p.intended-block {
+    margin-left: 10px;
+    background-color: #EEE;
+    padding: 5px;
+    border: 1px solid #DDD;
+}
+
+.flex-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.footer {
+    padding-top: 1.5rem;
+    color: #999;
+    border-top: .05rem solid #e5e5e5;
+    margin-top: 3rem;
+}
+
+.horizontal-divider {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+/* Remove * in crispy forms required field. */
+.asteriskField {
+    display: none;
+}

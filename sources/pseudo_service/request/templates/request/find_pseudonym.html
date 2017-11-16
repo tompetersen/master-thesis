@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <h2>Finder</h2>
+
+    {% crispy form %}
+
+    {% if entries %}
+        <table class="table table-bordered table-striped" style="margin-top: 16px;">
+            <thead>
+                <tr>
+                    <th>Pseudonym</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.pseudonym }}</td>
+                    <td><a href="{% url 'request:create' entry.pseudonym %}">Request pseudonym owner</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}

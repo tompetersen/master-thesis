@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from request.models import Applicant, StoreEntryRequest
+
+admin.site.register(Applicant)
+admin.site.register(StoreEntryRequest)
