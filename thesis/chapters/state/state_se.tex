@@ -1,3 +1,16 @@
 \section{Searchable Encryption}
 
-\todo{To be written...}
+- Problemstellung: wie herausfinden, ob für ein Datum bereits ein Pseudonym vorliegt, obwohl die Daten lediglich nicht entschlüsselbar vorliegen? Außerdem auch Notwendigkeit des  Nicht-Determinismus für Searchable Encryption erwähnen (Public Key Verfahren).
+
+- Lösungsmöglichkeiten aufbauend jeweils mit Bewertung der Möglichkeit:
+  - Entschlüsseln und überprüfen: nicht möglich durch threshold, außerdem performance
+  - Local Mapping
+  - Einfacher Hash: Bruteforce bei kleinem Werteraum einfach (bspw. Mitarbeiternamen)
+  - Searchable Encryption (siehe Grundlagen)
+    - MAC als einfachste Form deterministischer Verschlüsselung
+    - Andere Formen...
+    
+- Mögliche Bewertungskriterien:
+  - Was muss abgesichert werden und wo muss es vorliegen?
+  - Mehrere Suchworte zu einem Pseudonym möglich? (zB Name, IP, ... ) Gewünscht? Welche Vorteile könnte dies beispielsweise bezogen auf den Anwendungsfall der Insidererkennung bringen?
+  - Verteilte Pseudonymhaltung möglich? Was müsste verteilt werden?
