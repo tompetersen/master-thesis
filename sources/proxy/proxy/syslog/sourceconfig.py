@@ -60,19 +60,26 @@ class ConfigAction:
 class PatternSection:
 
     def __init__(self, pattern: str, actions: {str: ConfigAction}):
-        self._pattern = pattern
+        try:
+            self._pattern = re.compile(pattern)
+        except Exception as e:
+            raise Exception("Invalid pattern: %s." % str(e))
         self._actions = actions
+        self._check_section_contains_actions()
+
+    def _check_section_contains_actions(self):
+        for groupname in self._pattern.groupindex:
+            if not groupname in self._actions:
+                raise Exception('No action found for pattern group (%s).' % groupname)
 
     @property
-    def pattern(self) -> str:
+    def pattern(self) -> any:
+        """ Returns compiled regex for pattern to prevent multiple compile/match calls."""
         return self._pattern
 
     @property
     def actions(self) -> {str: ConfigAction}:
         return self._actions
-
-    def can_handle_message(self, message: str) -> bool:
-        return bool(re.match(self.pattern, message))
 
     def action_for_field(self, field: str) -> ConfigAction:
         if field in self.actions:
@@ -135,22 +142,11 @@ class SyslogSourceConfig:
                 except InvalidConfigActionError as e:
                     raise Exception('Invalid action %s in section [%s]: %s' % (action, key, str(e)))
 
-            section = PatternSection(pattern, config_actions)
             try:
-                self._check_pattern_section_is_valid(section)
+                section = PatternSection(pattern, config_actions)
             except Exception as e:
                 raise Exception('Invalid section [%s]: %s' % (key, str(e)))
             self._sections[key] = section
-
-    def _check_pattern_section_is_valid(self, section: PatternSection):
-        try:
-            pattern = re.compile(section.pattern)
-        except Exception as e:
-            raise Exception("Invalid pattern: %s." % str(e))
-
-        for groupname in pattern.groupindex:
-            if not groupname in section.actions:
-                raise Exception('No action found for pattern group (%s).' % groupname)
 
     def _check_used_plugins(self, plugin_registry: plugin.PluginRegistry):
         for section_key, section in self.sections.items():

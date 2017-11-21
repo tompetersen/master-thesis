@@ -3,7 +3,7 @@ import os
 from proxy.plugin import PluginRegistry
 from proxy.syslog.message import SyslogMessage
 from proxy.syslog.sourceconfig import InvalidSyslogSourceConfigError
-from proxy.syslog.sourcehandler import SyslogSourceHandler
+from proxy.syslog.sourcehandler import SyslogSourceHandler, CannotHandleSyslogMessageError
 
 
 class ApplicableConfigMissingError(Exception):
@@ -23,7 +23,7 @@ class SyslogSourceService:
         for file in self.get_config_files(configs_dir):
             try:
                 handler = SyslogSourceHandler(file, self._plugin_registry)
-                if handler.config.active:
+                if handler.is_active():
                     self._handlers.append(handler)
                     print('\t+ %s: Created handler' % os.path.basename(file))
                 else:
@@ -37,8 +37,10 @@ class SyslogSourceService:
 
     def handle_syslog_message(self, message: SyslogMessage) -> SyslogMessage:
         for handler in self._handlers:
-            if handler.can_handle_syslog_message(message):
+            try:
                 altered_message = handler.handle_syslog_message(message)
                 return altered_message
+            except CannotHandleSyslogMessageError:
+                pass
 
         raise ApplicableConfigMissingError

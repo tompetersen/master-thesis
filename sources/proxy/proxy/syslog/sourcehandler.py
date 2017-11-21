@@ -15,31 +15,24 @@ class SyslogSourceHandler:
         self._plugin_registry = plugin_registry
         self._config = SyslogSourceConfig(config_file_path, plugin_registry)
 
-    def can_handle_syslog_message(self, message: SyslogMessage) -> bool:
-        """ TBW """
-        return self._config_section_for_message(message.message_content) is not None
-
-    def _config_section_for_message(self, message: str) -> (str, PatternSection):
-        for key, section in self.config.sections.items():
-            if section.can_handle_message(message):
-                return key, section
-        return None
-
-    @property
-    def config(self):
-        return self._config
+    def is_active(self) -> bool:
+        return self._config.active
 
     def handle_syslog_message(self, message: SyslogMessage) -> SyslogMessage:
-        """ TBW """
-        section_key, section = self._config_section_for_message(message.message_content)
-        match = re.match(section.pattern, message.message_content)
+        """
+        Updates the syslog message according to the config of this handler if there
+        is a match for any section pattern. Raises CannotHandleSyslogMessageError
+        otherwise.
+        """
+        for key, section in self._config.sections.items():
+            match = section.pattern.match(message.message_content)
 
-        if match:
-            orig_message = match.group(0)
-            altered_message = self._get_altered_message(orig_message, match, section)
-            return SyslogMessage(message.priority, message.facility, altered_message)
-        else:
-            raise CannotHandleSyslogMessageError('Handler can not handle syslog message: pattern not matching.')
+            if match:
+                orig_message = match.group(0)
+                altered_message = self._get_altered_message(orig_message, match, section)
+                return SyslogMessage(message.priority, message.facility, altered_message)
+
+        raise CannotHandleSyslogMessageError('Handler can not handle syslog message: pattern not matching.')
 
     def _get_altered_message(self, orig_message: str, match, section: PatternSection) -> str:
         # Build update list from match groups and sort it by start position

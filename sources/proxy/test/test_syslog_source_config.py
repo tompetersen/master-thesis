@@ -3,7 +3,7 @@ import re
 from unittest import TestCase, main
 from unittest.mock import Mock
 
-from proxy.syslog.sourceconfig import SyslogSourceConfig, InvalidSyslogSourceConfigError, ConfigAction, InvalidConfigActionError
+from proxy.syslog.sourceconfig import SyslogSourceConfig, InvalidSyslogSourceConfigError, ConfigAction
 
 
 class TestSyslogSourceConfig(TestCase):
@@ -29,7 +29,7 @@ class TestSyslogSourceConfig(TestCase):
         group1 = config.sections['group1']
         g1_action1 = group1.action_for_field('time')
         g1_action3 = group1.action_for_field('user')
-        self.assertEqual(group1.pattern, '^(?P<time>\w+ *\d{1,2} \d{2}:\d{2}:\d{2}) (?P<device>[^:]+): Testing my device USER=(?P<user>.+)$')
+        self.assertTrue(group1.pattern.match('Nov 15 12:27:21 ubuntu tom: Testing my device USER=tom'))
         self.assertEqual(g1_action1.plugin_name, 'Substitute')
         self.assertEqual(len(g1_action1.parameters), 1)
         self.assertEqual(g1_action1.parameters['substitute'], 'somevalue_time')
@@ -38,7 +38,7 @@ class TestSyslogSourceConfig(TestCase):
 
         group2 = config.sections['group2']
         g2_action1 = group2.action_for_field('test')
-        self.assertEqual(group2.pattern, '^(?P<test>.*)$')
+        self.assertTrue(group2.pattern.match('Anything'))
         self.assertEqual(g2_action1.plugin_name, 'Pseudonymize')
         self.assertEqual(len(g2_action1.parameters), 0)
 
