@@ -1,25 +1,57 @@
 import uuid
+import nacl.utils
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.exceptions import APIException
 
 from store.models import StoreEntry
 
 
+class InvalidAPICallError(APIException):
+    status_code = 400
+    default_detail = 'The request contained invalid parameters.'
+
+
 class CreatePseudonym(APIView):
 
+    PSEUDONYM_LENGTH = 16 # length in bytes
+    PSEUDONYM_MAX_USAGES = 3
+
     def post(self, request):
+        if not self._is_valid_request(request):
+            raise InvalidAPICallError
+
         content = request.data.get('content')
+        search_token = request.data.get('search_token')
 
         try:
-            entry = StoreEntry.objects.get(content=content)
+            entry = StoreEntry.objects.get(
+                search_token=search_token,
+                usages__lt=self.PSEUDONYM_MAX_USAGES
+            ) # TODO: MAC collisions?
         except StoreEntry.DoesNotExist:
-            entry = StoreEntry(content=content, pseudonym=self._create_pseudonym())
-            entry.save()
+            entry = self._create_entry(content, search_token)
+        entry.save()
 
         return Response({'pseudonym': entry.pseudonym}, status=status.HTTP_201_CREATED)
 
-    def _create_pseudonym(self):
+    def _is_valid_request(self, request):
+        return 'content' in request.data and 'search_token' in request.data
+
+    def _create_entry(self, content: str, search_token: str) -> StoreEntry:
+        pseudonym = self._create_unique_pseudonym()
+        return StoreEntry(content=content, search_token=search_token, pseudonym=pseudonym)
+
+    def _create_unique_pseudonym(self) -> str:
         """ Use 'external' generation of pseudonym to take possible parameters into account. """
-        return uuid.uuid4().hex
+        result = None
+        while result is None:
+            result = nacl.utils.random(size=self.PSEUDONYM_LENGTH).hex()
+            try:
+                StoreEntry.objects.get(pseudonym__iexact=result)
+                result = None
+            except StoreEntry.DoesNotExist:
+                pass
+        return result

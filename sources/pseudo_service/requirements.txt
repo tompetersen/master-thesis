@@ -1,3 +1,4 @@
 django >= 1.11
 djangorestframework
 django-crispy-forms
+pynacl

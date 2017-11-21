@@ -1,5 +1,5 @@
 import requests
-
+import hashlib
 from proxy.plugin import AbstractPlugin
 
 
@@ -10,7 +10,8 @@ class Pseudonymize(AbstractPlugin):
 
     def handle_data(self, data: str, **kwargs):
         try:
-            request_data = {'content': data}
+            search_token = hashlib.sha256(bytes(data, 'utf-8')).hexdigest()
+            request_data = {'content': 'ENCRYPTED(' + data + ')', 'search_token': search_token}
             r = requests.post(self.SERVICE_URL, data=request_data, timeout=self.TIMEOUT)
             r.raise_for_status()
             result = r.json()

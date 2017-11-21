@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="text-align: center">
+    <div style="display: inline-block;">
+        <h2>{% block title %}403 Permission denied{% endblock %}</h2>
+
+        {% if exception %}
+            <p>{{ exception }}</p>
+        {% else %}
+            <p>You are not permitted to access this resource!</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

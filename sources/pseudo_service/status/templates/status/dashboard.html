@@ -10,6 +10,9 @@
                 <th>Pseudonym</th>
                 <th>Content</th>
                 <th>Created</th>
+                <th>Usages</th>
+                <th>Search token</th>
+                <th>Last accessed</th>
             </tr>
         </thead>
         <tbody>
@@ -18,6 +21,9 @@
                 <td>{{ entry.pseudonym }}</td>
                 <td>{{ entry.content }}</td>
                 <td>{{ entry.created }}</td>
+                <td>{{ entry.usages }}</td>
+                <td>{{ entry.search_token }}</td>
+                <td>{{ entry.last_access }}</td>
             </tr>
             {% endfor %}
         </tbody>
