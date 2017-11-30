@@ -2,21 +2,10 @@
 
 \label{sec_state_pseudonymity}
 
-- A name or another bit string. Identifiers, which are generated using random data only, i.e., fully 
-independent of the subject and related attribute values, do not contain side information on the 
-subject they are attached to, whereas non-random identifiers may do. E.g., nicknames chosen by 
-a user may contain information on heroes he admires; a sequence number may contain 
-information on the time the pseudonym was issued; an e-mail address or phone number contains 
-information how to reach the user.  \cite{pfitzmann2010}
-
-- evtl. Common Criteria
-
-- VANET
-
-- TIMSI
-
 %pfitzmann2001 - Abschnitt 12
-Der Begriff der Pseudonymisierung beschreibt die Benutzung von Pseudonymen zur Identifizierung von Subjekten. Pseudonymisierung sagt dabei erst einmal lediglich etwas über die Verwendung eines Verfahrens aus, jedoch nichts über die daraus entstehenden Auswirkungen auf die Identifizierbarkeit eines Subjekts oder die Zurechenbarkeit bestimmter Aktionen. Hierfür spielen weitere Eigenschaften von Pseudonymen wie die folgenden eine Rolle:
+Der Begriff der Pseudonymisierung beschreibt die Benutzung von Pseudonymen zur Identifizierung von Subjekten. Ein Pseudonym (im technischen Sinne) kann nach \cite{pfitzmann2010} als einfache Bitfolge betrachtet werden. Es sollte zufällig generiert werden, d.h. vollkommen unabhängig von dem zugehörigen Subjekt oder es betreffenden Eigenschaften sein, um keine Rückschlüsse aus dem Pseudonym selbst zu ermöglichen. Ein Negativbeispiel wäre ein nutzervergebenes Pseudonym, das den Namen des Haustiers enthält. Aber beispielsweise auch eine aufsteigende Nummerierung als Pseudonym könnte durch den hierdurch genauer spezifizierten Erstellungszeitpunkt Rückschlüsse auf das Subjekt hinter dem Pseudonym ermöglichen.
+
+Pseudonymisierung sagt erst einmal lediglich etwas über die Verwendung eines Verfahrens aus, jedoch nichts über die daraus entstehenden Auswirkungen auf die Identifizierbarkeit eines Subjekts oder die Zurechenbarkeit bestimmter Aktionen. Hierfür spielen nach \cite{pfitzmann2001} weitere Eigenschaften von Pseudonymen wie die folgenden eine Rolle:
 \begin{itemize}
   \item garantierte Eindeutigkeit von Pseudonymen
   \item Möglichkeit von Pseudonymänderungen
@@ -25,4 +14,48 @@ Der Begriff der Pseudonymisierung beschreibt die Benutzung von Pseudonymen zur I
   \item Art der Pseudonymserstellung
 \end{itemize}
 
-Die Ausprägungen dieser Eigenschaften werden auch im Rahmen dieser Arbeit für das umzusetzende System zu bewerten sein.
+Um die Auswirkungen dieser Eigenschaften einordnen zu können, soll im Folgenden kurz die Pseudonymisierung in zwei Systemen betrachtet und die Relevanz der eben genannten Eigenschaften verdeutlicht werden: Pseudonyme in Mobilfunknetzen und in der Fahrzeug-zu-Fahrzeug-Kommunikation. 
+
+\subsection{Mobilfunknetze}
+
+In Mobilfunknetzen wird zur Identifikation eines Teilnehmers anstelle seiner identifizierenden \textit{International Mobile Subscriber Identity} meist ein Pseudonym -- die \textit{Temporary Mobile Subscriber Identity} (TMSI) -- genutzt, das in bestimmten Situationen gewechselt wird und so Ortung und Bewegungsprofile der Teilnehmer verhindern soll.
+In \cite{arapinis2014} beschreiben die Autoren Schwächen der Implementierungen von Mobilfunkstandards in Netzen bei der (Neu-)Vergabe einer TIMSI. Bestimmte Eigenschaften im Bezug auf die Unverkettbarkeit von Pseudonymen und damit auf die Privatsphäre der Nutzer werden in vielen Netzen aufgrund einiger Schwächen nicht erreicht:
+\begin{itemize}
+  \item Zu seltene Änderung der Pseudonyme
+  \item Keine nutzungsabhängige Änderung von Pseudonymen
+  \item Pseudonyme werden in verschiedenen Bereichen beibehalten
+  \item Anfälligkeit der Neuvergabe für Replay-Angriffe
+\end{itemize}
+Die letzten beiden Schwächen sind für den Anwendungskontext dieser Arbeit nicht relevant, aber die zeit- und aktivitätsabhängige Neuvergabe von Pseudonymen müssen auch hier beachtet und umgesetzt werden.
+
+\subsection{VANets}
+
+Ein anderer Bereich, der sich besonders mit der Nutzung von Pseudonymen beschäftigt hat, ist die Forschung an Vehicular Ad Hoc Networks (VANets). Hierbei handelt es sich um Netzwerke für die Kommunikation zwischen Fahrzeugen, die beispielweise für die Datenübermittlung zur Bremserkennung naher Fahrzeuge oder die Stauerkennung genutzt werden können. Um die Privatsphäre der Fahrzeughalter zu schützen, wird für die Kommunikation in vielen Ansätzen auf die Verwendung von Pseudonymen gesetzt. So soll sich beispielsweise das Anlegen von Bewegungsprofilen verhindern lassen.\\
+Unter anderem in \cite{dotzer2005} und \cite{petit2015} widmen sich die Autoren der Nutzung von Pseudonymen in VANets und den besonderen Anforderungen, die diese erfüllen müssen -- insbesondere auch im Hinblick auf die Häufigkeit von Pseudonymwechseln. Es ergibt sich, dass die Häufigkeit und Situation\footnote{
+  Es werden beispielweise Lösungen vorgestellt, die abhängig von Geschwindigkeitsänderungen, einer gewissen Anzahl anderer Fahrzeuge oder besonderen Verkehrssituationen wie Kreuzungen die Pseudonymänderung vornehmen. Das Ziel ist hier immer die Möglichkeit der Pseudonymverkettung bzw. der Bewegungsprofilerstellung durch die äußere Situation der Pseudonymänderung zu erschweren.
+}, in der Pseudonymwechsel stattfinden sollten, abhängig vom gewünschten Grad an Anonymität bzw. Angreifermodell sind und außerdem gegenüber Sicherheitsanwendungen\footnote{
+  Beispielsweise wäre zur VANet-basierten Kollisionsvermeidung eine Verkettung von Orten, an denen sich ein Fahrzeug zu verschiedenen Zeitpunkten befindet, erstrebenswert.
+}  abgewogen werden müssen.\\
+Bei der Nutzung von Pseudonymen in VANets handelt es sich natürlich um eine Anwendung mit anders gelagerten Prioritäten im Vergleich zu dem Kontext dieser Arbeit. Dennoch wird deutlich, dass die Strategie zum Pseudonymwechsel stark von der Anwendungssituation abhängig ist. Bezogen auf den hier vorliegenden Anwendungsfall werden insbesondere Besonderheiten der Datenquelle, wie die Häufigkeit von auftretenden Überwachungsdaten, und Anforderungen an die Verknüpfbarkeit von Ereignissen der auf den Daten beruhenden Anomalieerkennung zu beachten sein.
+
+% Perfect Forward Privacy
+
+In \cite{schaub2009} stellt der Autor eine weitere Anforderung an die Nutzung von Pseudonymen in VANets, die jedoch nicht nur für diesen speziellen Anwendungsfall relevant ist: Er verlangt, dass die Aufdeckung eines Pseudonyms keine Informationen über die Identität eines Nutzers im Bezug auf andere Pseudonyme ermöglichen sollte. Diese Eigenschaft bezeichnet er als \textit{Perfect Forward Privacy}\footnote{
+  Die Bezeichnung ist an \textit{Perfect Forward Secrecy} angelehnt. Diese Eigenschaft beschreibt ein ähnliches Verhalten bei der verschlüsselten Kommunikation: Ein Angreifer, der in den Besitz des Langzeitschlüssels eines Kommunikationspartners kommt, sollte trotzdem nicht in der Lage sein, bereits aufgezeichnete Nachrichten entschlüsseln zu können.
+}.
+
+\subsection{Pseudonymisierung im zu entwickelnden System}
+
+\todo{Umzusetzen}
+
+% - Pseudonymgenerierung
+% - Pseudonymwechsel zeit und datenmengenabhängig
+%   leider nicht genauer, da sowohl datenquellen als auch anomaliedings nicht klar
+%   daher parameter ermöglichen
+% - PFP in DB umsetzen
+
+% Digitalgipfel
+
+Dieses Vorgehen wird auch in den \textit{Leitlinien für die rechtssichere Nutzung von Pseudonymisierungslösungen unter Berücksichtigung der Datenschutz-Grundverordnung} beschrieben: \glqq Abhängig vom Anwendungsfall sind – zeit- oder datenvolumenabhängig – geeignete Intervalle zu definieren, in denen ein Wechsel [...] erfolgt.\grqq{} \cite{schwartmann2017}
+
+\todo{Art des gewählten Pseudonymverfahrens basierend auf basics-pseudonymity erwähnen}
