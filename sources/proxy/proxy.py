@@ -4,16 +4,21 @@ Python based Syslog proxy.
 Based on: https://gist.github.com/marcelom/4218010
 """
 
+import socket
 from socketserver import BaseRequestHandler, ThreadingUDPServer
 
 from proxy.plugin import PluginRegistry
 from proxy.syslog.message import SyslogMessage, InvalidSyslogMessageException
 from proxy.syslog.sourceservice import SyslogSourceService, ApplicableConfigMissingError
 
+
 HOST = '169.254.65.208' # VMNET 1
 PORT = 514
 CONFIGS_DIR = './syslog_source_config/'
 PLUGIN_DIR = './plugins/'
+SYSLOG_TARGET_ADDRESS = '192.168.2.90'
+SYSLOG_TARGET_PORT = 514
+
 
 _plugin_registry = PluginRegistry(PLUGIN_DIR)
 _syslog_source_service = SyslogSourceService(CONFIGS_DIR, _plugin_registry)
@@ -37,6 +42,10 @@ class SyslogUdpHandler(BaseRequestHandler):
 
             altered_message = _syslog_source_service.handle_syslog_message(syslog_message)
             print("Altered_message: " + altered_message.message_content)
+
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.sendto(bytes(altered_message.raw_message(), 'utf-8'), (SYSLOG_TARGET_ADDRESS, SYSLOG_TARGET_PORT))
+            print("Forwarded message: " + altered_message.raw_message())
         except InvalidSyslogMessageException:
             print("Invalid syslog message: %s" % logdata)
         except ApplicableConfigMissingError:

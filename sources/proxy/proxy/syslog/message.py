@@ -10,7 +10,7 @@ class SyslogMessage:
     """ A class representing syslog messages. """
 
     @classmethod
-    def from_logdata(cls, logdata:str):
+    def from_logdata(cls, logdata: str):
         if re.match('<\d+>.+', logdata):
             facility_priority_str, message = logdata.split('>', 1)
 
@@ -50,6 +50,10 @@ class SyslogMessage:
     @property
     def message_content(self)->str:
         return self._message
+
+    def raw_message(self) -> str:
+        fac_prior = SysLogHandler().encodePriority(self._facility, self._priority)
+        return '<%d>%s' % (fac_prior, self._message)
 
     def __str__(self):
         return "Syslog message [%s,%s]: %s", (self.get_facility_name(), self.get_priority_name(), self.message_content)
