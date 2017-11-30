@@ -25,3 +25,8 @@ bin/
 # Python
 
 __pycache__/
+
+# Prod DB
+
+
+/sources/pseudo_service/db.sqlite3
