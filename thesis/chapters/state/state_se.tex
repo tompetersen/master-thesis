@@ -1,5 +1,7 @@
 \section{Searchable Encryption}
 
+\label{sec_state_se}
+
 %- Problemstellung: wie herausfinden, ob für ein Datum bereits ein Pseudonym vorliegt, obwohl die Daten lediglich nicht entschlüsselbar vorliegen? Außerdem auch Notwendigkeit des  Nicht-Determinismus für Searchable Encryption erwähnen (Public Key Verfahren).
 %
 %- Lösungsmöglichkeiten aufbauend jeweils mit Bewertung der Möglichkeit:
@@ -57,6 +59,7 @@ Eine andere Möglichkeit ist die Anlage einer vor externem Zugriff geschützten 
 Aufbauend auf der Hash-basierten Lösung lässt sich jedoch auch eine nicht für einen Wörterbuch-Angriff anfällige Lösung entwickeln. Dazu wird der verwendete Hash durch einen schlüsselabhängigen Message Authentication Code (MAC) ersetzt. Beim Speichern eines neuen Eintrags wird dazu unter Zuhilfename eines zufällig generierten Schlüssels ein MAC über das Datum berechnet und mit dem Eintrag gespeichert. Für ein Datum kann jetzt durch Überprüfen aller MACs bestimmt werden, ob bereits ein Pseudonym vergeben wurde. Ein Angreifer kann den beschriebenen Wörterbuch-Angriff jedoch ohne Kenntnis des Schlüssels nicht ausführen.\\
 Bei dieser Lösung handelt es sich um eine einfache Form der Searchable Symmetric Encryption wie sie in Abschnitt \ref{sec_basisc_se} dargestellt ist. Die durch Pseudonyme zu ersetzenden Daten bilden die zu durchsuchenden Dokumente. Der MAC bildet den Suchwort-Index für jeden verschlüsselten Eintrag und wird so auch als Trapdoor-Element für die Suche nach einem passenden Eintrag genutzt. \\
 Die Nutzung von deterministischer Verschlüsselung (mit der hier beschriebenen Verwendung eines MACs als Sonderfall) wird erstmals in \cite{bellare2007deterministic} beschrieben. Dort werden auch einige Schwächen dieser Lösung diskutiert: Die Datenbank erfährt durch den Suchindex bereits einiges über die gespeicherten Dokumente, da durch die deterministische Struktur gleiche Suchwörter auf gleiche Trapdoor-Elemente abgebildet werden. Diese Schwäche ist im Bezug auf den besonderen Anwendungsfall dieser Arbeit jedoch zu vernachlässigen, da Dokumente (meint Benutzernamen, ...) nur einmalig vorliegen dürfen. Eine weitere Schwäche, die auch in dieser Arbeit beachtet werden muss, ist, dass die Datenbank etwas über die Häufigkeit verschiedener Suchanfragen erfährt, da die Trapdoor-Elemente für ein bestimmtes Datum immer gleich sind. Durch Korrelation mit Hintergrundwissen könnte so möglicherweise in bestimmten Fällen der Inhaber eines Pseudonyms herausgefunden werden. 
+\todo{Hash-Kollisionen und Geburtstags-Paradoxon hier erwähnen?}
 
 \subsection{Weitere Möglichkeiten der Searchable Encryption}
 
