@@ -16,8 +16,11 @@ class InvalidAPICallError(APIException):
 
 class CreatePseudonym(APIView):
 
+    # TODO: Extract to general config app (existing status or own app?)
     PSEUDONYM_LENGTH = 16 # length in bytes
     PSEUDONYM_MAX_USAGES = 3
+    PSEUDONYM_VALID_SECONDS = 60 * 60 * 24
+    PSEUDONYM_USE_PFP = True
 
     def post(self, request):
         if not self._is_valid_request(request):
