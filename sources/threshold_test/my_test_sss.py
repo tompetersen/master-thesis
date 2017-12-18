@@ -46,8 +46,8 @@ def interpolate_polynom(shares, p):
 
     lagrange_coefficients = []
     for i in range(0, k):
-        tmp = [(-x(j) * prime_mod_inv(x(i) - x(j), p)) % p for j in range(0, k) if not j == i]
-        lagrange_coefficients.append(prod(tmp))
+        tmp = [(-x(j) * prime_mod_inv(x(i) - x(j), p)) for j in range(0, k) if not j == i]
+        lagrange_coefficients.append(prod(tmp) % p)
 
     return sum(lagrange_coefficients[i] * y(i) for i in range(0, k)) % p
 

@@ -33,8 +33,8 @@ def generate(bits, randfunc, progress_func=None):
     if progress_func:
         progress_func(str(datetime.datetime.now().time()) + ' p\n')
     while 1:
-        q = number.getPrime(bits-1, randfunc)
-        elgamal_p = 2*q+1
+        elgamal_q = number.getPrime(bits-1, randfunc)
+        elgamal_p = 2*elgamal_q+1
         if number.isPrime(elgamal_p, randfunc=randfunc):
             break
 
@@ -53,7 +53,7 @@ def generate(bits, randfunc, progress_func=None):
         safe = 1
         if pow(elgamal_g, 2, elgamal_p) == 1:
             safe = 0
-        if safe and pow(elgamal_g, q, elgamal_p) == 1:
+        if safe and pow(elgamal_g, elgamal_q, elgamal_p) == 1:
             safe = 0
         # Discard g if it divides p-1 because of the attack described
         # in Note 11.67 (iii) in HAC
@@ -81,5 +81,5 @@ def generate(bits, randfunc, progress_func=None):
     return elgamal_p, elgamal_g, elgamal_private, elgamal_public
 
 
-while 1:
-    elgamal_p, elgamal_g, elgamal_private, elgamal_public = generate(512, random, print)
+# while 1:
+    # elgamal_p, elgamal_g, elgamal_private, elgamal_public = generate(512, random, print)
