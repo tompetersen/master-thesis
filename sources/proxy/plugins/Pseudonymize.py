@@ -10,7 +10,7 @@ class Pseudonymize(AbstractPlugin):
 
     def handle_data(self, data: str, **kwargs):
         try:
-            search_token = hashlib.sha256(bytes(data, 'utf-8')).hexdigest()
+            search_token = hashlib.sha256(bytes(data, 'utf-8')).hexdigest() # Replace with MAC
             request_data = {'content': 'ENCRYPTED(' + data + ')', 'search_token': search_token}
             r = requests.post(self.SERVICE_URL, data=request_data, timeout=self.TIMEOUT)
             r.raise_for_status()
