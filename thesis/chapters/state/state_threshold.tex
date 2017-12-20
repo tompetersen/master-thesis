@@ -40,13 +40,15 @@ Die Verschlüsselung einer Nachricht \(m\) funktioniert analog zum ursprünglich
 
 Die partiellen Verschlüsselungen 
 
-\subsection{Dezentrale Schlüsselgenerierung}
+
 
 
 
 \subsection{TEMP}
 
 \todo{Some things should be moved to implementation.}
+
+\todo{Beziehen auf Grundlagenkapitel insbesondere den formalen Rahmen}
 
 \textbf{(Zentrale) Schlüsselgenerierung }
 
@@ -94,3 +96,7 @@ berechnet werden. Dies funktioniert, da
 gilt. Der letzte Schritt \((*)\) folgt direkt aus dem zugrundeliegenden Secret Sharing und ist in dieser Form bereits in Abschnitt \ref{sec_basics_threshold_shamir} zu finden.
 
 Anschließend kann die Nachricht als \(m = c \cdot (g^{ak})^{(-1)}\) wiederhergestellt werden. 
+
+Ein Nachteil bei diesem Verfahren ist, dass für die Generierung des geheimen Schlüssels und der daraus resultierenden Shares eine zentrale und vertrauenswürdige Instanz notwendig ist. Dieser Nachteil soll im folgenden Abschnitt behandelt werden.
+
+\subsection{Dezentrale Schlüsselgenerierung}

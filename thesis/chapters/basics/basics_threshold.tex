@@ -35,6 +35,8 @@ definiert, die auch als Lagrange-Koeffizienten bezeichnet werden. Das gesuchte G
 \[D = \sum_{i=1}^{t}\lambda_i \cdot q(x_i')\]
 berechnet werden. Da \(\lambda_i\) nicht von \(q(x_i)\) abhängt, können diese Werte in der Praxis bereits vorberechnet werden. Details zu der Korrektheit dieses Verfahrens sind \cite{boneh2016} zu entnehmen.
 
+\todo{(Informationstheoretische) Sicherheit erwähnen}
+
 Das Problem dieser Lösung bezogen auf den in dieser Arbeit behandelten Anwendungsfall ist jedoch, dass das Geheimnis nach erstmaligem Aufdecken bekannt ist. Wünschenswert wäre ein Verfahren, bei dem nur ein entsprechend verschlüsseltes Datum (bspw. der gesuchte Eintrag in einer Pseudonym-Tabelle) aufgedeckt werden kann, ohne dass der kombinierte Schlüssel selbst bekannt wird. 
 
 \subsection{Threshold Decryption}
@@ -42,6 +44,8 @@ Das Problem dieser Lösung bezogen auf den in dieser Arbeit behandelten Anwendun
 %- 87 SocietyOriented \cite{desmedt1987}
 %- 93 Threshold decryption (non-interactive) \cite{desmedt1993}
 %- Def. nach 96 Boneh \cite{boneh2006}
+
+\label{sec_basics_threshold_thresholddecryption}
 
 In \cite{desmedt1987} wird das erwähnte Problem das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird auch die zentrale Forderung an mögliche Lösungen des Problems aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. 
 
@@ -80,4 +84,18 @@ In \cite{boneh2006} werden diese Algorithmen noch um einen fünften erweitert, d
 
 Weiterhin wird für den neuen Algorithmus eine weitere Eigenschaft verlangt. Für jeden Schlüsseltext \(c\) und \(c_j' = D(sk_i,c)\), wobei \(sk_i\) der \(i\)-te von \(G\) erstellte \textit{Share} ist, gelte: \(V(pk, vk, c, c_j')\) liefert ein valides Ergebnis.
 
-\todo{ElGamal hier noch kurz erläutern oder wo?}
+\subsection{ElGamal-Kryptosystem}
+
+\label{sec_basics_threshold_elgamal}
+
+Das in Abschnitt \ref{sec_state_threshold} vorgestellte und in dieser Arbeit verwendete kryptographische Schwellwertschema basiert auf dem bereits erläuterten Secret Sharing von Shamir und einem von Taher ElGamal entwickelten asymmetrischen Verschlüsselungsverfahren \cite{elgamal1985}. Die Grundlagen dieses Verfahrens sollen daher hier kurz vorgestellt werden.
+
+Im Folgenden sei \(\mathbb{G}\) eine zyklische Gruppe der Ordnung \(p\), wobei \(p\) eine Primzahl darstellt, und \(g\) ein Generator dieser Gruppe. Diese Parameter sind öffentlich bekannt. 
+
+Ein Teilnehmer wählt nun ein zufälliges Element \(x \in \mathbb{Z}_p\). Dies ist der private Schlüssel des Teilnehmers. Er berechnet zusätzlich seinen öffentlichen Schlüssel \(h = g^x\).\\
+Um eine Nachricht \(m\), die an den Teilnehmer geschickt werden soll, zu verschlüsseln, wird zuerst ein zufälliges Element \(y \in \mathbb{Z}_p\) gewählt. Anschließend kann die Nachricht verschlüsselt als \((v, c) = (g^y, h^y \cdot m)\) versendet werden.\\
+Zur Entschlüsselung berechnet der Empfänger \(k' = (v^x)^{(-1)}\) und kann die Nachricht \(m = c \cdot k'\) entschlüsseln. Dies funktioniert, da 
+\[c \cdot k' = (h^y \cdot m) \cdot (v^x)^{(-1)} = g^{xy} \cdot m \cdot g^{(-yx)} = m\]
+gilt.
+
+Die Sicherheit des Verfahrens beruht auf dem Diskreten-Logarithmus-Problem. Details und Beweise hierzu sind beispielsweise in \cite{katz2014} zu finden.
