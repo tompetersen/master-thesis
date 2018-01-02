@@ -1,12 +1,9 @@
+# Number-theoretic functions.
 #
-# https://raw.githubusercontent.com/dlitz/pycrypto/master/lib/Crypto/Util/number.py
-#
-#
-#  number.py : Number-theoretic functions
-#
-#  Part of the Python Cryptography Toolkit
-#
-#  Written by Andrew M. Kuchling, Barry A. Warsaw, and others
+# Most of these are based on number.py from Python Cryptography Toolkit
+# [https://raw.githubusercontent.com/dlitz/pycrypto/master/lib/Crypto/Util/number.py]
+# by Andrew M. Kuchling, Barry A. Warsaw, and others,
+# which is provided under the following license:
 #
 # ===================================================================
 # The contents of this file are dedicated to the public domain.  To
@@ -27,13 +24,70 @@
 # ===================================================================
 #
 
-__revision__ = "$Id$"
-
+import functools
 import math
+import operator
 
+from nacl.utils import random as nacl_random
+
+
+def prime_mod_inv(x: int, p: int) -> int:
+    return pow(x, p - 2, p)  # Fermats little theorem
+
+
+def prod(factors: [int]) -> int:
+    return functools.reduce(operator.mul, factors, 1)
+
+
+class PolynomMod:
+
+    @staticmethod
+    def create_random_polynom(absolute_term: int, degree: int, q: int):
+        coefficients = [absolute_term]
+        coefficients.extend([getRandomRange(1, q - 1) for _ in range(0, degree - 1)])
+
+        return PolynomMod(coefficients, q)
+
+    def __init__(self, coefficients: [int], q: int):
+        # Make sure that the highest degree coefficient is set.
+        # An alternative would be to strip trailing zero elements.
+        assert coefficients[-1] != 0
+
+        self._coefficients = coefficients
+        self._q = q
+
+    @property
+    def q(self) -> int:
+        return self._q
+
+    @property
+    def degree(self):
+        return len(self._coefficients)
+
+    def evaluate(self, x: int) -> int:
+        evaluated = ((self._coefficients[j] * pow(x, j)) for j in range(0, self.degree))
+        return sum(evaluated) % self.q
+
+
+def build_lagrange_coefficients(partial_ind: [int], p: int) -> [int]:
+    k_tmp = len(partial_ind)
+
+    def x(idx):
+        return partial_ind[idx]
+
+    lagrange_coeff = []
+    for i in range(0, k_tmp):
+        tmp = [(- x(j) * prime_mod_inv(x(i) - x(j), p)) for j in range(0, k_tmp) if not j == i]
+        lagrange_coeff.append(prod(tmp) % p)  # lambda_i
+
+    return lagrange_coeff
+
+
+# The following functions are based on PyCrypto.
 
 def size (N):
-    """size(N:long) : int
+    """
+    size(N:long) : int
     Returns the size of the number N in bits.
     """
     bits = 0
@@ -41,14 +95,11 @@ def size (N):
         bits += 1
     return bits
 
-def getRandomInteger(N, randfunc):
-    """getRandomInteger(N:int, randfunc:callable):long
+
+def getRandomInteger(N, randfunc=nacl_random):
+    """
+    getRandomInteger(N:int, randfunc:callable):long
     Return a random number with at most N bits.
-
-    If randfunc is omitted, then Random.new().read is used.
-
-    This function is for internal use only and may be renamed or removed in
-    the future.
     """
     S = randfunc(N >> 3)
     odd_bits = N % 8
@@ -58,14 +109,11 @@ def getRandomInteger(N, randfunc):
     value = bytes_to_long(S)
     return value
 
-def getRandomRange(a, b, randfunc=None):
-    """getRandomRange(a:int, b:int, randfunc:callable):long
+
+def getRandomRange(a, b, randfunc=nacl_random):
+    """
+    getRandomRange(a:int, b:int, randfunc:callable):long
     Return a random number n so that a <= n < b.
-
-    If randfunc is omitted, then Random.new().read is used.
-
-    This function is for internal use only and may be renamed or removed in
-    the future.
     """
     range_ = b - a - 1
     bits = size(range_)
@@ -74,23 +122,23 @@ def getRandomRange(a, b, randfunc=None):
         value = getRandomInteger(bits, randfunc)
     return a + value
 
-def getRandomNBitInteger(N, randfunc=None):
-    """getRandomInteger(N:int, randfunc:callable):long
+
+def getRandomNBitInteger(N, randfunc=nacl_random):
+    """
+    getRandomInteger(N:int, randfunc:callable):long
     Return a random number with exactly N-bits, i.e. a random number
     between 2**(N-1) and (2**N)-1.
-
-    If randfunc is omitted, then Random.new().read is used.
-
-    This function is for internal use only and may be renamed or removed in
-    the future.
     """
     value = getRandomInteger (N-1, randfunc)
     value |= 2 ** (N-1)                # Ensure high bit is set
     assert size(value) >= N
     return value
 
+
+# Not used?
 def GCD(x,y):
-    """GCD(x:long, y:long): long
+    """
+    GCD(x:long, y:long): long
     Return the GCD of x and y.
     """
     x = abs(x) ; y = abs(y)
@@ -98,6 +146,8 @@ def GCD(x,y):
         x, y = y % x, x
     return y
 
+
+# Not used?
 def inverse(u, v):
     """inverse(u:long, v:long):long
     Return the inverse of u mod v.
@@ -112,33 +162,27 @@ def inverse(u, v):
         u1 = u1 + v
     return u1
 
-# Given a number of bits to generate and a random generation function,
-# find a prime number of the appropriate size.
 
-def getPrime(N, randfunc):
-    """getPrime(N:int, randfunc:callable):long
-    Return a random N-bit prime number.
-
-    If randfunc is omitted, then Random.new().read is used.
+def getPrime(N, randfunc=nacl_random):
     """
+    Given a number of bits to generate and a random generation function,
+    find a prime number of the appropriate size.
 
+    Return a random N-bit prime number.
+    """
     number=getRandomNBitInteger(N, randfunc) | 1
     while (not isPrime(number, randfunc=randfunc)):
         number=number+2
     return number
 
 
-def _rabinMillerTest(n, rounds, randfunc=None):
-    """_rabinMillerTest(n:long, rounds:int, randfunc:callable):int
+def _rabinMillerTest(n, rounds, randfunc=nacl_random):
+    """
+    _rabinMillerTest(n:long, rounds:int, randfunc:callable):int
     Tests if n is prime.
     Returns 0 when n is definitly composite.
     Returns 1 when n is probably prime.
     Returns 2 when n is definitly prime.
-
-    If randfunc is omitted, then Random.new().read is used.
-
-    This function is for internal use only and may be renamed or removed in
-    the future.
     """
     # check special cases (n==2, n even, n < 2)
     if n < 3 or (n & 1) == 0:
@@ -176,127 +220,10 @@ def _rabinMillerTest(n, rounds, randfunc=None):
             return 0
     return 1
 
-def getStrongPrime(N, e=0, false_positive_prob=1e-6, randfunc=None):
-    """getStrongPrime(N:int, e:int, false_positive_prob:float, randfunc:callable):long
-    Return a random strong N-bit prime number.
-    In this context p is a strong prime if p-1 and p+1 have at
-    least one large prime factor.
-    N should be a multiple of 128 and > 512.
 
-    If e is provided the returned prime p-1 will be coprime to e
-    and thus suitable for RSA where e is the public exponent.
-
-    The optional false_positive_prob is the statistical probability
-    that true is returned even though it is not (pseudo-prime).
-    It defaults to 1e-6 (less than 1:1000000).
-    Note that the real probability of a false-positive is far less. This is
-    just the mathematically provable limit.
-
-    randfunc should take a single int parameter and return that
-    many random bytes as a string.
-    If randfunc is omitted, then Random.new().read is used.
+def isPrime(N, false_positive_prob=1e-6, randfunc=nacl_random):
     """
-    # This function was implemented following the
-    # instructions found in the paper:
-    #   "FAST GENERATION OF RANDOM, STRONG RSA PRIMES"
-    #   by Robert D. Silverman
-    #   RSA Laboratories
-    #   May 17, 1997
-    # which by the time of writing could be freely downloaded here:
-    # http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.17.2713&rep=rep1&type=pdf
-
-    # Use the accelerator if available
-    if (N < 512) or ((N % 128) != 0):
-        raise ValueError ("bits must be multiple of 128 and > 512")
-
-    rabin_miller_rounds = int(math.ceil(-math.log(false_positive_prob)/math.log(4)))
-
-    # calculate range for X
-    #   lower_bound = sqrt(2) * 2^{511 + 128*x}
-    #   upper_bound = 2^{512 + 128*x} - 1
-    x = (N - 512) >> 7
-    # We need to approximate the sqrt(2) in the lower_bound by an integer
-    # expression because floating point math overflows with these numbers
-    lower_bound = divmod(14142135623730950489 * (2 ** (511 + 128*x)),
-                         10000000000000000000)[0]
-    upper_bound = (1 << (512 + 128*x)) - 1
-    # Randomly choose X in calculated range
-    X = getRandomRange (lower_bound, upper_bound, randfunc)
-
-    # generate p1 and p2
-    p = [0, 0]
-    for i in (0, 1):
-        # randomly choose 101-bit y
-        y = getRandomNBitInteger (101, randfunc)
-        # initialize the field for sieving
-        field = [0] * 5 * len (sieve_base)
-        # sieve the field
-        for prime in sieve_base:
-            offset = y % prime
-            for j in range((prime - offset) % prime, len (field), prime):
-                field[j] = 1
-
-        # look for suitable p[i] starting at y
-        result = 0
-        for j in range(len(field)):
-            composite = field[j]
-            # look for next canidate
-            if composite:
-                continue
-            tmp = y + j
-            result = _rabinMillerTest (tmp, rabin_miller_rounds)
-            if result > 0:
-                p[i] = tmp
-                break
-        if result == 0:
-            raise RuntimeError ("Couln't find prime in field. "
-                                "Developer: Increase field_size")
-
-    # Calculate R
-    #     R = (p2^{-1} mod p1) * p2 - (p1^{-1} mod p2) * p1
-    tmp1 = inverse (p[1], p[0]) * p[1]  # (p2^-1 mod p1)*p2
-    tmp2 = inverse (p[0], p[1]) * p[0]  # (p1^-1 mod p2)*p1
-    R = tmp1 - tmp2 # (p2^-1 mod p1)*p2 - (p1^-1 mod p2)*p1
-
-    # search for final prime number starting by Y0
-    #    Y0 = X + (R - X mod p1p2)
-    increment = p[0] * p[1]
-    X = X + (R - (X % increment))
-    while 1:
-        is_possible_prime = 1
-        # first check candidate against sieve_base
-        for prime in sieve_base:
-            if (X % prime) == 0:
-                is_possible_prime = 0
-                break
-        # if e is given make sure that e and X-1 are coprime
-        # this is not necessarily a strong prime criterion but useful when
-        # creating them for RSA where the p-1 and q-1 should be coprime to
-        # the public exponent e
-        if e and is_possible_prime:
-            if e & 1:
-                if GCD (e, X-1) != 1:
-                    is_possible_prime = 0
-            else:
-                if GCD (e, divmod((X-1),2)[0]) != 1:
-                    is_possible_prime = 0
-
-        # do some Rabin-Miller-Tests
-        if is_possible_prime:
-            result = _rabinMillerTest (X, rabin_miller_rounds)
-            if result > 0:
-                break
-        X += increment
-        # abort when X has more bits than requested
-        # TODO: maybe we shouldn't abort but rather start over.
-        if X >= 1 << N:
-            raise RuntimeError ("Couln't find prime in field. "
-                                "Developer: Increase field_size")
-    return X
-
-
-def isPrime(N, false_positive_prob=1e-6, randfunc=None):
-    """isPrime(N:long, false_positive_prob:float, randfunc:callable):bool
+    isPrime(N:long, false_positive_prob:float, randfunc:callable):bool
     Return true if N is prime.
 
     The optional false_positive_prob is the statistical probability
@@ -304,10 +231,7 @@ def isPrime(N, false_positive_prob=1e-6, randfunc=None):
     It defaults to 1e-6 (less than 1:1000000).
     Note that the real probability of a false-positive is far less. This is
     just the mathematically provable limit.
-
-    If randfunc is omitted, then Random.new().read is used.
     """
-
     if N < 3 or N & 1 == 0:
         return N == 2
     for p in sieve_base:
@@ -371,6 +295,7 @@ def bytes_to_long(s):
     for i in range(0, length, 4):
         acc = (acc << 32) + unpack('>I', s[i:i+4])[0]
     return acc
+
 
 # The first 10000 primes used for checking primality.
 # This should be enough to eliminate most of the odd

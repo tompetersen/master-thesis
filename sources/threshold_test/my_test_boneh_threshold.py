@@ -98,6 +98,7 @@ def generate(bits, randfunc, progress_func=None):
 
     return elgamal_p, elgamal_g, elgamal_q
 
+
 elgamal_p, elgamal_g, elgamal_q = generate(512, random, print)
 p = elgamal_p
 #g = elgamal_g
