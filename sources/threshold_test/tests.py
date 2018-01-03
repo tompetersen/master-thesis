@@ -57,7 +57,7 @@ class TCTestCase(unittest.TestCase):
 
     # TBD: further tests
 
-    def test_complete_process(self):
+    def test_complete_process_with(self):
         key_params = ThresholdCrypto.generate_static_key_parameters()
         thresh_params = ThresholdParameters(2,3)
 
@@ -67,7 +67,7 @@ class TCTestCase(unittest.TestCase):
         message = b'1337'
         encrypted_message = ThresholdCrypto.encrypt_message(message, pub_key)
 
-        partial_decryptions = [ThresholdCrypto.compute_partial_decryption(encrypted_message, share) for share in key_shares]
+        partial_decryptions = [ThresholdCrypto.compute_partial_decryption(encrypted_message, share) for share in key_shares[:2]]
         decrypted_message = ThresholdCrypto.combine_shares(partial_decryptions, encrypted_message, thresh_params, key_params)
 
         self.assertEqual(message, decrypted_message)
