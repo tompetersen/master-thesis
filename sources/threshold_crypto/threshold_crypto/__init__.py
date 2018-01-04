@@ -3,6 +3,7 @@ from .threshold_crypto import (ThresholdCrypto,
                                KeyParameters,
                                PublicKey,
                                PrivateKey,
-                               KeyShare
+                               KeyShare,
+                               ThresholdCryptoError,
                                )
 from .number import PolynomMod

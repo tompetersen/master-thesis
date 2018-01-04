@@ -1,11 +1,21 @@
+"""
+
+
+"""
 from threshold_crypto import number
+
+
+class ThresholdCryptoError(Exception):
+    pass
 
 
 class ThresholdParameters:
 
     def __init__(self, t: int, n: int):
-        assert t < n, 'threshold parameter t must be smaller than n'
-        assert t > 0, 'threshold parameter t must be greater than 0'
+        if t > n:
+            raise ThresholdCryptoError('threshold parameter t must be smaller than n')
+        if t <= 0:
+            raise ThresholdCryptoError('threshold parameter t must be greater than 0')
 
         self._t = t
         self._n = n
@@ -25,9 +35,10 @@ class ThresholdParameters:
 class KeyParameters:
 
     def __init__(self, p: int, q: int, g: int):
-        assert (2 * q + 1) == p, 'no safe prime (p = 2q + 1) given'
-        assert pow(g, q, p) == 1, 'no generator g for subgroup of order q given'
-        assert pow(g, 2, p) != 1, 'no generator g for subgroup of order q given'
+        if (2 * q + 1) != p:
+            raise ThresholdCryptoError('no safe prime (p = 2q + 1) given')
+        if pow(g, q, p) != 1 or pow(g, 2, p) == 1:
+            raise ThresholdCryptoError('no generator g for subgroup of order q given')
 
         self._p = p
         self._q = q
@@ -52,7 +63,8 @@ class KeyParameters:
 class PublicKey:
 
     def __init__(self, g_a: int, key_params: KeyParameters):
-        assert key_params is not None, 'key parameters must be given'
+        if key_params is None:
+            raise ThresholdCryptoError('key parameters must be given')
 
         self._g_a = g_a
         self._key_params = key_params
@@ -72,7 +84,8 @@ class PublicKey:
 class PrivateKey:
 
     def __init__(self, a: int, key_params: KeyParameters):
-        assert key_params is not None, 'key parameters must be given'
+        if key_params is None:
+            raise ThresholdCryptoError('key parameters must be given')
 
         self._a = a
         self._key_params = key_params
@@ -91,7 +104,8 @@ class PrivateKey:
 class KeyShare:
 
     def __init__(self, x: int, y: int, key_params: KeyParameters):
-        assert key_params is not None, 'key parameters must be given'
+        if key_params is None:
+            raise ThresholdCryptoError('key parameters must be given')
 
         self._x = x
         self._y = y
@@ -162,7 +176,7 @@ class ThresholdCrypto:
 
     @staticmethod
     def create_keys_centralized(key_params: KeyParameters) -> (PublicKey, PrivateKey):
-        a = number.getRandomRange(2, key_params.q - 2) # TODO: parameters for key_params
+        a = number.getRandomRange(2, key_params.q - 2) # TODO: parameters for key_params (here 2 and -2?)
         g_a = pow(key_params.g, a, key_params.p)
         private = PrivateKey(a, key_params)
         public = PublicKey(g_a, key_params)
@@ -186,7 +200,8 @@ class ThresholdCrypto:
 
         # TODO: message encoding?
         m = int.from_bytes(message, byteorder='big')
-        assert m < key_params.p, 'message is larger than key parameter p'
+        if m >= key_params.p:
+            raise ThresholdCryptoError('message is larger than key parameter p')
 
         k = number.getRandomRange(1, key_params.q - 1)
         g_k = pow(key_params.g, k, key_params.p) # aka v
@@ -209,7 +224,9 @@ class ThresholdCrypto:
                        threshold_params: ThresholdParameters,
                        key_params: KeyParameters
                        ) -> bytes:
-        #assert len(partial_decryptions) >= threshold_params.t
+        # Disabled to enable testing for unsuccessful decryption
+        # if len(partial_decryptions) < threshold_params.t:
+        #    raise ThresholdCryptoError('less than t partial decryptions given')
 
         partial_indices = [dec.x for dec in partial_decryptions]
         lagrange_coefficients = number.build_lagrange_coefficients(partial_indices, key_params.q)

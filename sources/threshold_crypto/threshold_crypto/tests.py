@@ -1,5 +1,5 @@
 import unittest
-from threshold_crypto import ThresholdCrypto, ThresholdParameters, KeyParameters, PolynomMod
+from threshold_crypto import ThresholdCrypto, ThresholdParameters, KeyParameters, PolynomMod, ThresholdCryptoError
 
 
 class TCTestCase(unittest.TestCase):
@@ -15,20 +15,20 @@ class TCTestCase(unittest.TestCase):
     def test_valid_threshold_parameters(self):
         t = ThresholdParameters(3,5)
 
-    @unittest.expectedFailure
     def test_invalid_threshold_parameters(self):
-        t = ThresholdParameters(5,3)
+        with self.assertRaises(ThresholdCryptoError):
+            t = ThresholdParameters(5,3)
 
     def test_valid_key_parameters(self):
         k = KeyParameters(7, 3, 2) # 2 generates 3-order subgroup {1,2,4}
 
-    @unittest.expectedFailure
     def test_invalid_key_parameters_whole_group(self):
-        k = KeyParameters(7, 3, 3) # 3 generates 6-order group Z_7*
+        with self.assertRaises(ThresholdCryptoError):
+            k = KeyParameters(7, 3, 3) # 3 generates 6-order group Z_7*
 
-    @unittest.expectedFailure
     def test_invalid_key_parameters_no_safe_prime(self):
-        k = KeyParameters(7, 4, 3)
+        with self.assertRaises(ThresholdCryptoError):
+            k = KeyParameters(7, 4, 3)
 
     def test_static_key_parameter_generation(self):
         kp = ThresholdCrypto.generate_static_key_parameters()

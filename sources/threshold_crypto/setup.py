@@ -7,7 +7,7 @@ def readme():
 
 
 setup(
-    name='threshold_crypto',
+    name='threshold-crypto',
     version='0.0.1',
     description='Threshold-based ElGamal encryption',
     long_description=readme(),
