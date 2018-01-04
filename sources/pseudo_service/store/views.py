@@ -1,4 +1,3 @@
-import uuid
 import nacl.utils
 
 from rest_framework import status
@@ -6,12 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import APIException
 
+from shared.views import InvalidAPICallError
 from store.models import StoreEntry
-
-
-class InvalidAPICallError(APIException):
-    status_code = 400
-    default_detail = 'The request contained invalid parameters.'
 
 
 class CreatePseudonym(APIView):

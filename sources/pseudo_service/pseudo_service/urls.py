@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^store/', include('store.urls')),
     url(r'^status/', include('status.urls')),
     url(r'^request/', include('request.urls')),
+    url(r'^threshold/', include('threshold.urls')),
     url(r'^login/$', auth_views.LoginView.as_view(template_name='login.html', redirect_authenticated_user=True), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
 ]

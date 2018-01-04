@@ -37,10 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'crispy_forms',
     'store.apps.StoreConfig',
     'status.apps.StatusConfig',
     'request.apps.RequestConfig',
+    'shared.apps.SharedConfig',
+    'threshold.apps.ThresholdConfig',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +62,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, "global_templates"),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -125,7 +127,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "global_staticfiles"),
 ]
 
 # Authentication

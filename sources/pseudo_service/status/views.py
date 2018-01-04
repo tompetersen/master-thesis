@@ -25,4 +25,5 @@ class DashboardView(SuperuserRequiredMixin, TemplateView):
         context = super(DashboardView, self).get_context_data(**kwargs)
         context['entries'] = StoreEntry.objects.all()
         context['requests'] = StoreEntryRequest.objects.all()
+
         return context
