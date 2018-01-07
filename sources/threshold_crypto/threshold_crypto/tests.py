@@ -1,5 +1,14 @@
 import unittest
-from threshold_crypto import ThresholdCrypto, ThresholdParameters, KeyParameters, PolynomMod, ThresholdCryptoError
+from threshold_crypto import (ThresholdCrypto,
+                              ThresholdParameters,
+                              KeyParameters,
+                              PolynomMod,
+                              ThresholdCryptoError,
+                              PublicKey,
+                              KeyShare,
+                              EncryptedMessage,
+                              PartialDecryption,
+                              )
 
 
 class TCTestCase(unittest.TestCase):
@@ -8,6 +17,10 @@ class TCTestCase(unittest.TestCase):
         self.tp = ThresholdParameters(3, 5)
         self.kp = ThresholdCrypto.generate_static_key_parameters()
         self.pk, self.sk = ThresholdCrypto.create_keys_centralized(self.kp)
+        self.shares = ThresholdCrypto.create_shares_centralized(self.sk, self.tp)
+        self.em = ThresholdCrypto.encrypt_message(b'1234', self.pk)
+        self.reconstruct_shares = [self.shares[i] for i in [0, 2, 4]]  # choose 3 of 5 key shares
+        self.partial_decryptions = [ThresholdCrypto.compute_partial_decryption(self.em, share) for share in self.reconstruct_shares]
 
     def tearDown(self):
         pass
@@ -19,6 +32,12 @@ class TCTestCase(unittest.TestCase):
         with self.assertRaises(ThresholdCryptoError):
             t = ThresholdParameters(5,3)
 
+    def test_threshold_parameter_json(self):
+        t = ThresholdParameters(3, 5)
+        t_j = ThresholdParameters.from_json(t.to_json())
+
+        self.assertEqual(t, t_j)
+
     def test_valid_key_parameters(self):
         k = KeyParameters(7, 3, 2) # 2 generates 3-order subgroup {1,2,4}
 
@@ -29,6 +48,11 @@ class TCTestCase(unittest.TestCase):
     def test_invalid_key_parameters_no_safe_prime(self):
         with self.assertRaises(ThresholdCryptoError):
             k = KeyParameters(7, 4, 3)
+
+    def test_key_parameter_json(self):
+        k_j = KeyParameters.from_json(self.kp.to_json())
+
+        self.assertEqual(self.kp, k_j)
 
     def test_static_key_parameter_generation(self):
         kp = ThresholdCrypto.generate_static_key_parameters()
@@ -43,17 +67,39 @@ class TCTestCase(unittest.TestCase):
         self.assertEqual(pk.key_parameters, self.kp)
         self.assertEqual(sk.key_parameters, self.kp)
         self.assertEqual(pk.g_a, pow(self.kp.g, sk.a, self.kp.p))
+
+    def test_public_key_json(self):
+        pk_j = PublicKey.from_json(self.pk.to_json())
+
+        self.assertEqual(self.pk, pk_j)
         
     def test_central_share_generation(self):
         shares = ThresholdCrypto.create_shares_centralized(self.sk, self.tp)
 
         self.assertEqual(len(shares), self.tp.n)
 
+    def test_key_share_json(self):
+        share = self.shares[0]
+        share_j = KeyShare.from_json(share.to_json())
+
+        self.assertEqual(share, share_j)
+
     def test_message_encryption(self):
         em = ThresholdCrypto.encrypt_message(b'1234', self.pk)
 
         self.assertTrue(em.c >= 0)
         self.assertTrue(em.v >= 0)
+
+    def test_message_json(self):
+        m_j = EncryptedMessage.from_json(self.em.to_json())
+
+        self.assertEqual(self.em, m_j)
+
+    def test_partial_decryption_json(self):
+        pd = self.partial_decryptions[0]
+        pd_j = PartialDecryption.from_json(pd.to_json())
+
+        self.assertEqual(pd, pd_j)
 
     # TBD: further tests
 
