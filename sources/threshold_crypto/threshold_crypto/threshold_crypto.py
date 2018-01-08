@@ -16,6 +16,10 @@ class ThresholdParameters:
     @staticmethod
     def from_json(json_str: str):
         obj = json.loads(json_str)
+        return ThresholdParameters.from_dict(obj)
+
+    @staticmethod
+    def from_dict(obj: dict):
         return ThresholdParameters(obj['t'], obj['n'])
 
     def __init__(self, t: int, n: int):
@@ -35,11 +39,14 @@ class ThresholdParameters:
     def n(self) -> int:
         return self._n
 
-    def to_json(self) -> str:
-        return json.dumps({
+    def to_dict(self):
+        return {
             't': self._t,
             'n': self._n
-        })
+        }
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
@@ -55,6 +62,10 @@ class KeyParameters:
     @staticmethod
     def from_json(json_str: str):
         obj = json.loads(json_str)
+        return KeyParameters.from_dict(obj)
+
+    @staticmethod
+    def from_dict(obj: dict):
         return KeyParameters(obj['p'], obj['q'], obj['g'])
 
     def __init__(self, p: int, q: int, g: int):
@@ -79,12 +90,15 @@ class KeyParameters:
     def g(self) -> int:
         return self._g
 
-    def to_json(self):
-        return json.dumps({
+    def to_dict(self):
+        return {
             'p': self._p,
             'q': self._q,
             'g': self._g
-        })
+        }
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
@@ -101,7 +115,11 @@ class PublicKey:
     @staticmethod
     def from_json(json_str: str):
         obj = json.loads(json_str)
-        key_params = KeyParameters.from_json(json_str)
+        return PublicKey.from_dict(obj)
+
+    @staticmethod
+    def from_dict(obj: dict):
+        key_params = KeyParameters.from_dict(obj)
         return PublicKey(obj['g_a'], key_params)
 
     def __init__(self, g_a: int, key_params: KeyParameters):
@@ -119,13 +137,16 @@ class PublicKey:
     def key_parameters(self) -> KeyParameters:
         return self._key_params
 
-    def to_json(self):
-        return json.dumps({
+    def to_dict(self):
+        return {
             'p': self._key_params.p,
             'q': self._key_params.q,
             'g': self._key_params.g,
             'g_a': self._g_a,
-        })
+        }
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
@@ -162,7 +183,11 @@ class KeyShare:
     @staticmethod
     def from_json(json_str: str):
         obj = json.loads(json_str)
-        key_params = KeyParameters.from_json(json_str)
+        return KeyShare.from_dict(obj)
+
+    @staticmethod
+    def from_dict(obj: dict):
+        key_params = KeyParameters.from_dict(obj)
         return KeyShare(obj['x'], obj['y'], key_params)
 
     def __init__(self, x: int, y: int, key_params: KeyParameters):
@@ -185,14 +210,17 @@ class KeyShare:
     def key_parameters(self) -> KeyParameters:
         return self._key_params
 
-    def to_json(self):
-        return json.dumps({
+    def to_dict(self):
+        return {
             'p': self.key_parameters.p,
             'q': self.key_parameters.q,
             'g': self.key_parameters.g,
             'x': self.x,
             'y': self.y,
-        })
+        }
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
@@ -209,6 +237,10 @@ class EncryptedMessage:
     @staticmethod
     def from_json(json_str: str):
         obj = json.loads(json_str)
+        return EncryptedMessage.from_dict(obj)
+
+    @staticmethod
+    def from_dict(obj: dict):
         return EncryptedMessage(obj['v'], obj['c'])
 
     def __init__(self, v: int, c: int):
@@ -223,11 +255,14 @@ class EncryptedMessage:
     def c(self) -> int:
         return self._c
 
-    def to_json(self):
-        return json.dumps({
+    def to_dict(self):
+        return {
             'v': self.v,
             'c': self.c,
-        })
+        }
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
@@ -243,6 +278,10 @@ class PartialDecryption:
     @staticmethod
     def from_json(json_str: str):
         obj = json.loads(json_str)
+        return PartialDecryption.from_dict(obj)
+
+    @staticmethod
+    def from_dict(obj: dict):
         return PartialDecryption(obj['x'], obj['v_y'])
 
     def __init__(self, x: int, v_y: int):
@@ -257,11 +296,14 @@ class PartialDecryption:
     def v_y(self) -> int:
         return self._v_y
 
-    def to_json(self):
-        return json.dumps({
+    def to_dict(self):
+        return {
             'x': self.x,
             'v_y': self.v_y,
-        })
+        }
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
