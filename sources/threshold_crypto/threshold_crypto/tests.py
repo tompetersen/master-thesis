@@ -1,4 +1,8 @@
 import unittest
+
+import nacl.utils
+import nacl.secret
+
 from threshold_crypto import (ThresholdCrypto,
                               ThresholdParameters,
                               KeyParameters,
@@ -18,7 +22,7 @@ class TCTestCase(unittest.TestCase):
         self.kp = ThresholdCrypto.generate_static_key_parameters()
         self.pk, self.sk = ThresholdCrypto.create_keys_centralized(self.kp)
         self.shares = ThresholdCrypto.create_shares_centralized(self.sk, self.tp)
-        self.em = ThresholdCrypto.encrypt_message(b'1234', self.pk)
+        self.em = ThresholdCrypto.encrypt_message('Some secret message', self.pk)
         self.reconstruct_shares = [self.shares[i] for i in [0, 2, 4]]  # choose 3 of 5 key shares
         self.partial_decryptions = [ThresholdCrypto.compute_partial_decryption(self.em, share) for share in self.reconstruct_shares]
 
@@ -85,7 +89,7 @@ class TCTestCase(unittest.TestCase):
         self.assertEqual(share, share_j)
 
     def test_message_encryption(self):
-        em = ThresholdCrypto.encrypt_message(b'1234', self.pk)
+        em = ThresholdCrypto.encrypt_message('Some secret message', self.pk)
 
         self.assertTrue(em.c >= 0)
         self.assertTrue(em.v >= 0)
@@ -109,6 +113,26 @@ class TCTestCase(unittest.TestCase):
         self.assertTrue(p.degree == 5)
         self.assertTrue(p.evaluate(0) == 17)
 
+    def test_key_encryption_decryption_with_enough_shares(self):
+        testkey = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+        g_k, c = ThresholdCrypto._encrypt_key(testkey, self.pk)
+        em = EncryptedMessage(g_k, c, '')
+        reconstruct_shares = [self.shares[i] for i in [0, 2, 4]]  # choose 3 of 5 key shares
+        partial_decryptions = [ThresholdCrypto.compute_partial_decryption(em, share) for share in reconstruct_shares]
+        rec_testkey = ThresholdCrypto._combine_shares(partial_decryptions, em, self.tp, self.kp)
+
+        self.assertEqual(testkey, rec_testkey)
+
+    def test_key_encryption_decryption_without_enough_shares(self):
+        testkey = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+        g_k, c = ThresholdCrypto._encrypt_key(testkey, self.pk)
+        em = EncryptedMessage(g_k, c, '')
+        reconstruct_shares = [self.shares[i] for i in [0, 4]]  # choose 3 of 5 key shares
+        partial_decryptions = [ThresholdCrypto.compute_partial_decryption(em, share) for share in reconstruct_shares]
+        rec_testkey = ThresholdCrypto._combine_shares(partial_decryptions, em, self.tp, self.kp)
+
+        self.assertNotEqual(testkey, rec_testkey)
+
     def test_complete_process_with_enough_shares(self):
         key_params = ThresholdCrypto.generate_static_key_parameters()
         thresh_params = ThresholdParameters(3, 5)
@@ -116,12 +140,12 @@ class TCTestCase(unittest.TestCase):
         pub_key, priv_key = ThresholdCrypto.create_keys_centralized(key_params)
         key_shares = ThresholdCrypto.create_shares_centralized(priv_key, thresh_params)
 
-        message = b'1337'
+        message = 'Some secret message to be encrypted!'
         encrypted_message = ThresholdCrypto.encrypt_message(message, pub_key)
 
         reconstruct_shares = [key_shares[i] for i in [0, 2, 4]] # choose 3 of 5 key shares
         partial_decryptions = [ThresholdCrypto.compute_partial_decryption(encrypted_message, share) for share in reconstruct_shares]
-        decrypted_message = ThresholdCrypto.combine_shares(partial_decryptions, encrypted_message, thresh_params, key_params)
+        decrypted_message = ThresholdCrypto.decrypt_message(partial_decryptions, encrypted_message, thresh_params, key_params)
 
         self.assertEqual(message, decrypted_message)
 
@@ -132,11 +156,11 @@ class TCTestCase(unittest.TestCase):
         pub_key, priv_key = ThresholdCrypto.create_keys_centralized(key_params)
         key_shares = ThresholdCrypto.create_shares_centralized(priv_key, thresh_params)
 
-        message = b'1337'
+        message = 'Some secret message to be encrypted!'
         encrypted_message = ThresholdCrypto.encrypt_message(message, pub_key)
 
         reconstruct_shares = [key_shares[i] for i in [3, 4]] # choose 2 of 5 key shares
         partial_decryptions = [ThresholdCrypto.compute_partial_decryption(encrypted_message, share) for share in reconstruct_shares]
-        decrypted_message = ThresholdCrypto.combine_shares(partial_decryptions, encrypted_message, thresh_params, key_params)
 
-        self.assertNotEqual(message, decrypted_message)
+        with self.assertRaises(ThresholdCryptoError):
+            decrypted_message = ThresholdCrypto.decrypt_message(partial_decryptions, encrypted_message, thresh_params, key_params)

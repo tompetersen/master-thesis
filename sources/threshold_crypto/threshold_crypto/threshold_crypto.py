@@ -4,6 +4,11 @@ TBW
 """
 import json
 
+import nacl.utils
+import nacl.secret
+import nacl.encoding
+import nacl.exceptions
+
 from threshold_crypto import number
 
 
@@ -241,11 +246,12 @@ class EncryptedMessage:
 
     @staticmethod
     def from_dict(obj: dict):
-        return EncryptedMessage(obj['v'], obj['c'])
+        return EncryptedMessage(obj['v'], obj['c'], obj['enc'])
 
-    def __init__(self, v: int, c: int):
+    def __init__(self, v: int, c: int, enc: str):
         self._v = v
         self._c = c
+        self._enc = enc
 
     @property
     def v(self) -> int:
@@ -255,10 +261,15 @@ class EncryptedMessage:
     def c(self) -> int:
         return self._c
 
+    @property
+    def enc(self) -> str:
+        return self._enc
+
     def to_dict(self):
         return {
             'v': self.v,
             'c': self.c,
+            'enc': self.enc,
         }
 
     def to_json(self):
@@ -267,10 +278,11 @@ class EncryptedMessage:
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
                 self.v == other.v and
-                self.c == other.c)
+                self.c == other.c and
+                self.enc == other.enc)
 
     def __str__(self):
-        return 'EncryptedMessage:\n\tv = %d\n\tc = %d' % (self._v, self._c)
+        return 'EncryptedMessage:\n\tv = %d\n\tc = %d\n\tenc = %s' % (self._v, self._c, self._enc)
 
 
 class PartialDecryption:
@@ -346,20 +358,31 @@ class ThresholdCrypto:
         return shares
 
     @staticmethod
-    def encrypt_message(message: bytes, public_key: PublicKey) -> EncryptedMessage:
+    def encrypt_message(message: str, public_key: PublicKey) -> EncryptedMessage:
+        # TODO: Hybrid approach -> explain here
+        key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+        box = nacl.secret.SecretBox(key)
+        encoded_message = bytes(message, 'utf-8')
+        encrypted = str(box.encrypt(encoded_message, encoder=nacl.encoding.HexEncoder), 'ascii')
+        g_k, c = ThresholdCrypto._encrypt_key(key, public_key)
+
+        return EncryptedMessage(g_k, c, encrypted)
+
+    @staticmethod
+    def _encrypt_key(key: bytes, public_key: PublicKey) -> (int, int):
         key_params = public_key.key_parameters
 
         # TODO: message encoding?
-        m = int.from_bytes(message, byteorder='big')
-        if m >= key_params.p:
-            raise ThresholdCryptoError('message is larger than key parameter p')
+        key_as_int = int.from_bytes(key, byteorder='big')
+        if key_as_int >= key_params.p:
+            raise ThresholdCryptoError('key is larger than key parameter p')
 
         k = number.getRandomRange(1, key_params.q - 1)
         g_k = pow(key_params.g, k, key_params.p) # aka v
         g_ak = pow(public_key.g_a, k, key_params.p)
-        c = (m * g_ak) % key_params.p
+        c = (key_as_int * g_ak) % key_params.p
 
-        return EncryptedMessage(g_k, c)
+        return g_k, c
 
     @staticmethod
     def compute_partial_decryption(encrypted_message: EncryptedMessage, key_share: KeyShare) -> PartialDecryption:
@@ -370,7 +393,23 @@ class ThresholdCrypto:
         return PartialDecryption(key_share.x, v_y)
 
     @staticmethod
-    def combine_shares(partial_decryptions: [PartialDecryption],
+    def decrypt_message(partial_decryptions: [PartialDecryption],
+                        encrypted_message: EncryptedMessage,
+                        threshold_params: ThresholdParameters,
+                        key_params: KeyParameters
+                        ) -> str:
+        # TODO: Hybrid approach -> explain here
+        key = ThresholdCrypto._combine_shares(partial_decryptions, encrypted_message, threshold_params, key_params)
+        try:
+            box = nacl.secret.SecretBox(key)
+            encoded_plaintext = box.decrypt(bytes(encrypted_message.enc, 'ascii'), encoder=nacl.encoding.HexEncoder)
+        except nacl.exceptions.CryptoError as e:
+            raise ThresholdCryptoError(str(e))
+
+        return str(encoded_plaintext, 'utf-8')
+
+    @staticmethod
+    def _combine_shares(partial_decryptions: [PartialDecryption],
                        encrypted_message: EncryptedMessage,
                        threshold_params: ThresholdParameters,
                        key_params: KeyParameters
@@ -388,5 +427,5 @@ class ThresholdCrypto:
         restored_m = encrypted_message.c * restored_g_minus_ak % key_params.p
 
         # TODO: message decoding?
-        return restored_m.to_bytes((restored_m.bit_length() // 8) + 1, byteorder='big')
+        return restored_m.to_bytes((restored_m.bit_length() + 7) // 8, byteorder='big')
 

@@ -8,10 +8,12 @@ def readme():
 
 setup(
     name='threshold-crypto',
-    version='0.0.4',
+    version='0.0.5',
     description='Threshold-based ElGamal encryption',
     long_description=readme(),
     author='Tom Petersen, SVS, Universität Hamburg',
     packages=find_packages(),
-    install_requires=[],
+    install_requires=[
+        'pynacl',
+    ],
 )
