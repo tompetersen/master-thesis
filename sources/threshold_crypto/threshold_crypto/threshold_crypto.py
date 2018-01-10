@@ -363,7 +363,7 @@ class ThresholdCrypto:
         key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
         box = nacl.secret.SecretBox(key)
         encoded_message = bytes(message, 'utf-8')
-        encrypted = str(box.encrypt(encoded_message, encoder=nacl.encoding.HexEncoder), 'ascii')
+        encrypted = box.encrypt(encoded_message).hex()
         g_k, c = ThresholdCrypto._encrypt_key(key, public_key)
 
         return EncryptedMessage(g_k, c, encrypted)
@@ -402,7 +402,7 @@ class ThresholdCrypto:
         key = ThresholdCrypto._combine_shares(partial_decryptions, encrypted_message, threshold_params, key_params)
         try:
             box = nacl.secret.SecretBox(key)
-            encoded_plaintext = box.decrypt(bytes(encrypted_message.enc, 'ascii'), encoder=nacl.encoding.HexEncoder)
+            encoded_plaintext = box.decrypt(bytes.fromhex(encrypted_message.enc))
         except nacl.exceptions.CryptoError as e:
             raise ThresholdCryptoError(str(e))
 
