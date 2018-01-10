@@ -5,24 +5,29 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
+from requests.exceptions import ConnectionError, RequestException
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from threshold_crypto.threshold_crypto import ThresholdCrypto, ThresholdParameters
+from threshold_crypto import ThresholdCrypto, ThresholdParameters, KeyParameters, PublicKey
 
 from shared.views import InvalidAPICallError
+from threshold.client_api import ClientApiCaller, ClientApiError
 from threshold.forms import ThresholdSetupForm
 from threshold.models import ThresholdClient, Config
 from threshold.serializers import ClientSerializer
 
 
+KEY_PARAM_STATIC_512 = 'static_512'
+KEY_PARAM_GENERATE_512 = 'generate'
 KEY_PARAM_CHOICES = [
-    ('static_512', 'Fixed parameters (512 Bit)'),
-    ('generate', 'Generate new parameters (512 Bit)'),
+    (KEY_PARAM_STATIC_512, 'Fixed parameters (512 Bit)'),
+    (KEY_PARAM_GENERATE_512, 'Generate new parameters (512 Bit)'),
 ]
+
 
 #
 # VIEWS
@@ -39,20 +44,17 @@ class ThresholdSetupView(FormView):
 
         # TODO: More validation
 
-        Config(Config.KEY_PARAMETER_STRATEGY, key_param_strategy).save()
-        Config(Config.CLIENT_ID_LIST, ','.join(client_ids)).save()
-        Config(Config.THRESHOLD_T, str(threshold_t)).save()
-        Config(Config.THRESHOLD_N, str(len(client_ids))).save()
-
-        self.perform_centralized_setup(key_param_strategy, client_ids, threshold_t)
-
-        return redirect('status:dashboard')
+        try:
+            self.perform_centralized_setup(key_param_strategy, client_ids, threshold_t)
+            return redirect('status:dashboard') # TODO: redirect to correct place
+        except Exception as e:
+            raise e # TODO: redirect, error,...?
 
     def get_form_kwargs(self):
         kwargs = super(ThresholdSetupView, self).get_form_kwargs()
 
         kwargs.update({'key_params': KEY_PARAM_CHOICES})
-        client_arg = [(client.id, client.name) for client in ThresholdClient.objects.all()]
+        client_arg = [(client.id, "%s [%s:%d]" % (client.name, client.client_address, client.client_port)) for client in ThresholdClient.objects.all()]
         if len(client_arg) == 0:
             client_arg = [('no_client', 'No clients available')]
         kwargs.update({'clients': client_arg})
@@ -64,25 +66,31 @@ class ThresholdSetupView(FormView):
         return context
 
     def perform_centralized_setup(self, key_param_strategy, client_ids, threshold_t):
+        # Create parameters, keys and shares
         threshold_n = len(client_ids)
         threshold_params = ThresholdParameters(threshold_t, threshold_n)
-        key_params = ThresholdCrypto.generate_static_key_parameters()
+        key_params = self.get_key_params(key_param_strategy)
 
         pk, sk = ThresholdCrypto.create_keys_centralized(key_params)
         shares = ThresholdCrypto.create_shares_centralized(sk, threshold_params)
 
+        # Send shares to clients
         clients = ThresholdClient.objects.filter(id__in=client_ids)
         for client, share in zip(clients, shares):
-            requests.post('http://' + client.client_address + ':' + str(client.client_port) + '/share', json=self.share_to_json(share))
+            ClientApiCaller.send_share(client.client_address, client.client_port, share)
 
-    def share_to_json(self, share):
-        return json.dumps({
-            'p': share.key_parameters.p,
-            'q': share.key_parameters.q,
-            'g': share.key_parameters.g,
-            'x': share.x,
-            'y': share.y,
-        })
+        # Store public values
+        Config(Config.CLIENT_ID_LIST, ','.join(client_ids)).save()
+        Config(Config.THRESHOLD_PARAMS, threshold_params.to_json()).save()
+        Config(Config.PUBLIC_KEY, pk.to_json()).save()
+        Config(Config.KEY_PARAMS, key_params.to_json()).save()
+
+    def get_key_params(self, key_param_strategy) -> KeyParameters:
+        # TODO: extend key strategies
+        if key_param_strategy == KEY_PARAM_STATIC_512:
+            return ThresholdCrypto.generate_static_key_parameters()
+
+        raise Exception('Unknown key parameter strategy.')
 
 
 #
@@ -90,7 +98,6 @@ class ThresholdSetupView(FormView):
 #
 
 # Get public key
-# get key share (central key generation)
 # ... (distributed key generation)
 # get anfragen
 # send partial decryption
@@ -100,7 +107,10 @@ class ThresholdSetupView(FormView):
 class PublicKeyView(APIView):
 
     def get(self, request):
-        return
+        public_key = Config.objects.get(key=Config.PUBLIC_KEY).value
+        pk = PublicKey.from_json(public_key)
+
+        return Response(pk.to_dict(), status=status.HTTP_200_OK)
 
 
 class ClientConnectView(CreateAPIView):

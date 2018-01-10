@@ -15,10 +15,10 @@ class ThresholdClient(models.Model):
 
 
 class Config(models.Model):
-    THRESHOLD_T = 'threshold_t'
-    THRESHOLD_N = 'threshold_n'
+    THRESHOLD_PARAMS = 'threshold_params'
+    KEY_PARAMS = 'key_params'
     CLIENT_ID_LIST = 'client_id_list'
-    KEY_PARAMETER_STRATEGY = 'key_parameter_strategy'
+    PUBLIC_KEY = 'public_key'
 
     key = models.CharField(
         max_length=20,

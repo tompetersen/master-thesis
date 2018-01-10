@@ -4,5 +4,5 @@ from store.views import CreatePseudonym
 
 
 urlpatterns = [
-    url(r'^pseudonym$', CreatePseudonym.as_view(), name='create_pseudonym'),
+    url(r'^pseudonym/$', CreatePseudonym.as_view(), name='create_pseudonym'),
 ]

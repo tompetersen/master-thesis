@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import APIException
+from threshold_crypto.threshold_crypto import EncryptedMessage
 
 from shared.views import InvalidAPICallError
 from store.models import StoreEntry
@@ -22,6 +23,7 @@ class CreatePseudonym(APIView):
             raise InvalidAPICallError
 
         content = request.data.get('content')
+        em = EncryptedMessage.from_json(content)
         search_token = request.data.get('search_token')
 
         try:
@@ -30,7 +32,7 @@ class CreatePseudonym(APIView):
                 usages__lt=self.PSEUDONYM_MAX_USAGES
             ) # TODO: MAC collisions?
         except StoreEntry.DoesNotExist:
-            entry = self._create_entry(content, search_token)
+            entry = self._create_entry(em.to_json(), search_token)
         entry.save()
 
         return Response({'pseudonym': entry.pseudonym}, status=status.HTTP_201_CREATED)
