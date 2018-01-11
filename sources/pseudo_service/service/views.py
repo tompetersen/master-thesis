@@ -55,6 +55,8 @@ class ThresholdSetupView(FormView):
         client_ids = form.cleaned_data['clients']          # ['client1']
         threshold_t = form.cleaned_data['threshold_t']  # 2
 
+        # TODO: Include pseudonym values
+
         # TODO: More validation
 
         try:

@@ -1,7 +1,7 @@
-from crispy_forms.bootstrap import FormActions, FieldWithButtons
+from crispy_forms.bootstrap import FieldWithButtons
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Button, Layout, Fieldset, Field
+from crispy_forms.layout import Submit, Layout, Fieldset, ButtonHolder, Div
 
 
 class PseudonymSearchForm(forms.Form):
@@ -13,6 +13,7 @@ class PseudonymSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(PseudonymSearchForm, self).__init__(*args, **kwargs)
+
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.form_action = 'service:find_pseudonym'
@@ -20,7 +21,6 @@ class PseudonymSearchForm(forms.Form):
 
         self.helper.label_class = 'ml-1'
         self.helper.field_class = 'ml-1'
-        # self.helper.add_input(Submit('submit', 'Find'))
         self.helper.layout = Layout(
             FieldWithButtons('pseudonym', Submit('submit', 'Find', css_class='btn-success')),
         )
@@ -31,13 +31,14 @@ class ThresholdSetupForm(forms.Form):
     key_params = forms.ChoiceField(
         label='Key parameters',
         help_text='Determines the used key parameters p, q and g.',
-        widget=forms.RadioSelect,
+        widget=forms.RadioSelect(),
+        initial='static_512',
     )
 
     clients = forms.MultipleChoiceField(
         label='Clients involved',
         help_text='Number of checked clients yields the threshold parameter n.',
-        widget=forms.CheckboxSelectMultiple
+        widget=forms.CheckboxSelectMultiple(attrs={'checked' : 'checked'})
     )
 
     threshold_t = forms.IntegerField(
@@ -46,6 +47,22 @@ class ThresholdSetupForm(forms.Form):
         initial=2,
         label='Required decryption participants',
         help_text='This must be smaller than the number of checked clients. Describes the threshold parameter t.',
+    )
+
+    pseudonym_length = forms.IntegerField(
+        required=True,
+        min_value=8,
+        initial=16,
+        label='Pseudonym length',
+        help_text='The length of generated pseudonyms in bytes.'
+    )
+
+    max_pseudonym_usages = forms.IntegerField(
+        required=True,
+        min_value=1,
+        initial=3,
+        label='Maximal pseudonym usages',
+        help_text='The maximal number of times a pseudonym will be used.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -60,4 +77,38 @@ class ThresholdSetupForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.label_class = 'font-weight-bold'
-        self.helper.add_input(Submit('submit', 'Perform setup', css_class='btn btn-success'))
+
+        self.helper.layout = Layout(
+            Fieldset(
+                'Threshold encryption settings',
+                'key_params',
+                Div(
+                    Div(
+                        'clients',
+                        css_class='col-6',
+                    ),
+                    Div(
+                        'threshold_t',
+                        css_class='col-6',
+                    ),
+                    css_class='row',
+                ),
+            ),
+            Fieldset(
+                'Pseudonymization settings',
+                Div(
+                    Div(
+                        'pseudonym_length',
+                        css_class='col-6',
+                    ),
+                    Div(
+                        'max_pseudonym_usages',
+                        css_class='col-6',
+                    ),
+                    css_class='row',
+                ),
+            ),
+            ButtonHolder(
+                Submit('submit', 'Perform setup', css_class='btn-success')
+            ),
+        )

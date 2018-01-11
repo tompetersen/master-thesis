@@ -19,6 +19,8 @@ class InvalidAPICallError(APIException):
     default_detail = 'The request contained invalid parameters.'
 
 
+# TODO:  Check for every call if setup has happened
+
 class CreatePseudonym(APIView):
 
     # TODO: Extract to general config app (existing status or own app?)
@@ -64,11 +66,6 @@ class CreatePseudonym(APIView):
             except StoreEntry.DoesNotExist:
                 pass
         return result
-
-# ... (distributed key generation)
-# get anfragen
-# send partial decryption
-#
 
 
 class PublicKeyView(APIView):
