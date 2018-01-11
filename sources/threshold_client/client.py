@@ -14,6 +14,7 @@ from requests.exceptions import RequestException
 from requests.models import Response
 from threshold_crypto import KeyShare
 from nacl import secret, utils, pwhash, encoding
+from threshold_crypto.threshold_crypto import PartialDecryption, EncryptedMessage, ThresholdCrypto
 
 DEFAULT_LOCAL_ADDRESS = '127.0.0.1'
 DEFAULT_LOCAL_PORT = 1111
@@ -101,6 +102,8 @@ class ThresholdClient:
             p = input('Please enter your password: ')
             self.config = Config.load_config(p, config_path)
             print('Loaded config.')
+
+            self.start_request_process()
         else:
             name = input('Please enter your name: ')
             self.config = Config(client_address, client_port, name)
@@ -121,12 +124,39 @@ class ThresholdClient:
         self.config.save_config(p, self.config_path)
         print('Stored config with share.')
 
+        self.start_request_process()
+
     def _is_valid_pw(self, p: str):
         return p and len(p) >= 8
 
-    def get_requests(self):
-        pass # TODO: TBD
+    def start_request_process(self):
+        while True:
+            input('Press a key to send a new requests query...')
+            store_entry_requests = ServiceApiCaller.get_store_entry_requests(self.config.name)
+            if len(store_entry_requests) == 0:
+                print('No action required.')
+            else:
+                for r in store_entry_requests:
+                    self.handle_request(r)
 
+    def handle_request(self, request):
+        req_id = request['request_id']
+        req_by = request['requested_by']
+        pseudonym = request['pseudonym']
+        encrypted_message = EncryptedMessage(request['em_v'], request['em_c'], '')
+
+        print('\nNew request for pseudonym ' + pseudonym + ' by ' + req_by)
+        print('--------')
+        print('(A)ccept - (D)ecline - (P)ostpone')
+        choice = ''
+        while choice not in ['A', 'D', 'P']:
+            choice = input('Your action: ')
+
+        if choice == 'A':
+            partial_decryption = ThresholdCrypto.compute_partial_decryption(encrypted_message, self.config.key_share)
+            ServiceApiCaller.send_partial_decryption(req_id, self.config.name, True, partial_decryption)
+        elif choice == 'D':
+            ServiceApiCaller.send_partial_decryption(req_id, self.config.name, False)
 
 
 class ServiceApiError(Exception):
@@ -136,21 +166,34 @@ class ServiceApiError(Exception):
 class ServiceApiCaller:
 
     @staticmethod
-    def get_store_entry_requests(name: str, service_address: str=SERVICE_ADDRESS, service_port: int=SERVICE_PORT):
-        route = 'TBD'
+    def get_store_entry_requests(name: str, service_address: str=SERVICE_ADDRESS, service_port: int=SERVICE_PORT) -> [dict]:
+        route = 'api/requests/'
         data = {
             'name': name
         }
 
         response = ServiceApiCaller._call_service_api(service_address, service_port, route, data)
+        return response.json()
 
     @staticmethod
     def send_client_data(client_address: str, client_port: int, name: str, service_address: str=SERVICE_ADDRESS, service_port: int=SERVICE_PORT):
-        route = 'threshold/api/clientconnect/'
+        route = 'api/clientconnect/'
         data = {
             'name': name,
             'client_address': client_address,
             'client_port': client_port,
+        }
+
+        response = ServiceApiCaller._call_service_api(service_address, service_port, route, data)
+
+    @staticmethod
+    def send_partial_decryption(request_id: int, name: str, accepted: bool, partial_decryption: PartialDecryption=None, service_address: str=SERVICE_ADDRESS, service_port: int=SERVICE_PORT):
+        route = 'api/partial_decryption/'
+        data = {
+            'name': name,
+            'request': request_id,
+            'accepted': accepted,
+            'partial_decryption': partial_decryption.to_json() if partial_decryption else ''
         }
 
         response = ServiceApiCaller._call_service_api(service_address, service_port, route, data)
@@ -168,6 +211,7 @@ class ServiceApiCaller:
 
             return result
         except RequestException as e:
+            print(str(e))
             raise ServiceApiError(str(e))
 
 
