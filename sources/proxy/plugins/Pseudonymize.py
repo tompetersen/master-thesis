@@ -19,11 +19,11 @@ class Pseudonymize(AbstractPlugin):
             self.pk = ServiceApiCaller.get_public_key(self.SERVICE_URL, self.SERVICE_PORT)
         except Exception:
             raise Exception('Could not receive required public encryption key from pseudonym service! Make sure service is reachable!')
-        
+
         self.mac_key = utils.random(size=64)
 
     def handle_data(self, data: str, **kwargs):
-        search_token = hash.blake2b(bytes(data, 'utf-8'), key=self.mac_key)
+        search_token = hash.blake2b(data.encode(), key=self.mac_key)
         encrypted_content = ThresholdCrypto.encrypt_message(data, self.pk).to_json()
         pseudonym = ServiceApiCaller.get_pseudonym_for_data(self.SERVICE_URL, self.SERVICE_PORT, encrypted_content, search_token)
 
