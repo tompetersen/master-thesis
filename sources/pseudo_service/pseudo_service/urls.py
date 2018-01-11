@@ -19,27 +19,25 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.views.generic.base import View
 
-from request.models import Applicant
+from service.models import Applicant
 
 
 class IndexView(View):
 
     def get(self, request):
         if Applicant.user_is_applicant(request.user):
-            return redirect('request:dashboard')
+            return redirect('service:dashboard_applicant')
         else:
-            return redirect('status:dashboard')
+            return redirect('service:dashboard_superuser')
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', IndexView.as_view(), name='index'),
-    url(r'^store/', include('store.urls')),
-    url(r'^status/', include('status.urls')),
-    url(r'^request/', include('request.urls')),
-    url(r'^threshold/', include('threshold.urls')),
+    url(r'^api/', include('api.urls')),
     url(r'^login/$', auth_views.LoginView.as_view(template_name='login.html', redirect_authenticated_user=True), name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
+    url(r'^', include('service.urls')),
 ]
 
 

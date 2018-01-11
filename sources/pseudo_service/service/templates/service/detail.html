@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h3>{% block title %} Request for pseudonym decryption {% endblock %}</h3>
+
+    <br />
+
+    <div class="card-group">
+        <div class="card">
+            <p class="card-header">
+               <strong>Details</strong>
+            </p>
+            <div class="card-body bg-lightgray">
+                <table class="table table-sm table-striped">
+                    <tr>
+                        <td>Created on</td>
+                        <td><strong>{{ request.created | date:"d.m.Y H:i"}}</strong></td></tr>
+                    <tr>
+                        <td>Requested by</td>
+                        <td><strong>{{ request.applicant.user.username }}</strong></td></tr>
+                    <tr>
+                        <td>Pseudonym</td>
+                        <td><strong>{{ request.store_entry.pseudonym }}</strong></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+
+            <p class="card-header">
+                <strong>Threshold client action overview</strong>
+                {%  if request.is_accepted %}
+                    <span class="text-success float-right"><strong>ACCEPTED</strong></span>
+                {% elif request.is_declined %}
+                    <span class="text-danger float-right"><strong>DECLINED</strong></span>
+                {% else %}
+                    <span class="text-secondary float-right"><strong>OPEN</strong></span>
+                {% endif %}
+            </p>
+
+            <div class="card-body">
+
+                <table class="table table-sm table-striped">
+                    <tr>
+                        <td>Required accept actions</td>
+                        <td><strong>{{ request.accepts_required }}</strong></td></tr>
+                    <tr>
+                        <td>Accepted by </td>
+                        <td><strong>{{ request.accepted_by }}</strong></td></tr>
+                    <tr>
+                        <td>Declined by </td>
+                        <td><strong>{{ request.declined_by }}</strong></td></tr>
+                </table>
+            </div>
+
+            {%  if request.is_accepted %}
+                <p class="card-header" style="border-top: 1px solid rgba(0,0,0,.125);">
+                    <strong>Pseudonym owner</strong>
+                </p>
+
+                <div class="card-body">
+                    <div style="padding: 4px; background-color: #dddfe2;">{{ request.store_entry.decrypted_content }}</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

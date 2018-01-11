@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2>Actions</h2>
+
+    <a href="{% url 'service:setup' %}"><button class="btn btn-success">Perform initial threshold encryption setup</button></a>
+
+    <h2>StoreEntries</h2>
+
+    <table class="table table-striped table-bordered">
+        <thead class="">
+            <tr class="table-secondary">
+                <th>Pseudonym</th>
+                <th>Content</th>
+                <th>Created</th>
+                <th>Usages</th>
+                <th>Search token</th>
+                <th>Last accessed</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry.pseudonym }}</td>
+                <td>{{ entry.content }}</td>
+                <td>{{ entry.created }}</td>
+                <td>{{ entry.usages }}</td>
+                <td>{{ entry.search_token }}</td>
+                <td>{{ entry.last_access }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Requests</h2>
+
+    <table class="table table-striped table-bordered">
+        <thead class="">
+            <tr class="table-secondary">
+                <th>Request</th>
+                <th>Pseudonym</th>
+                <th>Applicant</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{ request.id }}</td>
+                <td>{{ request.store_entry.pseudonym }}</td>
+                <td>{{ request.applicant.user.username }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Partial Decryptions</h2>
+
+    <table class="table table-striped table-bordered">
+        <thead class="">
+            <tr class="table-secondary">
+                <th>Request</th>
+                <th>Client</th>
+                <th>Accepted</th>
+                <th>Partial decryption</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pd in partial_decryptions %}
+            <tr>
+                <td>{{ pd.request.id }}</td>
+                <td>{{ pd.client.name }}</td>
+                <td>{{ pd.accepted }}</td>
+                <td>{{ pd.partial_decryption }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
