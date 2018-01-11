@@ -1,6 +1,6 @@
-import json
 import requests
 import hashlib
+from nacl import utils, hash
 
 from requests.exceptions import RequestException
 from requests.models import Response
@@ -14,17 +14,20 @@ class Pseudonymize(AbstractPlugin):
     SERVICE_URL = '127.0.0.1'
     SERVICE_PORT = 8000
 
-    def handle_data(self, data: str, **kwargs):
+    def __init__(self):
         try:
-            pk = ServiceApiCaller.get_public_key(self.SERVICE_URL, self.SERVICE_PORT)
-            search_token = hashlib.sha256(bytes(data, 'utf-8')).hexdigest()  # TODO: Replace with MAC
-            encrypted_content = ThresholdCrypto.encrypt_message(data, pk).to_json()
-            pseudonym = ServiceApiCaller.get_pseudonym_for_data(self.SERVICE_URL, self.SERVICE_PORT, encrypted_content, search_token)
+            self.pk = ServiceApiCaller.get_public_key(self.SERVICE_URL, self.SERVICE_PORT)
+        except Exception:
+            raise Exception('Could not receive required public encryption key from pseudonym service! Make sure service is reachable!')
+        
+        self.mac_key = utils.random(size=64)
 
-            return pseudonym
-        except Exception as e:
-            # TODO: what to do here?
-            raise
+    def handle_data(self, data: str, **kwargs):
+        search_token = hash.blake2b(bytes(data, 'utf-8'), key=self.mac_key)
+        encrypted_content = ThresholdCrypto.encrypt_message(data, self.pk).to_json()
+        pseudonym = ServiceApiCaller.get_pseudonym_for_data(self.SERVICE_URL, self.SERVICE_PORT, encrypted_content, search_token)
+
+        return pseudonym
 
 
 class ServiceApiError(Exception):
@@ -35,13 +38,13 @@ class ServiceApiCaller:
 
     @staticmethod
     def get_public_key(address: str, port: int) -> PublicKey:
-        route = 'threshold/api/publickey/'
+        route = 'api/publickey/'
         response = ServiceApiCaller._call_service_api(address, port, route)
         return PublicKey.from_dict(response.json())
 
     @staticmethod
     def get_pseudonym_for_data(address: str, port: int, encrypted_content: str, search_token: str) -> str:
-        route = 'store/pseudonym/'
+        route = 'api/pseudonym/'
 
         request_data = {'content': encrypted_content, 'search_token': search_token}
         response = ServiceApiCaller._call_service_api(address, port, route, request_data)
