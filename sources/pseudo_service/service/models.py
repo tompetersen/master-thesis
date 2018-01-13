@@ -105,6 +105,8 @@ class Config(models.Model):
     KEY_PARAMS = 'key_params'
     CLIENT_ID_LIST = 'client_id_list'
     PUBLIC_KEY = 'public_key'
+    PSEUDONYM_LENGTH = 'pseudonym_length'
+    MAX_PSEUDONYM_USAGES = 'max_pseudonym_usages'
 
     key = models.CharField(max_length=20, primary_key=True)
     value = models.TextField()

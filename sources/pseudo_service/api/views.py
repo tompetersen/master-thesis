@@ -24,8 +24,6 @@ class InvalidAPICallError(APIException):
 class CreatePseudonym(APIView):
 
     # TODO: Extract to general config app (existing status or own app?)
-    PSEUDONYM_LENGTH = 16 # length in bytes
-    PSEUDONYM_MAX_USAGES = 3
     PSEUDONYM_VALID_SECONDS = 60 * 60 * 24
     PSEUDONYM_USE_PFP = True
 
@@ -37,10 +35,12 @@ class CreatePseudonym(APIView):
         em = EncryptedMessage.from_json(content)
         search_token = request.data.get('search_token')
 
+        max_pseudonym_usage = int(Config.objects.get(key=Config.MAX_PSEUDONYM_USAGES).value)
+
         try:
             entry = StoreEntry.objects.get(
                 search_token=search_token,
-                usages__lt=self.PSEUDONYM_MAX_USAGES
+                usages__lt=max_pseudonym_usage
             ) # TODO: MAC collisions?
         except StoreEntry.DoesNotExist:
             entry = self._create_entry(em.to_json(), search_token)
@@ -58,8 +58,10 @@ class CreatePseudonym(APIView):
     def _create_unique_pseudonym(self) -> str:
         """ Use 'external' generation of pseudonym to take possible parameters into account. """
         result = None
+        pseudonym_length = int(Config.objects.get(key=Config.PSEUDONYM_LENGTH).value)
+
         while result is None:
-            result = nacl.utils.random(size=self.PSEUDONYM_LENGTH).hex()
+            result = nacl.utils.random(size=pseudonym_length).hex()
             try:
                 StoreEntry.objects.get(pseudonym__iexact=result)
                 result = None
@@ -140,32 +142,39 @@ class CreatePartialDecryptionView(APIView):
         if not self._is_valid_request(request):
             raise InvalidAPICallError
 
+        # Load client for name
         try:
             name = request.data.get('name')
             tc = ThresholdClient.objects.get(name=name)
         except ThresholdClient.DoesNotExist:
             raise InvalidAPICallError('Invalid client name.')
 
+        # Load store entry request for id
         try:
             request_id = request.data.get('request')
             store_entry_request = StoreEntryRequest.objects.get(id=request_id)
         except StoreEntryRequest.DoesNotExist:
             raise InvalidAPICallError('Invalid request id.')
 
-        # TODO: Check existing pd
+        # Raise exception if partial decryption object already existed
+        try:
+            store_entry_request = PartialDecryptionForRequest.objects.get(client=tc, request_id=request_id)
+            raise InvalidAPICallError('Already sent partial decryption')
+        except PartialDecryptionForRequest.DoesNotExist:
+            pass
 
         accepted = (request.data.get('accepted') == "True")
         pd = request.data.get('partial_decryption')
         partial_decryption = None
         if accepted:
-            partial_decryption = PartialDecryption.from_json(pd).to_json() # Imcplicit format check
+            partial_decryption = PartialDecryption.from_json(pd).to_json() # Implicit format check
 
         PartialDecryptionForRequest(client=tc,
                                     request=store_entry_request,
                                     accepted=accepted,
                                     partial_decryption=partial_decryption).save()
 
-        # Start decryption in new thread
+        # Start decryption in new thread if required
         t = threading.Thread(target=CreatePartialDecryptionView.check_enough_partial_decryptions, args=(self, store_entry_request))
         t.start()
 

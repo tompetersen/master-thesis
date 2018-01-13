@@ -54,13 +54,13 @@ class ThresholdSetupView(FormView):
         key_param_strategy = form.cleaned_data['key_params']    # 'static_512'
         client_ids = form.cleaned_data['clients']          # ['client1']
         threshold_t = form.cleaned_data['threshold_t']  # 2
-
-        # TODO: Include pseudonym values
+        pseudonym_length = form.cleaned_data['pseudonym_length']
+        max_pseudonym_usages = form.cleaned_data['max_pseudonym_usages']
 
         # TODO: More validation
 
         try:
-            self.perform_centralized_setup(key_param_strategy, client_ids, threshold_t)
+            self.perform_centralized_setup(key_param_strategy, client_ids, threshold_t, pseudonym_length, max_pseudonym_usages)
             return redirect('index') # TODO: redirect to correct place
         except Exception as e:
             raise e # TODO: redirect, error,...?
@@ -80,7 +80,7 @@ class ThresholdSetupView(FormView):
         context = super(ThresholdSetupView, self).get_context_data(**kwargs)
         return context
 
-    def perform_centralized_setup(self, key_param_strategy, client_ids, threshold_t):
+    def perform_centralized_setup(self, key_param_strategy, client_ids, threshold_t, pseudonym_length, max_pseudonym_usages):
         # Create parameters, keys and shares
         threshold_n = len(client_ids)
         threshold_params = ThresholdParameters(threshold_t, threshold_n)
@@ -99,6 +99,8 @@ class ThresholdSetupView(FormView):
         Config(Config.THRESHOLD_PARAMS, threshold_params.to_json()).save()
         Config(Config.PUBLIC_KEY, pk.to_json()).save()
         Config(Config.KEY_PARAMS, key_params.to_json()).save()
+        Config(Config.PSEUDONYM_LENGTH, str(pseudonym_length)).save()
+        Config(Config.MAX_PSEUDONYM_USAGES, str(max_pseudonym_usages)).save()
 
     def get_key_params(self, key_param_strategy) -> KeyParameters:
         # TODO: extend key strategies
