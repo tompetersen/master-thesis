@@ -13,7 +13,7 @@ import requests
 from requests.exceptions import RequestException
 from requests.models import Response
 from threshold_crypto import KeyShare
-from nacl import secret, utils, pwhash, encoding
+from nacl import secret, utils, pwhash, exceptions
 from threshold_crypto.threshold_crypto import PartialDecryption, EncryptedMessage, ThresholdCrypto
 
 DEFAULT_LOCAL_ADDRESS = '127.0.0.1'
@@ -100,7 +100,11 @@ class ThresholdClient:
 
         if os.path.exists(config_path):
             p = input('Please enter your password: ')
-            self.config = Config.load_config(p, config_path)
+            try:
+                self.config = Config.load_config(p, config_path)
+            except exceptions.CryptoError as e:
+                print('Could not decrypt required client data. Exiting...')
+                exit(-1)
             print('Loaded config.')
 
             self.start_request_process()
@@ -131,13 +135,14 @@ class ThresholdClient:
 
     def start_request_process(self):
         while True:
-            input('Press a key to send a new requests query...')
+            input('\nPress a key to ask for new decryption requests requiring your choice...')
             store_entry_requests = ServiceApiCaller.get_store_entry_requests(self.config.name)
             if len(store_entry_requests) == 0:
                 print('No action required.')
             else:
                 for r in store_entry_requests:
                     self.handle_request(r)
+                print('All decryption requests handled.')
 
     def handle_request(self, request):
         req_id = request['request_id']
@@ -145,18 +150,25 @@ class ThresholdClient:
         pseudonym = request['pseudonym']
         encrypted_message = EncryptedMessage(request['em_v'], request['em_c'], '')
 
-        print('\nNew request for pseudonym ' + pseudonym + ' by ' + req_by)
-        print('--------')
+        print('New decryption request for pseudonym ' + pseudonym + ' by ' + req_by)
         print('(A)ccept - (D)ecline - (P)ostpone')
         choice = ''
         while choice not in ['A', 'D', 'P']:
-            choice = input('Your action: ')
+            choice = input('Choose your action: ')
 
-        if choice == 'A':
-            partial_decryption = ThresholdCrypto.compute_partial_decryption(encrypted_message, self.config.key_share)
-            ServiceApiCaller.send_partial_decryption(req_id, self.config.name, True, partial_decryption)
-        elif choice == 'D':
-            ServiceApiCaller.send_partial_decryption(req_id, self.config.name, False)
+        try:
+            if choice == 'A':
+                partial_decryption = ThresholdCrypto.compute_partial_decryption(encrypted_message, self.config.key_share)
+                ServiceApiCaller.send_partial_decryption(req_id, self.config.name, True, partial_decryption)
+                print('Accepted pseudonym decryption request.')
+            elif choice == 'D':
+                ServiceApiCaller.send_partial_decryption(req_id, self.config.name, False)
+                print('Declined pseudonym decryption request.')
+            elif choice == 'P':
+                print('Choosing action postponed.')
+        except ServiceApiError as e:
+            print('Could not perform action: ' + str(e))
+        print('--------')
 
 
 class ServiceApiError(Exception):
@@ -200,6 +212,7 @@ class ServiceApiCaller:
 
     @staticmethod
     def _call_service_api(address: str, port: int, route: str, data=None) -> Response:
+        result = None
         try:
             url = 'http://' + address + ':' + str(port) + '/' + route
 
@@ -211,8 +224,8 @@ class ServiceApiCaller:
 
             return result
         except RequestException as e:
-            print(str(e))
-            raise ServiceApiError(str(e))
+            error_dict = result.json()
+            raise ServiceApiError(error_dict['detail'] if 'detail' in error_dict else 'Unknown reason.')
 
 
 def main():
@@ -227,7 +240,7 @@ def main():
 
     client = ThresholdClient(localaddress, localport, configfile_path)
     app = create_bottle_app(client)
-    bottle.run(app, host=localaddress, port=localport, debug=True)
+    bottle.run(app, host=localaddress, port=localport, debug=False, quiet=True)
 
 
 def create_bottle_app(client: ThresholdClient) -> bottle.Bottle:
