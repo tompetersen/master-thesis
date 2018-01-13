@@ -360,10 +360,15 @@ class ThresholdCrypto:
     @staticmethod
     def encrypt_message(message: str, public_key: PublicKey) -> EncryptedMessage:
         # TODO: Hybrid approach -> explain here
-        key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
-        box = nacl.secret.SecretBox(key)
         encoded_message = bytes(message, 'utf-8')
-        encrypted = box.encrypt(encoded_message).hex()
+        try:
+            key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+            box = nacl.secret.SecretBox(key)
+            encrypted = box.encrypt(encoded_message).hex()
+        except nacl.exceptions.CryptoError as e:
+            print('Encryption failed: ' + str(e))
+            raise ThresholdCryptoError('Message encryption failed.')
+
         g_k, c = ThresholdCrypto._encrypt_key(key, public_key)
 
         return EncryptedMessage(g_k, c, encrypted)
@@ -404,7 +409,8 @@ class ThresholdCrypto:
             box = nacl.secret.SecretBox(key)
             encoded_plaintext = box.decrypt(bytes.fromhex(encrypted_message.enc))
         except nacl.exceptions.CryptoError as e:
-            raise ThresholdCryptoError(str(e))
+            print('Decryption failed: ' + str(e))
+            raise ThresholdCryptoError('Message decryption failed.')
 
         return str(encoded_plaintext, 'utf-8')
 
