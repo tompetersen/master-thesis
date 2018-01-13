@@ -1,3 +1,42 @@
 \section{Implementierung und Integration des Schwellwertschemas}
 
 \label{sec_impl_threshold}
+
+Something
+
+\subsection{ThresholdCrypto \glqq Lib\grqq{}}
+
+- Bibliothek, die statuslos in allen Teilen des Systems verwendet werden kann.
+
+- Interface
+
+  \subsubsection{Parametergenerierung}
+  
+  - Verwendete Gruppen und Auswirkungen fester Parameter? HoC, ...
+  
+  \subsubsection{Hybride Kryptographie}
+  
+  - Erzeugung symmetrischer Schlüssel und symmetrische Kryptographie per NaCl(pynacl) -> Authenticated Encryption ChaCha Salsa
+  
+  - lediglich Verschlüsselung dieses Schlüssels mit dem Schwellwertschema
+  
+  - von erfahrenen Kryptographen entwickelt
+  - getestet
+  - schnell
+  - Beliebiger Nachrichteninhalt ohne Auswirkungen auf die Verschlüsselung
+
+\subsection{Setup-Verfahren}
+
+auf bereits in impl-pseudonymity geschriebenes zurückgreifen
+
+\subsection{Client-Anwendung}
+
+- Shares empfangen und verschlüsselt abspeichern
+
+- Enthält Webserver um Shares niemals auf dem Server speichern zu müssen
+
+\subsection{Proxy}
+
+- Empfängt PublicKey vom Service und nutzt ihn zur Nachrichtenverschlüsselung
+
+
