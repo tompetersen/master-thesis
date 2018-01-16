@@ -20,8 +20,7 @@ class TCTestCase(unittest.TestCase):
     def setUp(self):
         self.tp = ThresholdParameters(3, 5)
         self.kp = ThresholdCrypto.generate_static_key_parameters()
-        self.pk, self.sk = ThresholdCrypto.create_keys_centralized(self.kp)
-        self.shares = ThresholdCrypto.create_shares_centralized(self.sk, self.tp)
+        self.pk, self.shares = ThresholdCrypto.create_public_key_and_shares_centralized(self.kp, self.tp)
         self.em = ThresholdCrypto.encrypt_message('Some secret message', self.pk)
         self.reconstruct_shares = [self.shares[i] for i in [0, 2, 4]]  # choose 3 of 5 key shares
         self.partial_decryptions = [ThresholdCrypto.compute_partial_decryption(self.em, share) for share in self.reconstruct_shares]
@@ -66,21 +65,15 @@ class TCTestCase(unittest.TestCase):
         self.assertNotEqual(pow(self.kp.g, 2, self.kp.p), 1)
 
     def test_central_key_generation(self):
-        pk, sk = ThresholdCrypto.create_keys_centralized(self.kp)
+        pk, shares = ThresholdCrypto.create_public_key_and_shares_centralized(self.kp, self.tp)
 
         self.assertEqual(pk.key_parameters, self.kp)
-        self.assertEqual(sk.key_parameters, self.kp)
-        self.assertEqual(pk.g_a, pow(self.kp.g, sk.a, self.kp.p))
+        self.assertEqual(len(shares), self.tp.n)
 
     def test_public_key_json(self):
         pk_j = PublicKey.from_json(self.pk.to_json())
 
         self.assertEqual(self.pk, pk_j)
-        
-    def test_central_share_generation(self):
-        shares = ThresholdCrypto.create_shares_centralized(self.sk, self.tp)
-
-        self.assertEqual(len(shares), self.tp.n)
 
     def test_key_share_json(self):
         share = self.shares[0]
@@ -137,8 +130,7 @@ class TCTestCase(unittest.TestCase):
         key_params = ThresholdCrypto.generate_static_key_parameters()
         thresh_params = ThresholdParameters(3, 5)
 
-        pub_key, priv_key = ThresholdCrypto.create_keys_centralized(key_params)
-        key_shares = ThresholdCrypto.create_shares_centralized(priv_key, thresh_params)
+        pub_key, key_shares = ThresholdCrypto.create_public_key_and_shares_centralized(key_params, thresh_params)
 
         message = 'Some secret message to be encrypted!'
         encrypted_message = ThresholdCrypto.encrypt_message(message, pub_key)
@@ -153,8 +145,7 @@ class TCTestCase(unittest.TestCase):
         key_params = ThresholdCrypto.generate_static_key_parameters()
         thresh_params = ThresholdParameters(3, 5)
 
-        pub_key, priv_key = ThresholdCrypto.create_keys_centralized(key_params)
-        key_shares = ThresholdCrypto.create_shares_centralized(priv_key, thresh_params)
+        pub_key, key_shares = ThresholdCrypto.create_public_key_and_shares_centralized(key_params, thresh_params)
 
         message = 'Some secret message to be encrypted!'
         encrypted_message = ThresholdCrypto.encrypt_message(message, pub_key)

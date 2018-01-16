@@ -86,8 +86,7 @@ class ThresholdSetupView(FormView):
         threshold_params = ThresholdParameters(threshold_t, threshold_n)
         key_params = self.get_key_params(key_param_strategy)
 
-        pk, sk = ThresholdCrypto.create_keys_centralized(key_params)
-        shares = ThresholdCrypto.create_shares_centralized(sk, threshold_params)
+        pk, shares = ThresholdCrypto.create_public_key_and_shares_centralized(key_params, threshold_params)
 
         # Send shares to clients
         clients = ThresholdClient.objects.filter(id__in=client_ids)

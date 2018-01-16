@@ -337,25 +337,19 @@ class ThresholdCrypto:
 
         return KeyParameters(p=p, q=q, g=g)
 
+
     @staticmethod
-    def create_keys_centralized(key_params: KeyParameters) -> (PublicKey, PrivateKey):
-        a = number.getRandomRange(2, key_params.q - 2) # TODO: parameters for key_params (here 2 and -2?)
+    def create_public_key_and_shares_centralized(key_params: KeyParameters, threshold_params: ThresholdParameters) -> (PublicKey, [KeyShare]):
+        a = number.getRandomRange(2, key_params.q - 2)  # TODO: parameters for key_params (here 2 and -2?)
         g_a = pow(key_params.g, a, key_params.p)
-        private = PrivateKey(a, key_params)
-        public = PublicKey(g_a, key_params)
-
-        return public, private
-
-    @staticmethod
-    def create_shares_centralized(private_key: PrivateKey, threshold_params: ThresholdParameters) -> [KeyShare]:
-        key_params = private_key.key_parameters
+        public_key = PublicKey(g_a, key_params)
 
         # Perform Shamir's secret sharing in Z_q
-        polynom = number.PolynomMod.create_random_polynom(private_key.a, threshold_params.t - 1, key_params.q)
+        polynom = number.PolynomMod.create_random_polynom(a, threshold_params.t - 1, key_params.q)
         supporting_points = range(1, threshold_params.n + 1)
         shares = [KeyShare(x, polynom.evaluate(x), key_params) for x in supporting_points]
 
-        return shares
+        return public_key, shares
 
     @staticmethod
     def encrypt_message(message: str, public_key: PublicKey) -> EncryptedMessage:
@@ -409,8 +403,7 @@ class ThresholdCrypto:
             box = nacl.secret.SecretBox(key)
             encoded_plaintext = box.decrypt(bytes.fromhex(encrypted_message.enc))
         except nacl.exceptions.CryptoError as e:
-            print('Decryption failed: ' + str(e))
-            raise ThresholdCryptoError('Message decryption failed.')
+            raise ThresholdCryptoError('Message decryption failed. Internal: ' + str(e))
 
         return str(encoded_plaintext, 'utf-8')
 
