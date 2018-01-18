@@ -17,6 +17,7 @@ class Pseudonymize(AbstractPlugin):
     def __init__(self):
         try:
             self.pk = ServiceApiCaller.get_public_key(self.SERVICE_URL, self.SERVICE_PORT)
+            print('\tReceived service public key: ' + str(self.pk.g_a))
         except Exception:
             raise Exception('Could not receive required public encryption key from pseudonym service! Make sure service is reachable!')
 
