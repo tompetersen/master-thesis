@@ -12,7 +12,7 @@ from threshold_crypto import (ThresholdCrypto,
                               KeyShare,
                               EncryptedMessage,
                               PartialDecryption,
-                              )
+                              number)
 
 
 class TCTestCase(unittest.TestCase):
@@ -107,24 +107,26 @@ class TCTestCase(unittest.TestCase):
         self.assertTrue(p.evaluate(0) == 17)
 
     def test_key_encryption_decryption_with_enough_shares(self):
-        testkey = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
-        g_k, c = ThresholdCrypto._encrypt_key(testkey, self.pk)
+        r = number.getRandomRange(2, self.kp.q)
+        testkey_element = pow(self.kp.g, r, self.kp.p)
+        g_k, c = ThresholdCrypto._encrypt_key_element(testkey_element, self.pk)
         em = EncryptedMessage(g_k, c, '')
         reconstruct_shares = [self.shares[i] for i in [0, 2, 4]]  # choose 3 of 5 key shares
         partial_decryptions = [ThresholdCrypto.compute_partial_decryption(em, share) for share in reconstruct_shares]
-        rec_testkey = ThresholdCrypto._combine_shares(partial_decryptions, em, self.tp, self.kp)
+        rec_testkey_element = ThresholdCrypto._combine_shares(partial_decryptions, em, self.tp, self.kp)
 
-        self.assertEqual(testkey, rec_testkey)
+        self.assertEqual(testkey_element, rec_testkey_element)
 
     def test_key_encryption_decryption_without_enough_shares(self):
-        testkey = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
-        g_k, c = ThresholdCrypto._encrypt_key(testkey, self.pk)
+        r = number.getRandomRange(2, self.kp.q)
+        testkey_element = pow(self.kp.g, r, self.kp.p)
+        g_k, c = ThresholdCrypto._encrypt_key_element(testkey_element, self.pk)
         em = EncryptedMessage(g_k, c, '')
-        reconstruct_shares = [self.shares[i] for i in [0, 4]]  # choose 3 of 5 key shares
+        reconstruct_shares = [self.shares[i] for i in [0, 4]]  # choose 2 of 5 key shares
         partial_decryptions = [ThresholdCrypto.compute_partial_decryption(em, share) for share in reconstruct_shares]
-        rec_testkey = ThresholdCrypto._combine_shares(partial_decryptions, em, self.tp, self.kp)
+        rec_testkey_element = ThresholdCrypto._combine_shares(partial_decryptions, em, self.tp, self.kp)
 
-        self.assertNotEqual(testkey, rec_testkey)
+        self.assertNotEqual(testkey_element, rec_testkey_element)
 
     def test_complete_process_with_enough_shares(self):
         key_params = ThresholdCrypto.generate_static_key_parameters()

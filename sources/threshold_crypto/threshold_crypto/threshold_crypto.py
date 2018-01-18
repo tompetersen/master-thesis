@@ -8,6 +8,7 @@ import nacl.utils
 import nacl.secret
 import nacl.encoding
 import nacl.exceptions
+import nacl.hash
 
 from threshold_crypto import number
 
@@ -160,27 +161,6 @@ class PublicKey:
 
     def __str__(self):
         return 'PublicKey:\n\tg^a = ' + str(self._g_a)
-
-
-class PrivateKey:
-
-    def __init__(self, a: int, key_params: KeyParameters):
-        if key_params is None:
-            raise ThresholdCryptoError('key parameters must be given')
-
-        self._a = a
-        self._key_params = key_params
-
-    @property
-    def a(self) -> int:
-        return self._a
-
-    @property
-    def key_parameters(self) -> KeyParameters:
-        return self._key_params
-
-    def __str__(self):
-        return 'PrivateKey:\n\ta = ' + str(self._a)
 
 
 class KeyShare:
@@ -353,33 +333,49 @@ class ThresholdCrypto:
 
     @staticmethod
     def encrypt_message(message: str, public_key: PublicKey) -> EncryptedMessage:
-        # TODO: Hybrid approach -> explain here
+        """
+        TODO: Hybrid approach -> explain here
+        
+        :param message: 
+        :param public_key: 
+        :return: 
+        """""
         encoded_message = bytes(message, 'utf-8')
+        key_params = public_key.key_parameters
+
+        # Create random subgroup element and use its hash as symmetric key to prevent
+        # attacks described in "Why Textbook ElGamal and RSA Encryption Are Insecure"
+        # by Boneh et. al.
+        r = number.getRandomRange(2, public_key.key_parameters.q)
+        key_subgroup_element = pow(key_params.g, r, key_params.p)
+        element_bytes = key_subgroup_element.to_bytes((key_subgroup_element.bit_length() + 7) // 8, byteorder='big')
         try:
-            key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+            key = nacl.hash.blake2b(element_bytes,
+                                    digest_size=nacl.secret.SecretBox.KEY_SIZE,
+                                    encoder=nacl.encoding.RawEncoder)
+            # Use derived symmetric key to encrypt the message
             box = nacl.secret.SecretBox(key)
             encrypted = box.encrypt(encoded_message).hex()
         except nacl.exceptions.CryptoError as e:
             print('Encryption failed: ' + str(e))
             raise ThresholdCryptoError('Message encryption failed.')
 
-        g_k, c = ThresholdCrypto._encrypt_key(key, public_key)
+        # Use threshold scheme to encrypt the subgroup element used as key input
+        g_k, c = ThresholdCrypto._encrypt_key_element(key_subgroup_element, public_key)
 
         return EncryptedMessage(g_k, c, encrypted)
 
     @staticmethod
-    def _encrypt_key(key: bytes, public_key: PublicKey) -> (int, int):
+    def _encrypt_key_element(key_element: int, public_key: PublicKey) -> (int, int):
         key_params = public_key.key_parameters
 
-        # TODO: message encoding?
-        key_as_int = int.from_bytes(key, byteorder='big')
-        if key_as_int >= key_params.p:
-            raise ThresholdCryptoError('key is larger than key parameter p')
+        if key_element >= key_params.p:
+            raise ThresholdCryptoError('key element is larger than key parameter p')
 
         k = number.getRandomRange(1, key_params.q - 1)
         g_k = pow(key_params.g, k, key_params.p) # aka v
         g_ak = pow(public_key.g_a, k, key_params.p)
-        c = (key_as_int * g_ak) % key_params.p
+        c = (key_element * g_ak) % key_params.p
 
         return g_k, c
 
@@ -397,9 +393,21 @@ class ThresholdCrypto:
                         threshold_params: ThresholdParameters,
                         key_params: KeyParameters
                         ) -> str:
-        # TODO: Hybrid approach -> explain here
-        key = ThresholdCrypto._combine_shares(partial_decryptions, encrypted_message, threshold_params, key_params)
+        """
+        TODO: Hybrid approach -> explain here
+
+        :param partial_decryptions:
+        :param encrypted_message:
+        :param threshold_params:
+        :param key_params:
+        :return:
+        """
+        key_subgroup_element = ThresholdCrypto._combine_shares(partial_decryptions, encrypted_message, threshold_params, key_params)
+        key_subgroup_element_bytes = key_subgroup_element.to_bytes((key_subgroup_element.bit_length() + 7) // 8, byteorder='big')
         try:
+            key = nacl.hash.blake2b(key_subgroup_element_bytes,
+                                    digest_size=nacl.secret.SecretBox.KEY_SIZE,
+                                    encoder=nacl.encoding.RawEncoder)
             box = nacl.secret.SecretBox(key)
             encoded_plaintext = box.decrypt(bytes.fromhex(encrypted_message.enc))
         except nacl.exceptions.CryptoError as e:
@@ -412,7 +420,7 @@ class ThresholdCrypto:
                        encrypted_message: EncryptedMessage,
                        threshold_params: ThresholdParameters,
                        key_params: KeyParameters
-                       ) -> bytes:
+                       ) -> int:
         # Disabled to enable testing for unsuccessful decryption
         # if len(partial_decryptions) < threshold_params.t:
         #    raise ThresholdCryptoError('less than t partial decryptions given')
@@ -425,6 +433,5 @@ class ThresholdCrypto:
         restored_g_minus_ak = number.prime_mod_inv(restored_g_ka, key_params.p)
         restored_m = encrypted_message.c * restored_g_minus_ak % key_params.p
 
-        # TODO: message decoding?
-        return restored_m.to_bytes((restored_m.bit_length() + 7) // 8, byteorder='big')
+        return restored_m
 
