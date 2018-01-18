@@ -55,21 +55,16 @@ Die partiellen Verschlüsselungen
 % https://crypto.stackexchange.com/questions/1451/elgamal-multiplicative-cyclic-group-and-key-generation
 % Introduction to modern cryptography 8.3.3 (pdf 343ff)
 % Sharing of parameters: Introduction to modern cryptography ElGamal implementation issues (pdf 425)
-Hier werden sichere Primzahlen bzw. Sophie-Germain-Primzahl verwendet: Zwei Primzahlen \(p\) und \(q\) mit der Eigenschaft \(p = 2q + 1\). Ein Algorithmus zu ihrer Erzeugung kann im Handbook of applied cryptography gefunden werden. \todo{cite} Im Wesentlichen wird solange eine Primzahl \(q\) im gewünschten Bereich zufällig gewählt, bis \(2q + 1\) ebenfalls eine Primzahl ist.
-
-Weiterhin wird ein Generator der Untergruppe der Ordnung \(q\) von \(\mathbb{Z}_p^*\) berechnet. Hierzu wird lediglich solange ein zufälliges Element \(g\) aus \(\mathbb{Z}_p^*\) gewählt bis 
-
-\[g^q \equiv 1 \mod p \text{ und } g^2 \not\equiv 1 \mod p\] 
-
-gelten. Da Untergruppen von \(\mathbb{Z}_p^*\) nach dem Satz von Lagrange lediglich die Ordnungen \(1,2,q \text{ oder } 2q\) besitzen, werden durch obenstehende Bedingungen lediglich Untergruppen der Ordnung \(q\) zugelassen.
+Hier werden sichere Primzahlen bzw. Sophie-Germain-Primzahl verwendet: Zwei Primzahlen \(p\) und \(q\) mit der Eigenschaft \(p = 2q + 1\). 
+Weiterhin wird ein Generator der Untergruppe der Ordnung \(q\) von \(\mathbb{Z}_p^*\) benötigt.
 
 Der (temporär erstellte) geheime Schlüssel \(a \in \mathbb{Z}_q\) wird zufällig gewählt. Hieraus wird der öffentliche Schlüssel \(pk = g^a \mod p\) berechnet.
 
-Der geheime Schlüssel wird anschließend analog zu Shamirs Secret Sharing (unter Nutzung von \(\mathbb{Z}_q\)) in einzelne Shares \((x_i, y_i) = (x_i, q(x_i))\) aufgeteilt und diese werden an die Teilnehmer verteilt. \todo{ref shamir}
+Der geheime Schlüssel wird anschließend analog zu Shamirs Secret Sharing (siehe Abschnitt \ref{sec_basics_threshold_shamir}) unter Nutzung von \(\mathbb{Z}_q\) in einzelne Shares \((x_i, y_i) = (x_i, q(x_i))\) aufgeteilt und diese werden an die Teilnehmer verteilt. 
 
 \textbf{Verschlüsselung}
 
-Anschließend kann eine Nachricht mithilfe von \(pk\) analog zu dem ElGamal-Verfahren verschlüsselt werden. \todo{ref ElGamal} So erhält man \((v,c) = (g^k, m \cdot g^{ak})\) für ein zufällig gewähltes \(k \in \mathbb{Z}_q\).
+Anschließend kann eine Nachricht mithilfe von \(pk\) analog zu dem ElGamal-Verfahren (siehe Abschnitt \ref{sec_basics_threshold_elgamal}) verschlüsselt werden. So erhält man \((v,c) = (g^k, m \cdot g^{ak})\) für ein zufällig gewähltes \(k \in \mathbb{Z}_q\).
 
 \textbf{Partielle Entschlüsselung}
 
@@ -80,6 +75,7 @@ Jeder Besitzer eines Shares \((x_i, y_i)\) berechnet für den zu entschlüsselnd
 \textbf{Entschlüsselung}
 
 \todo{threshold gruppe erwähnen - es handelt sich im Zweifel nicht um die gleichen xi,yi}
+
 Hierzu berechnet der Kombiner die Lagrange-Koeffizienten \(\lambda_i \in \mathbb{Z}_q\) wie in Shamir's Secret Sharing beschrieben. Anschließend kann
  
 \[g^{ak} = \prod_{i=1}^k (v^{y_i})^{\lambda_i}\]
