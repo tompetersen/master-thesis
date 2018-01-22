@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name='threshold-crypto',
-    version='0.0.6',
+    version='0.1.0',
     description='Threshold-based ElGamal encryption',
     long_description=readme(),
     author='Tom Petersen, SVS, Universität Hamburg',

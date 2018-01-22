@@ -1,6 +1,30 @@
 """
-TBW
+A stateless library which offers functionality for ElGamal-based threshold decryption with centralized key generation.
 
+Threshold decryption means a message can be encrypted using a simple public key, but for decryption at least t out of n
+share owners must collaborate to decrypt the message.
+
+A hybrid approach (using pynacl for symmetric encryption) is used for message encryption and decryption.
+Therefor there are no limitations regarding message lengths or format. Additionally the integrity of a message is
+secured by using the AE-scheme, meaning changes to some parts of the ciphertext, to partial decryptions or even
+dishonest share owners can be detected.
+
+Usage:
+    # Generate parameters, public key and shares
+    key_params = ThresholdCrypto.generate_static_key_parameters()
+    thresh_params = ThresholdParameters(3, 5)
+    pub_key, key_shares = ThresholdCrypto.create_public_key_and_shares_centralized(key_params, thresh_params)
+
+    # encrypt message using the public key
+    message = 'Some secret message to be encrypted!'
+    encrypted_message = ThresholdCrypto.encrypt_message(message, pub_key)
+
+    # build partial decryptions of three share owners using their shares
+    reconstruct_shares = [key_shares[i] for i in [0, 2, 4]]
+    partial_decryptions = [ThresholdCrypto.compute_partial_decryption(encrypted_message, share) for share in reconstruct_shares]
+
+    # combine these partial decryptions to recover the message
+    decrypted_message = ThresholdCrypto.decrypt_message(partial_decryptions, encrypted_message, thresh_params, key_params)
 """
 import json
 
@@ -18,6 +42,14 @@ class ThresholdCryptoError(Exception):
 
 
 class ThresholdParameters:
+    """
+    Contains the parameters used for the threshold scheme:
+    - t: number of share owners required to decrypt a message
+    - n: number of share owners involved
+
+    In other words:
+    At least t out of overall n share owners must participate to decrypt an encrypted message.
+    """
 
     @staticmethod
     def from_json(json_str: str):
@@ -29,6 +61,13 @@ class ThresholdParameters:
         return ThresholdParameters(obj['t'], obj['n'])
 
     def __init__(self, t: int, n: int):
+        """
+        Construct threshold parameter. Required:
+        0 < t <= n
+
+        :param t:  number of share owners required for decryption
+        :param n: overall number of share owners
+        """
         if t > n:
             raise ThresholdCryptoError('threshold parameter t must be smaller than n')
         if t <= 0:
@@ -64,6 +103,11 @@ class ThresholdParameters:
 
 
 class KeyParameters:
+    """
+    Contains the key parameters the scheme uses:
+    - Primes p, q with p = 2q + 1
+    - Generator g of q-ordered subgroup Z_q* of Z_p*
+    """
 
     @staticmethod
     def from_json(json_str: str):
@@ -75,6 +119,16 @@ class KeyParameters:
         return KeyParameters(obj['p'], obj['q'], obj['g'])
 
     def __init__(self, p: int, q: int, g: int):
+        """
+        Construct key parameters. Required:
+        - p = 2q + 1
+        - g generates Z_q*, meaning (g^q mod p = 1) and (g^2 mod p != 1)
+          These conditions are sufficient because subgroups of Z_p* can only have orders 1, 2, q or 2q.
+
+        :param p: prime
+        :param q: prime
+        :param g: generator for Z_q*
+        """
         if (2 * q + 1) != p:
             raise ThresholdCryptoError('no safe prime (p = 2q + 1) given')
         if pow(g, q, p) != 1 or pow(g, 2, p) == 1:
@@ -117,6 +171,9 @@ class KeyParameters:
 
 
 class PublicKey:
+    """
+    The public key (g^a mod p) linked to the (implicit) secret key (a) of the scheme.
+    """
 
     @staticmethod
     def from_json(json_str: str):
@@ -129,6 +186,12 @@ class PublicKey:
         return PublicKey(obj['g_a'], key_params)
 
     def __init__(self, g_a: int, key_params: KeyParameters):
+        """
+        Construct the public key.
+
+        :param g_a: the public key value
+        :param key_params: the key parameters used for constructing the key.
+        """
         if key_params is None:
             raise ThresholdCryptoError('key parameters must be given')
 
@@ -164,6 +227,10 @@ class PublicKey:
 
 
 class KeyShare:
+    """
+    A share (x_i, y_i) of the private key for share owner i.
+    y_i is the evaluated polynom value of x_i in shamirs secret sharing.
+    """
 
     @staticmethod
     def from_json(json_str: str):
@@ -176,6 +243,13 @@ class KeyShare:
         return KeyShare(obj['x'], obj['y'], key_params)
 
     def __init__(self, x: int, y: int, key_params: KeyParameters):
+        """
+        Construct a share of the private key.
+
+        :param x: the x value of the share
+        :param y: the y value of the share
+        :param key_params:
+        """
         if key_params is None:
             raise ThresholdCryptoError('key parameters must be given')
 
@@ -218,6 +292,13 @@ class KeyShare:
 
 
 class EncryptedMessage:
+    """
+    An encrypted message in the scheme. Because a hybrid approach is used it consists of three parts:
+    - v = g^k mod p as in the ElGamal scheme
+    - c = r * g^k mod p as in the ElGamal scheme with r being the value to be encrypted
+    - enc the symmetrically encrypted message.
+    The symmetric key is derived from the ElGamal encrypted value r.
+    """
 
     @staticmethod
     def from_json(json_str: str):
@@ -229,6 +310,13 @@ class EncryptedMessage:
         return EncryptedMessage(obj['v'], obj['c'], obj['enc'])
 
     def __init__(self, v: int, c: int, enc: str):
+        """
+        Construct a encrypted message.
+
+        :param v: like in ElGamal scheme
+        :param c: like in ElGamal scheme
+        :param enc: the symmetrically encrypted message
+        """
         self._v = v
         self._c = c
         self._enc = enc
@@ -266,6 +354,9 @@ class EncryptedMessage:
 
 
 class PartialDecryption:
+    """
+    A partial decryption (x_i, v^(y_i)) of an encrypted message computed by a share owner using his share.
+    """
 
     @staticmethod
     def from_json(json_str: str):
@@ -277,6 +368,12 @@ class PartialDecryption:
         return PartialDecryption(obj['x'], obj['v_y'])
 
     def __init__(self, x: int, v_y: int):
+        """
+        Construct the partial decryption.
+
+        :param x: the shares x value
+        :param v_y: the computed partial decryption value
+        """
         self._x = x
         self._v_y = v_y
 
@@ -317,10 +414,16 @@ class ThresholdCrypto:
 
         return KeyParameters(p=p, q=q, g=g)
 
-
     @staticmethod
     def create_public_key_and_shares_centralized(key_params: KeyParameters, threshold_params: ThresholdParameters) -> (PublicKey, [KeyShare]):
-        a = number.getRandomRange(2, key_params.q - 2)  # TODO: parameters for key_params (here 2 and -2?)
+        """
+        Creates a public key and n shares by choosing a random secret key and using it for computations.
+
+        :param key_params: key parameters to use
+        :param threshold_params: parameters t and n for the threshold scheme
+        :return: (the public key, n key shares)
+        """
+        a = number.getRandomRange(2, key_params.q - 2)
         g_a = pow(key_params.g, a, key_params.p)
         public_key = PublicKey(g_a, key_params)
 
@@ -334,12 +437,14 @@ class ThresholdCrypto:
     @staticmethod
     def encrypt_message(message: str, public_key: PublicKey) -> EncryptedMessage:
         """
-        TODO: Hybrid approach -> explain here
+        Encrypt a message using a public key. A hybrid encryption approach is used to include advantages of symmetric
+        encryption (fast, independent of message-length, integrity-preserving by using AE-scheme).
+        Internally a combination of Salsa20 and Poly1305 from the cryptographic library NaCl is used.
         
-        :param message: 
-        :param public_key: 
-        :return: 
-        """""
+        :param message: the message to be encrypted
+        :param public_key: the public key
+        :return: an encrypted message
+        """
         encoded_message = bytes(message, 'utf-8')
         key_params = public_key.key_parameters
 
@@ -349,18 +454,19 @@ class ThresholdCrypto:
         r = number.getRandomRange(2, public_key.key_parameters.q)
         key_subgroup_element = pow(key_params.g, r, key_params.p)
         element_bytes = key_subgroup_element.to_bytes((key_subgroup_element.bit_length() + 7) // 8, byteorder='big')
+
         try:
-            key = nacl.hash.blake2b(element_bytes,
-                                    digest_size=nacl.secret.SecretBox.KEY_SIZE,
-                                    encoder=nacl.encoding.RawEncoder)
+            symmetric_key = nacl.hash.blake2b(element_bytes,
+                                              digest_size=nacl.secret.SecretBox.KEY_SIZE,
+                                              encoder=nacl.encoding.RawEncoder)
             # Use derived symmetric key to encrypt the message
-            box = nacl.secret.SecretBox(key)
+            box = nacl.secret.SecretBox(symmetric_key)
             encrypted = box.encrypt(encoded_message).hex()
         except nacl.exceptions.CryptoError as e:
             print('Encryption failed: ' + str(e))
             raise ThresholdCryptoError('Message encryption failed.')
 
-        # Use threshold scheme to encrypt the subgroup element used as key input
+        # Use threshold scheme to encrypt the subgroup element used as hash input to derive the symmetric key
         g_k, c = ThresholdCrypto._encrypt_key_element(key_subgroup_element, public_key)
 
         return EncryptedMessage(g_k, c, encrypted)
@@ -381,6 +487,13 @@ class ThresholdCrypto:
 
     @staticmethod
     def compute_partial_decryption(encrypted_message: EncryptedMessage, key_share: KeyShare) -> PartialDecryption:
+        """
+        Compute a partial decryption of an encrypted message using a key share.
+
+        :param encrypted_message: the encrypted message
+        :param key_share: the key share
+        :return: a partial decryption
+        """
         key_params = key_share.key_parameters
 
         v_y = pow(encrypted_message.v, key_share.y, key_params.p)
@@ -394,13 +507,14 @@ class ThresholdCrypto:
                         key_params: KeyParameters
                         ) -> str:
         """
-        TODO: Hybrid approach -> explain here
+        Decrypt a message using the combination of at least t partial decryptions. Similar to the encryption process
+        the hybrid approach is used for decryption.
 
-        :param partial_decryptions:
-        :param encrypted_message:
-        :param threshold_params:
-        :param key_params:
-        :return:
+        :param partial_decryptions: at least t partial decryptions
+        :param encrypted_message: the encrapted message to be decrypted
+        :param threshold_params: the used threshold parameters
+        :param key_params: the used key parameters
+        :return: the decrypted message
         """
         key_subgroup_element = ThresholdCrypto._combine_shares(partial_decryptions, encrypted_message, threshold_params, key_params)
         key_subgroup_element_bytes = key_subgroup_element.to_bytes((key_subgroup_element.bit_length() + 7) // 8, byteorder='big')
@@ -425,6 +539,7 @@ class ThresholdCrypto:
         # if len(partial_decryptions) < threshold_params.t:
         #    raise ThresholdCryptoError('less than t partial decryptions given')
 
+        # compute lagrange coefficients
         partial_indices = [dec.x for dec in partial_decryptions]
         lagrange_coefficients = number.build_lagrange_coefficients(partial_indices, key_params.q)
 
