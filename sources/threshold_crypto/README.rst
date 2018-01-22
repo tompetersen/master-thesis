@@ -16,6 +16,8 @@ Usage
 
 .. code:: python
 
+    from threshold_crypto import (ThresholdCrypto, ThresholdParameters)
+
     # Generate parameters, public key and shares
     key_params = ThresholdCrypto.generate_static_key_parameters()
     thresh_params = ThresholdParameters(3, 5)
