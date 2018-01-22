@@ -11,9 +11,11 @@ Therefor there are no limitations regarding message lengths or format. Additiona
 secured by using the AE-scheme, meaning changes to some parts of the ciphertext, to partial decryptions or even
 dishonest share owners can be detected.
 
-Usage::
+Usage
+-----
 
 .. code:: python
+
     # Generate parameters, public key and shares
     key_params = ThresholdCrypto.generate_static_key_parameters()
     thresh_params = ThresholdParameters(3, 5)
