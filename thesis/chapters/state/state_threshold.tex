@@ -6,11 +6,6 @@
   \item Zusätzlich Erweiterungen dieses Verfahrens wie verteilte Schlüsselgenerierung.
 \end{itemize}
 
-%- Desmedt, Frankel: ElGamal \cite{DesmedtFrankel1990}
-%- setzt zentralen "Dealer" voraus
-%- Pedersen und verbesserte Variante 
-%- Andere Möglichkeiten: Paillier, RSA, ...
-
 \label{sec_state_threshold}
 
 \subsection{Schemata}
@@ -22,61 +17,44 @@ Basierend auf dem jetzigen Recherchestand würde sich diese Kombination von Verf
 
 Neben diesem Verfahren gibt es noch weitere Ansätze basierend auf RSA \cite{desmedt1993, nguyen2005} oder dem Paillier-Kryptosystem \cite{paillier1999, damgard2001}, die jedoch deutlich komplexer zu sein scheinen. 
 
-\subsection{Desmedt und Frankel: Threshold cryptosystems}
+\subsection{Umzusetzendes kryptographisches Schwellwertschema}
 
-Das ursprüngliche Verfahren setzt eine vertrauenswürdige, zentrale Instanz zur Schlüsselgenerierung voraus. Das Verfahren lässt sich in 4 Phasen unterteilen: Generierung von Schlüssel und Shares, Verschlüsselung einer Nachricht, Generierung der partiellen Entschlüsselungen mithilfe der Shares, Kombination der partiellen Entschlüsselungen zur ursprünglichen Nachricht. \todo{? Beziehen auf basics}
+%- Desmedt und Frankel, aufbereitet auch in Katz und Boneh.
 
-% Setup: Generierung von Schlüssel und Shares
+%- Verfahren basierend auf Shamir und ElGamal
 
-Die zentrale Instanz erstellt ein Schlüsselpaar analog zu dem Vorgehen im ElGamal-Verfahren. Für eine \todo{Ergänzen oder ElGamal in Basics aufnehmen - siehe auch Handbook of applied cryptography}
+%- Analog zu basics-threshold-formal (zentrale) lässt sich das Verfahren in 4 Phasen unterteilen
 
-Der private Schlüssel \(a\) wird dann mittels Shamir's Secret Sharing (siehe Abschnitt \ref{sec_basics_threshold_shamir}) in \(n\) Shares \(x_i, y_i\) für \(i \in {1, \dots, n}\) zerlegt, die dann an die entsprechenden Besitzer verteilt werden. Nachfolgend wird die zentrale Instanz nicht mehr benötigt und kann alle verbliebenen Werte im Speicher löschen.
+Das Verfahren, das in einem späteren Teil dieser Arbeit implementiert wird, wurde in \cite{DesmedtFrankel1990} vorgestellt. Aufbereitete Darstellungen lassen sich in \cite{katz2014} und \cite{boneh2016} finden. Das Verfahren beruht auf einer geschickten Kombination von Shamir's Secret Sharing (Abschnitt \ref{sec_basics_threshold_shamir}) und des ElGamal-Kryptosystems (Abschnitt \ref{sec_basics_threshold_elgamal}).
 
-% Verschlüsselung
+Im Folgenden wird das entwickelte Schema entsprechend den in Abschnitt \ref{sec_basics_threshold_thresholddecryption} aufgeführten Algorithmen eines Threshold-Public-Key-Decryption-Systems im Detail dargestellt.
 
-Die Verschlüsselung einer Nachricht \(m\) funktioniert analog zum ursprünglichen ElGamal-Verfahren. Es wird ein zufälliger Wert \(r < q\) mit \(ggT(r,q) = 1\) generiert. Der Schlüsseltext ergibt sich als \((g^k, M * g^{a*r})\), wobei \(g^a\) den bereits generierten öffentlichen Schlüssel darstellt.
+\textbf{Algorithmus G: Schlüsselgenerierung}
 
-% Generierung der partiellen Entschlüsselungen
+In dem Verfahren wird für die Schlüsselgenerierung eine zentrale, vertrauenswürdige Instanz vorausgesetzt, die den öffentlichen Schlüssel und die später benötigten Shares des geheimen Schlüssels erzeugt und verteilt. 
 
-Die partiellen Verschlüsselungen 
+Zur Erzeugung werden zwei Primzahlen \(p\) und \(q\) mit der Eigenschaft \(p = 2q + 1\) - bekannt als sichere Primzahl bzw. Sophie-Germain-Primzahl - benötigt. Weiterhin ist ein Generator der Untergruppe der Ordnung \(q\) von \(\mathbb{Z}_p^*\) notwendig.
 
+Der (temporär erstellte) geheime Schlüssel \(a \in \mathbb{Z}_q\) wird analog zu der Schlüsselgenerierung im ElGamal-Verfahren zufällig gewählt. Aus ihm wird der öffentliche Schlüssel \(pk = g^a \mod p\) berechnet.\\
+Der geheime Schlüssel wird anschließend analog zu Shamirs Secret Sharing in \(\mathbb{Z}_q\) in einzelne Shares \((x_i, y_i) = (x_i, q(x_i))\) aufgeteilt und diese an die Teilnehmer verteilt. Anschließend werden diese Werte gelöscht, so dass nur noch die Teilnehmer im Besitz ihrer Shares und damit in der Lage sind, Schlüsseltexte zu entschlüsseln.
 
+\textbf{Algorithmus E: Verschlüsselung}
 
+Anschließend kann ein Klartext mithilfe von \(pk\) analog zu dem ElGamal-Verfahren 
+%(siehe Abschnitt \ref{sec_basics_threshold_elgamal}) 
+verschlüsselt werden. So erhält man \((v,c) = (g^k, m \cdot g^{ak})\) für ein durch den Sender zufällig gewähltes \(k \in \mathbb{Z}_q\).
 
+\textbf{Algorithmus D: Partielle Entschlüsselung}
 
-\subsection{TEMP}
-
-\todo{Some things should be moved to implementation.}
-
-\todo{Beziehen auf Grundlagenkapitel insbesondere den formalen Rahmen}
-
-\textbf{(Zentrale) Schlüsselgenerierung }
-
-% https://crypto.stackexchange.com/questions/1451/elgamal-multiplicative-cyclic-group-and-key-generation
-% Introduction to modern cryptography 8.3.3 (pdf 343ff)
-% Sharing of parameters: Introduction to modern cryptography ElGamal implementation issues (pdf 425)
-Hier werden sichere Primzahlen bzw. Sophie-Germain-Primzahl verwendet: Zwei Primzahlen \(p\) und \(q\) mit der Eigenschaft \(p = 2q + 1\). 
-Weiterhin wird ein Generator der Untergruppe der Ordnung \(q\) von \(\mathbb{Z}_p^*\) benötigt.
-
-Der (temporär erstellte) geheime Schlüssel \(a \in \mathbb{Z}_q\) wird zufällig gewählt. Hieraus wird der öffentliche Schlüssel \(pk = g^a \mod p\) berechnet.
-
-Der geheime Schlüssel wird anschließend analog zu Shamirs Secret Sharing (siehe Abschnitt \ref{sec_basics_threshold_shamir}) unter Nutzung von \(\mathbb{Z}_q\) in einzelne Shares \((x_i, y_i) = (x_i, q(x_i))\) aufgeteilt und diese werden an die Teilnehmer verteilt. 
-
-\textbf{Verschlüsselung}
-
-Anschließend kann eine Nachricht mithilfe von \(pk\) analog zu dem ElGamal-Verfahren (siehe Abschnitt \ref{sec_basics_threshold_elgamal}) verschlüsselt werden. So erhält man \((v,c) = (g^k, m \cdot g^{ak})\) für ein zufällig gewähltes \(k \in \mathbb{Z}_q\).
-
-\textbf{Partielle Entschlüsselung}
-
-Jeder Besitzer eines Shares \((x_i, y_i)\) berechnet für den zu entschlüsselnden Schlüsseltext \((v,c)\) seine partielle Entschlüsselung \((x_i, v^{y_i})\) und sendet dieses an eine zentrale Instanz, den Combiner. Empfängt dieser mindestens \(t\) partielle Entschlüsselungen\footnote{
+Jeder Besitzer eines Shares \((x_i, y_i)\) kann nun für den zu entschlüsselnden Schlüsseltext \((v,c)\) seine partielle Entschlüsselung \((x_i, v^{y_i})\) berechnen und diese an eine zentrale Instanz, den Combiner, senden. Empfängt dieser mindestens \(t\) partielle Entschlüsselungen\footnote{
   Zur Erinnerung: \(t\) beschreibt die Mindestzahl zur Entschlüsselung benötigter Shares des Schwellwertschemas.
 }, so kann er den Klartext wiederherstellen.
 
-\textbf{Entschlüsselung}
+\textbf{Algorithmus C: Kombination}
 
-\todo{threshold gruppe erwähnen - es handelt sich im Zweifel nicht um die gleichen xi,yi}
-
-Hierzu berechnet der Kombiner die Lagrange-Koeffizienten \(\lambda_i \in \mathbb{Z}_q\) wie in Shamir's Secret Sharing beschrieben. Anschließend kann
+Hierzu berechnet der Combiner die Lagrange-Koeffizienten \(\lambda_i \in \mathbb{Z}_q\) wie in Shamir's Secret Sharing beschrieben\footnote{
+  In diesem Abschnitt gilt \(i \in C\). \(C\) stellt dabei die Menge der Indizes der beteiligten Sharebesitzer dar. Es gilt also \(C \subseteq \{1, \dots, n\}\) und \(| C | \ge t\).
+}. Anschließend kann
  
 \[g^{ak} = \prod_{i=1}^k (v^{y_i})^{\lambda_i}\]
 
@@ -91,8 +69,8 @@ berechnet werden. Dies funktioniert, da
 
 gilt. Der letzte Schritt \((*)\) folgt direkt aus dem zugrundeliegenden Secret Sharing und ist in dieser Form bereits in Abschnitt \ref{sec_basics_threshold_shamir} zu finden.
 
-Anschließend kann die Nachricht als \(m = c \cdot (g^{ak})^{(-1)}\) wiederhergestellt werden. 
+Anschließend kann der Klartext als \(m = c \cdot (g^{ak})^{(-1)}\) wiederhergestellt werden. 
 
-Ein Nachteil bei diesem Verfahren ist, dass für die Generierung des geheimen Schlüssels und der daraus resultierenden Shares eine zentrale und vertrauenswürdige Instanz notwendig ist. Dieser Nachteil soll im folgenden Abschnitt behandelt werden.
 
-\subsection{Dezentrale Schlüsselgenerierung}
+
+Ein Nachteil bei diesem Verfahren ist, dass für die Generierung des geheimen Schlüssels und der daraus resultierenden Shares eine zentrale und vertrauenswürdige Instanz notwendig ist. \todo{Erweitern, wenn beschrieben}

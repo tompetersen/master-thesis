@@ -63,11 +63,11 @@ In \cite{boneh2016} werden diese Systeme formalisiert. Ein \textit{Threshold-Pub
 \begin{itemize}
   \item \(G(t, n, r)\) ist der Algorithmus zur Generation des öffentlichen Schlüssels \(pk\) und der \(n\) \textit{Shares} des geheimen Schlüssels \(\{sk_1, \dots, sk_n\}\). \(t\) steht für die Anzahl der zur Entschlüsselung benötigten \textit{Shares}, wie bereits beschrieben. \(r\) ist als stellvertretend für die einfließenden Zufallswerte zu betrachten.
   
-  \item \(E(pk, m, r)\) steht für den Algorithmus, der der Verschlüsselung einer Nachricht \(m\) mit dem öffentlichen Schlüssel \(pk\) dient. \(r\) dient der Vermeidung von \textit{Known-Ciphertext-Angriffen}. \todo{Vmtl.? Mehr Details...}
+  \item \(E(pk, m, r)\) steht für den Algorithmus, der der Verschlüsselung eines Klartexts \(m\) mit dem öffentlichen Schlüssel \(pk\) dient. \(r\) dient der Vermeidung von \textit{Known-Ciphertext-Angriffen}. \todo{Vmtl.? Mehr Details...}
   
   \item \(D(sk_i, c)\) ist der Algorithmus der für einen bestimmten \textit{Share} und einen Schlüsseltext \(c\) eine partielle Entschlüsselung \(c_j'\) liefert.
   
-  \item \(C(c, c_1', \dots, c_t')\) ist der Algorithmus, der aus dem Schlüsseltext \(c\) und aus \(t\) durch \(D\) generierten partiellen Verschlüsselungen wieder die Nachricht \(m\) liefert. Dieser Algorithmus wird auch \textit{Combiner} genannt. 
+  \item \(C(c, c_1', \dots, c_t')\) ist der Algorithmus, der aus dem Schlüsseltext \(c\) und aus \(t\) durch \(D\) generierten partiellen Verschlüsselungen wieder den Klartext \(m\) liefert. Dieser Algorithmus wird auch \textit{Combiner} genannt. 
 \end{itemize}
 
 Zusätzlich wird von diesen Algorithmen die folgende Eigenschaft verlangt. Sie beschreibt die korrekte Entschlüsselung von validen Schlüsseltexten im Kontext eines Schwellwertschemas: Für alle möglichen Ergebnisse \((pk, \{sk_1, \dots, sk_n\})\) von \(G\), alle möglichen Nachrichten \(m\) und alle \(t\)-elementigen Teilmengen der \textit{Shares} \(\{sk_1', \dots, sk_t'\}\) soll für alle möglichen Schlüsseltexte \(c=E(pk, m, r)\) gelten: \(C(c, D(sk_1', c), \dots, D(sk_t', c)) = m\).
@@ -90,7 +90,7 @@ Weiterhin wird für den neuen Algorithmus eine weitere Eigenschaft verlangt. Fü
 
 Das in Abschnitt \ref{sec_state_threshold} vorgestellte und in dieser Arbeit verwendete kryptographische Schwellwertschema basiert auf dem bereits erläuterten Secret Sharing von Shamir und einem von Taher ElGamal entwickelten asymmetrischen Verschlüsselungsverfahren \cite{elgamal1985}. Die Grundlagen dieses Verfahrens sollen daher hier kurz vorgestellt werden.
 
-Im Folgenden sei \(\mathbb{G}\) eine zyklische Gruppe der Ordnung \(p\), wobei \(p\) eine Primzahl darstellt, und \(g\) ein Generator dieser Gruppe. Diese Parameter sind öffentlich bekannt. 
+Im Folgenden sei \(\mathbb{G}\) eine zyklische Gruppe der primen Ordnung \(p\) und \(g\) ein Generator dieser Gruppe. Diese Parameter können öffentlich bekannt gegeben werden. Alle folgenden Berechnungen werden in \(\mathbb{G}\) (also \(\mod p\)) ausgeführt.
 
 Ein Teilnehmer wählt nun ein zufälliges Element \(x \in \mathbb{Z}_p\). Dies ist der private Schlüssel des Teilnehmers. Er berechnet zusätzlich seinen öffentlichen Schlüssel \(h = g^x\).\\
 Um eine Nachricht \(m\), die an den Teilnehmer geschickt werden soll, zu verschlüsseln, wird zuerst ein zufälliges Element \(y \in \mathbb{Z}_p\) gewählt. Anschließend kann die Nachricht verschlüsselt als \((v, c) = (g^y, h^y \cdot m)\) versendet werden.\\
@@ -98,4 +98,4 @@ Zur Entschlüsselung berechnet der Empfänger \(k' = (v^x)^{(-1)}\) und kann die
 \[c \cdot k' = (h^y \cdot m) \cdot (v^x)^{(-1)} = g^{xy} \cdot m \cdot g^{(-yx)} = m\]
 gilt.
 
-Die Sicherheit des Verfahrens beruht auf dem Diskreten-Logarithmus-Problem. Details und Beweise hierzu sind beispielsweise in \cite{katz2014} zu finden.
+Die Sicherheit des Verfahrens beruht auf dem Diskreten-Logarithmus-Problem. Details und Beweise hierzu sind beispielsweise in \cite{katz2014} zu finden. \todo{Erweitern, um später darauf zurückgreifen zu können}
