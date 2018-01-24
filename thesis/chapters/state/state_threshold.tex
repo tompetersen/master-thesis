@@ -1,33 +1,44 @@
 \section{Schwellwertschemata}
 
-\begin{itemize}
-  \item \textbf{Grundlagen} Von Shamirs Secret Sharing bis heute
-  \item \textbf{Konkretes Verfahren} Im Detail erläutern - vmtl. Desmedt auf Basis von ElGamal
-  \item Zusätzlich Erweiterungen dieses Verfahrens wie verteilte Schlüsselgenerierung.
-\end{itemize}
-
 \label{sec_state_threshold}
 
-\subsection{Schemata}
+%\subsection{Schemata}
 
-\todo{Erweitern um weitere Systeme}
+% - RSA signing/decryption \cite{frankel1997proactive} proactive
+% - RSA signing/decryption \cite{gennaro1996robust} robust efficient
+% - RSA signign/decryption \cite{rabin1998simplified} robust proactive
+% - RSA signing \cite{nguyen2005}
+% - RSA signing \cite{shoup2000practical}
+% - Paillier encryption \cite{damgard2001, fouque2000sharing} -> homomorphic for electronic voting
+% - DSS signing \cite{gennaro1996robustdss}
+% - Schnorr \cite{stinson2001provably}
 
-Ein solches System, das auf dem ElGamal-Algorithmus und damit dem Diskreten-Logarithmus-Problem basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. \todo{Details} Dieser Ansatz setzt in der \textit{Setup}-Phase auf eine zentrale vertrauenswürdige Stelle zur Erzeugung der Schlüssel und \textit{Shares}. In \cite{pedersen1991} stellt der Autor basierend auf diesen Ergebnissen ein Verfahren vor, das bei der Schlüsselgenerierung ohne eine vertrauenswürdige Instanz auskommt. Dieses Verfahren wird in \cite{gennaro1999} noch einmal verbessert.\\
-Basierend auf dem jetzigen Recherchestand würde sich diese Kombination von Verfahren gut für den angestrebten Anwendungszweck eignen. Konkrete offene Implementierungen wurden jedoch bisher nicht gefunden, so dass möglicherweise eine eigene Implementierung umgesetzt werden muss.
 
-Neben diesem Verfahren gibt es noch weitere Ansätze basierend auf RSA \cite{desmedt1993, nguyen2005} oder dem Paillier-Kryptosystem \cite{paillier1999, damgard2001}, die jedoch deutlich komplexer zu sein scheinen. 
 
-\subsection{Umzusetzendes kryptographisches Schwellwertschema}
+Aufbauend auf den Ideen von Shamir und Blakley und den ersten Ideen zu kryptographischen Schwellwertschemata wurden für verschiedene Algorithmen und Anwendungsfälle Schemata mit unterschiedlichen Eigenschaften entwickelt.
+
+\subsection{Übersicht}
+
+Eine Vielzahl von Veröffentlichungen behandlen das Problem der verteilten Erstellung von Signaturen: Die in \cite{shoup2000practical} entwickelte Lösung basiert auf dem RSA-Verfahren, \cite{gennaro1996robustdss} erweitert den DSS-Standard um ein Schwellwertschema und \cite{stinson2001provably} entwickelt ein Schema zur verteilten Signatur mittels Schnorr-Signaturen.\\
+Weitere Forschungen haben sich mit der Entwicklung von RSA-basierten Schwellwertschemata zur verteilten Entschlüsselung beschäftigt, die im Kontext dieser Arbeit genutzt werden \cite{frankel1997proactive, gennaro1996robust, rabin1998simplified}. \\
+Ein zusätzliches Verfahren, das im Zusammenhang mit verteilter Entschlüsselung Aufmerksamkeit erfuhr, ist das Paillier-Kryptosystem. In \cite{damgard2001} und \cite{fouque2000sharing} entwickelten die Autoren auf diesem System basierte Schwellwertschemata, die insbesondere durch ihre homomorphe Eigenschaft hervorstechen und dadurch im Bereich der elektronischen Wahlsysteme genutzt werden können.\\
+Einen Überblick über weitere Veröffentlichungen in diesem Bereich bieten beispielsweise \cite{desmedt1997some}, \cite{gemmell1997} und \cite{desmedt1993}.
+
+\subsection{ElGamal-basiertes Schwellwertschema}
+
+Ein Verfahren zur \textit{Threshold Decryption}, das auf auf einer geschickten Kombination von Shamir's Secret Sharing (Abschnitt \ref{sec_basics_threshold_shamir}) und des ElGamal-Kryptosystems (Abschnitt \ref{sec_basics_threshold_elgamal}) basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. Aufbereitete Darstellungen lassen sich in \cite{katz2014} und \cite{boneh2016} finden. \\
+Es ist eines der ersten veröffentlichten Schwellwertschemas und erfuhr dadurch viel Beachtung und entsprechend viele aufbauende Arbeiten, die Verbesserungen vorschlugen. Durch die hinterliegende Mathematik bietet das Schema einfachere Umsetzbarkeit (auch von Erweiterungen wie dezentraler Schlüsselgenerierung) gegenüber RSA\footnote{
+  Das ElGamal-Verfahren nutzt zur Berechnung eine öffentlich bekannter Ordnung (sie ist Teil des öffenltichen Schlüssels). Im Gegensatz dazu werden Berechnungen bei RSA in \(\Phi(n)\) ausgeführt, das jedoch nicht öffentlich vorliegen darf \cite{nguyen2005}.
+}. Dies gilt ebenso gegenüber den Paillier-basierten Schemata -- deren homomorphe Eigenschaften in dieser Arbeit nicht benötigt werden. Aus diesen Gründen fiel die Wahl des in dieser Arbeit umzusetzenden Schemas auf das genannte Verfahren.\\
+Der Rest dieses Abschnitts stellt das Verfahren nun entsprechend den in Abschnitt \ref{sec_basics_threshold_thresholddecryption} aufgeführten Algorithmen eines Threshold-Public-Key-Decryption-Systems im Detail vor.
+
+%\subsection{Umzusetzendes kryptographisches Schwellwertschema}
 
 %- Desmedt und Frankel, aufbereitet auch in Katz und Boneh.
 
 %- Verfahren basierend auf Shamir und ElGamal
 
 %- Analog zu basics-threshold-formal (zentrale) lässt sich das Verfahren in 4 Phasen unterteilen
-
-Das Verfahren, das in einem späteren Teil dieser Arbeit implementiert wird, wurde in \cite{DesmedtFrankel1990} vorgestellt. Aufbereitete Darstellungen lassen sich in \cite{katz2014} und \cite{boneh2016} finden. Das Verfahren beruht auf einer geschickten Kombination von Shamir's Secret Sharing (Abschnitt \ref{sec_basics_threshold_shamir}) und des ElGamal-Kryptosystems (Abschnitt \ref{sec_basics_threshold_elgamal}).
-
-Im Folgenden wird das entwickelte Schema entsprechend den in Abschnitt \ref{sec_basics_threshold_thresholddecryption} aufgeführten Algorithmen eines Threshold-Public-Key-Decryption-Systems im Detail dargestellt.
 
 \textbf{Algorithmus G: Schlüsselgenerierung}
 
@@ -71,6 +82,8 @@ gilt. Der letzte Schritt \((*)\) folgt direkt aus dem zugrundeliegenden Secret S
 
 Anschließend kann der Klartext als \(m = c \cdot (g^{ak})^{(-1)}\) wiederhergestellt werden. 
 
+%Ein Nachteil bei diesem Verfahren ist, dass für die Generierung des geheimen Schlüssels und der daraus resultierenden Shares eine zentrale und vertrauenswürdige Instanz notwendig ist. \todo{Erweitern, wenn beschrieben}
 
+\subsection{Existierende Implementierungen}
 
-Ein Nachteil bei diesem Verfahren ist, dass für die Generierung des geheimen Schlüssels und der daraus resultierenden Shares eine zentrale und vertrauenswürdige Instanz notwendig ist. \todo{Erweitern, wenn beschrieben}
+\todo{No available and apropriate implementations}

@@ -90,7 +90,7 @@ Weiterhin wird für den neuen Algorithmus eine weitere Eigenschaft verlangt. Fü
 
 Das in Abschnitt \ref{sec_state_threshold} vorgestellte und in dieser Arbeit verwendete kryptographische Schwellwertschema basiert auf dem bereits erläuterten Secret Sharing von Shamir und einem von Taher ElGamal entwickelten asymmetrischen Verschlüsselungsverfahren \cite{elgamal1985}. Die Grundlagen dieses Verfahrens sollen daher hier kurz vorgestellt werden.
 
-Im Folgenden sei \(\mathbb{G}\) eine zyklische Gruppe der primen Ordnung \(p\) und \(g\) ein Generator dieser Gruppe. Diese Parameter können öffentlich bekannt gegeben werden. Alle folgenden Berechnungen werden in \(\mathbb{G}\) (also \(\mod p\)) ausgeführt.
+Im Folgenden sei \(\mathbb{G}\) eine zyklische Gruppe der primen Ordnung \(p\) und \(g\) ein Generator dieser Gruppe. Diese Parameter können öffentlich bekannt gegeben werden. Alle folgenden Berechnungen werden in \(\mathbb{G}\) (also modulo \(p\)) ausgeführt.
 
 Ein Teilnehmer wählt nun ein zufälliges Element \(x \in \mathbb{Z}_p\). Dies ist der private Schlüssel des Teilnehmers. Er berechnet zusätzlich seinen öffentlichen Schlüssel \(h = g^x\).\\
 Um eine Nachricht \(m\), die an den Teilnehmer geschickt werden soll, zu verschlüsseln, wird zuerst ein zufälliges Element \(y \in \mathbb{Z}_p\) gewählt. Anschließend kann die Nachricht verschlüsselt als \((v, c) = (g^y, h^y \cdot m)\) versendet werden.\\
