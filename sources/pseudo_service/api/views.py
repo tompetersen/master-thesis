@@ -1,7 +1,6 @@
 import threading
 
 import nacl.utils
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.generics import CreateAPIView
@@ -70,13 +69,18 @@ class CreatePseudonym(APIView):
         return result
 
 
-class PublicKeyView(APIView):
+class ConfigView(APIView):
 
     def get(self, request):
         public_key = Config.objects.get(key=Config.PUBLIC_KEY).value
+        pseudonym_update_interval = Config.objects.get(key=Config.PSEUDONYM_UPDATE_INTERVAL).value
         pk = PublicKey.from_json(public_key)
+        response_dict = {
+            'public_key': pk.to_dict(),
+            'pseudonym_update_interval': pseudonym_update_interval,
+        }
 
-        return Response(pk.to_dict(), status=status.HTTP_200_OK)
+        return Response(response_dict, status=status.HTTP_200_OK)
 
 
 class ClientConnectView(CreateAPIView):

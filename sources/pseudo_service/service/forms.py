@@ -37,7 +37,7 @@ class ThresholdSetupForm(forms.Form):
 
     clients = forms.MultipleChoiceField(
         label='Clients involved',
-        help_text='Number of checked clients yields the threshold parameter n.',
+        help_text='The number of checked clients yields the threshold parameter n.',
         widget=forms.CheckboxSelectMultiple(attrs={'checked' : 'checked'})
     )
 
@@ -61,8 +61,16 @@ class ThresholdSetupForm(forms.Form):
         required=True,
         min_value=1,
         initial=3,
-        label='Maximal pseudonym usages',
-        help_text='The maximal number of times a pseudonym will be used.'
+        label='Maximum pseudonym usages',
+        help_text='The maximum number of times a pseudonym will be used.'
+    )
+
+    pseudonym_update_interval = forms.IntegerField(
+        required=True,
+        min_value=1,
+        initial=3600, # 6 hrs reasonable?
+        label='Pseudonym update interval',
+        help_text='The maximum time interval a pseudonym is used (in minutes).'
     )
 
     def __init__(self, *args, **kwargs):
@@ -85,11 +93,11 @@ class ThresholdSetupForm(forms.Form):
                 Div(
                     Div(
                         'clients',
-                        css_class='col-6',
+                        css_class='col-4',
                     ),
                     Div(
                         'threshold_t',
-                        css_class='col-6',
+                        css_class='col-4',
                     ),
                     css_class='row',
                 ),
@@ -99,11 +107,15 @@ class ThresholdSetupForm(forms.Form):
                 Div(
                     Div(
                         'pseudonym_length',
-                        css_class='col-6',
+                        css_class='col-4',
                     ),
                     Div(
                         'max_pseudonym_usages',
-                        css_class='col-6',
+                        css_class='col-4',
+                    ),
+                    Div(
+                        'pseudonym_update_interval',
+                        css_class='col-4',
                     ),
                     css_class='row',
                 ),

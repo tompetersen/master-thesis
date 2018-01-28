@@ -107,6 +107,7 @@ class Config(models.Model):
     PUBLIC_KEY = 'public_key'
     PSEUDONYM_LENGTH = 'pseudonym_length'
     MAX_PSEUDONYM_USAGES = 'max_pseudonym_usages'
+    PSEUDONYM_UPDATE_INTERVAL = 'pseudonym_update_interval'
 
     key = models.CharField(max_length=20, primary_key=True)
     value = models.TextField()

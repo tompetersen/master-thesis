@@ -1,7 +1,6 @@
-import json
-
 import requests
 from requests.exceptions import RequestException
+from requests.models import Response
 from threshold_crypto.threshold_crypto import KeyShare
 
 
@@ -13,19 +12,19 @@ class ClientApiCaller:
 
     @staticmethod
     def send_share(client_address: str, client_port: int, share: KeyShare):
-        route='share'
-        ClientApiCaller._call_client_api(client_address, client_port, route, share.to_json())
+        route = 'share'
+        ClientApiCaller._call_client_api(client_address, client_port, route, share.to_dict())
 
     @staticmethod
-    def _call_client_api(client_address: str, client_port: int, route:str, data) -> str:
+    def _call_client_api(client_address: str, client_port: int, route: str, data: dict=None) -> Response:
         try:
-            if not isinstance(data, str):
-                data = json.dumps(data)
-
             url = 'http://' + client_address + ':' + str(client_port) + '/' + route
-            result = requests.post(url, json=data)
-            if result.status_code >= 400:
-                raise ClientApiError(result.text())
+
+            if data:
+                result = requests.post(url, data=data)
+            else:
+                result = requests.get(url)
+            result.raise_for_status()
 
             return result
         except RequestException as e:

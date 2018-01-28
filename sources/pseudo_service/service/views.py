@@ -7,7 +7,7 @@ from django.views.generic.list import ListView
 
 from threshold_crypto import ThresholdParameters, ThresholdCrypto, KeyParameters
 
-from service.client_api import ClientApiCaller
+from service.client_api import ClientApiCaller, ClientApiError
 from service.forms import PseudonymSearchForm, ThresholdSetupForm
 from service.models import Applicant, StoreEntryRequest, StoreEntry, ThresholdClient, Config, \
     PartialDecryptionForRequest
@@ -56,14 +56,16 @@ class ThresholdSetupView(FormView):
         threshold_t = form.cleaned_data['threshold_t']  # 2
         pseudonym_length = form.cleaned_data['pseudonym_length']
         max_pseudonym_usages = form.cleaned_data['max_pseudonym_usages']
+        pseudonym_update_interval = form.cleaned_data['pseudonym_update_interval']
 
         # TODO: More validation
 
         try:
-            self.perform_centralized_setup(key_param_strategy, client_ids, threshold_t, pseudonym_length, max_pseudonym_usages)
+            self.perform_centralized_setup(key_param_strategy, client_ids, threshold_t, pseudonym_length, max_pseudonym_usages, pseudonym_update_interval)
             return redirect('index') # TODO: redirect to correct place
         except Exception as e:
-            raise e # TODO: redirect, error,...?
+            form.add_error(None, str(e)) # error handled as non-field error
+            return super(ThresholdSetupView, self).form_invalid(form)
 
     def get_form_kwargs(self):
         kwargs = super(ThresholdSetupView, self).get_form_kwargs()
@@ -80,7 +82,7 @@ class ThresholdSetupView(FormView):
         context = super(ThresholdSetupView, self).get_context_data(**kwargs)
         return context
 
-    def perform_centralized_setup(self, key_param_strategy, client_ids, threshold_t, pseudonym_length, max_pseudonym_usages):
+    def perform_centralized_setup(self, key_param_strategy, client_ids, threshold_t, pseudonym_length, max_pseudonym_usages, pseudonym_update_interval):
         # Create parameters, keys and shares
         threshold_n = len(client_ids)
         threshold_params = ThresholdParameters(threshold_t, threshold_n)
@@ -91,7 +93,11 @@ class ThresholdSetupView(FormView):
         # Send shares to clients
         clients = ThresholdClient.objects.filter(id__in=client_ids)
         for client, share in zip(clients, shares):
-            ClientApiCaller.send_share(client.client_address, client.client_port, share)
+            try:
+                ClientApiCaller.send_share(client.client_address, client.client_port, share)
+            except ClientApiError as e:
+                print('Could not reach client [%s]. INTERNAL: %s' % (client.name, str(e)))
+                raise Exception('Could not reach client [%s]. Please make sure the client is online and reachable!' % (client.name))
 
         # Store public values
         Config(Config.CLIENT_ID_LIST, ','.join(client_ids)).save()
@@ -100,6 +106,7 @@ class ThresholdSetupView(FormView):
         Config(Config.KEY_PARAMS, key_params.to_json()).save()
         Config(Config.PSEUDONYM_LENGTH, str(pseudonym_length)).save()
         Config(Config.MAX_PSEUDONYM_USAGES, str(max_pseudonym_usages)).save()
+        Config(Config.PSEUDONYM_UPDATE_INTERVAL, str(pseudonym_update_interval)).save()
 
     def get_key_params(self, key_param_strategy) -> KeyParameters:
         # TODO: extend key strategies
