@@ -112,7 +112,7 @@ Im Folgenden soll kurz auf zwei Kernelemente/Schlüsselstellen/... des implement
 % Setup: Clients, KeyParameter, ThresholdParameter
 % auf bereits in impl-pseudonymity geschriebenes zurückgreifen
 
-\todo{Setup und Generierung}
+Um die Parameter für das kryptographische Schwellwertschema setzen zu können, wurde die Konfigurationsoberfläche erweitert. Hier müssen nun Angaben zur Schlüsselstärke, zu beteiligten Teilnehmern und erforderlichen Anzahl an Teilnehmern für die Entschlüsselung eines Datenbankeintrages gemacht werden.
 
 Anschließend können berechtigte Benutzer die Aufdeckung eines Pseudonyms über das Webinterface anfragen. Anschließend werden von den teilnehmenden Clients die partiellen Entschlüsselungen entgegengenommen. Liegen ausreichend partielle Verschlüsselungen vor, so werden diese mithilfe der Bibliothek kombiniert und damit der Halter des Pseudonyms entschlüsselt und aufgedeckt. 
 
@@ -132,4 +132,4 @@ Anschließend können sich Teilnehmer regelmäßig nach neuen Anfragen zur Aufde
 
 %- Empfängt PublicKey vom Service und nutzt ihn zur Nachrichtenverschlüsselung
 
-Das im Syslog-Proxy implementierte Plugin zur Pseudonymisierung empfängt während der Initialisierung den während der Schlüsselerzeugung generierten öffentlichen Schlüssel vom Pseudonym-Service. Bei einer eintreffenden Syslog-Nachricht werden die zu pseudonymisierenden Daten mit diesem Schlüssel unter Nutzung der Bibliotheksfunktion verschlüsselt und zusammen mit den bereits beschriebenen weiteren Daten an den Service gesendet.
+Das im Syslog-Proxy implementierte Plugin zur Pseudonymisierung empfängt während der Initialisierung den während der Schlüsselerzeugung generierten öffentlichen Schlüssel vom Pseudonym-Service. Bei einer eintreffenden Syslog-Nachricht werden die zu pseudonymisierenden Daten mit diesem Schlüssel unter Nutzung der Bibliotheksfunktion verschlüsselt und zusammen mit den bereits in Abschnitt \ref{sec_impl_pseudonymity} beschriebenen weiteren Daten an den Service gesendet.
