@@ -71,35 +71,51 @@ Gerade die letzte Frage sorgt dafür, dass zusätzliche Anforderungen an den zu 
 
 \section{Related work}
 
-\cite{salem2008survey}, A Survey of Insider Attack Detection Research, 2008, 195
-Übersicht über verschiedene Arten der Insider-Erkennung (Host-based and network-based), 
-we also believe that any technologies developed to detect insider attack have to include strong privacy-preserving guarantees,
+%\cite{salem2008survey}, A Survey of Insider Attack Detection Research, 2008, 195
+%Übersicht über verschiedene Arten der Insider-Erkennung (Host-based and network-based), 
+%we also believe that any technologies developed to detect insider attack have to include strong privacy-preserving guarantees,
+%How might a system alert a supervisor of a possible attack without disclosing
+%an employee’s true identity unless and until an attack has been validated?
+
+Im Bereich der Erkennung von Insiderangriffen fand bereits einige Forschungsarbeit statt. In \cite{salem2008survey} bieten die Autoren einen Überblick über Forschungsergebnisse basierend auf unterschiedlichen Verfahren aus der Statistik und des maschinellen Lernens sowohl auf Host- als auch auf Netzwerkebene. Hier wird auch die Frage nach Erhalt der Privatsphäre eines Nutzers als Feld weiterer notwendiger Forschung dargestellt:
+
+\begin{quotation}
+Hence, we also believe that any technologies developed
+to detect insider attack have to include strong privacy-preserving guarantees
+to avoid making false claims that could harm the reputation of individuals
+whenever errors occur. [...] 
 How might a system alert a supervisor of a possible attack without disclosing
 an employee’s true identity unless and until an attack has been validated?
+\cite{salem2008survey}
+\end{quotation}
+
+%\cite{sobirey1997pseudonymous}, Pseudonymous Audit for Privacy Enhanced Intrusion Detection, 1997, 64
+%Zwei Ansätze zur pseudonymen Intrusion Detection (IDA, AID), basieren auf symmetrischer Verschlüsselung (Erwähnung von 4-Augen-Prinzip durch Teilung des Schlüssels), Pseudonymisierung geschieht jeweils bereits im Betriebssystem-Kernel
+
+%\cite{buschkes1999privacy}, Privacy enhanced intrusion detection, 1999, 23
+%Architekturansatz unter Pseudonymnutzung, benötigt TTP für die Generierung und Aufdeckung von Pseudonymen, praktische Umsetzung mithilfe von Kerberos oder MIXen
+
+%\cite{lundin1999privacy, lundin2000anomaly}, Privacy vs. Intrusion Detection Analysis, 1999, 35
+%Anomalieerkennung unter Nutzung von Pseudonymisierung, Experimente mit Firewalldaten, Pseudonymaufdeckung als durch organisatorische Maßnahmen zu regelnder Prozess
+
+%\cite{biskup2000threshold, biskup2001pseudonymization} On pseudonymization of audit data for intrusion detection, Threshold-based identity recovery for privacy enhanced applications, 2000, 44
+%Pseudonymisierungsansatz, der Shares (Shamir's Secret Sharing) als Pseudonyme nutzt. Bei Überschreitung eines Schwellwerts kann so ein Verursacher, der in genug Verdachtsfällen auffiel, ermittelt werden.
+
+Mit dieser Fragestellung beschäftigen sich weitere Veröffentlichungen im Bereich der Intrusion-Detection-Systeme. Oftmals wird -- wie in dieser Arbeit auch -- Pseudonymisierung als Verfahren zum Erhalt der Privatsphäre genutzt.
+In \cite{sobirey1997pseudonymous} werden zwei Ansätze zur \textit{Privacy Enhanced Intrusion Detection} vorgestellt. Die Pseudonymisierung wird jeweils bereits im Betriebssystem-Kernel vorgenommen und mithilfe symmetrischer Verschlüsselung erreicht. Auch die Nutzung des 4-Augen-Prinzips wird bei der Pseudonymaufdeckung wird bereits erwähnt -- hier angestrebt durch eine Aufteilung des symmetrischen Schlüssels.\\
+In \cite{buschkes1999privacy} stellt der Autor einen Architekturansatz für Intrusion-Detection-Systeme vor, der ebenfalls auf der Nutzung von Pseudonymen beruht. Es werden zwei Ansätze basierend auf Kerberos-Tickets bzw. dem MIX-Konzept vorgestellt. Für die Generierung bzw. Aufdeckung eines Pseudonyms wird eine \textit{Trusted Third Party} benötigt.\\
+In \cite{lundin2000anomaly} wird von den Autoren ein System zur Anomalieerkennung auf Basis von Pseudonymen entwickelt und anhand von Logdaten einer Firewall überprüft. Das Aufdecken von Pseudonymen wird hier als durch organisatorische Maßnahmen zu regelnder Prozess verstanden.\\
+In \cite{biskup2000threshold} und \cite{biskup2001pseudonymization} nutzen die Verfasser Shamir's Secret Sharing zur Erzeugung von Pseudonymen. Jeder Share bildet ein Pseudonym. Hierdurch wird sichergestellt, dass ein Pseudonym erst aufgedeckt werden kann, wenn eine einen Schwellwert übertreffende Anzahl von Warnmeldungen zu einem Nutzer im System eingetroffen ist.
 
 
+%\cite{park2007ppids}, PPIDS : Privacy Preserving Intrusion Detection System, 2007, 7
+%Rule-based pattern matching auf HIDS unter Nutzung von homomorpher Verschlüsselung ohne TTP, nur für bestimmte Situationen und relativ hoher Performanzoverhead
 
-\cite{sobirey1997pseudonymous}, Pseudonymous Audit for Privacy Enhanced Intrusion Detection, 1997, 64
-Zwei Ansätze zur pseudonymen Intrusion Detection (IDA, AID), basieren auf symmetrischer Verschlüsselung (Erwähnung von 4-Augen-Prinzip durch Teilung des Schlüssels), Pseudonymisierung geschieht jeweils bereits im Betriebssystem-Kernel
+%\cite{niksefat2013zids}, ZIDS: A Privacy-Preserving Intrusion Detection System Using Secure Two-Party Computation Protocols, 2013, 11
+%Client-Server Lösung zur Privacy-Preserving Intrusion Detection mit Geheimhaltungsgarantien für Clients (im Bezug auf zur Erkennung notwendige Daten) und Server (im Bezug auf Signaturen von Zero-Day-Exploits)
 
-\cite{buschkes1999privacy}, Privacy enhanced intrusion detection, 1999, 23
-Architekturansatz unter Pseudonymnutzung, benötigt TTP für die Generierung und Aufdeckung von Pseudonymen, praktische Umsetzung mithilfe von Kerberos oder MIXen
+Neben den Pseudonym-basierten Lösungen gibt es weitere auf anderen Verfahren basierende Forschungsergebnisse. In \cite{park2007ppids} beispielsweise werden von den Autoren die Eigenschaften homomorpher Verschlüsselung zur Privatsphäre-erhaltenden Angriffserkennung eingesetzt, in \cite{niksefat2013zids} wird eine Art der Mehrparteienberechnung genutzt um mehrseitige Privatsphäregarantien in einem Intrusion-Detection-System insbesondere im Hinblick auf Zero-Day-Lücken zu erreichen.\\
+In \cite{niksefat2017privacy} bieten die Autoren einen Überblick über weitere existierende Lösungen im Bereich der \textit{Privacy Enhanced Intrusion Detection}.
 
-\cite{lundin1999privacy, lundin2000anomaly}, Privacy vs. Intrusion Detection Analysis, 1999, 35
-Anomalieerkennung unter Nutzung von Pseudonymisierung, Experimente mit Firewalldaten, Pseudonymaufdeckung als durch organisatorische Maßnahmen zu regelnder Prozess
-
-\cite{biskup2000threshold, biskup2001pseudonymization} On pseudonymization of audit data for intrusion detection, Threshold-based identity recovery for privacy enhanced applications, 2000, 44
-Pseudonymisierungsansatz, der Shares (Shamir's Secret Sharing) als Pseudonyme nutzt. Bei Überschreitung eines Schwellwerts kann so ein Verursacher, der in genug Verdachtsfällen auffiel, ermittelt werden.
-
-
-
-\cite{park2007ppids}, PPIDS : Privacy Preserving Intrusion Detection System, 2007, 7
-Rule-based pattern matching auf HIDS unter Nutzung von homomorpher Verschlüsselung ohne TTP, nur für bestimmte Situationen und relativ hoher Performanzoverhead
-
-\cite{niksefat2013zids}, ZIDS: A Privacy-Preserving Intrusion Detection System Using Secure Two-Party Computation Protocols, 2013, 11
-Client-Server Lösung zur Privacy-Preserving Intrusion Detection mit Geheimhaltungsgarantien für Clients (im Bezug auf zur Erkennung notwendige Daten) und Server (im Bezug auf Signaturen von Zero-Day-Exploits)
-
-
-
-\cite{niksefat2017privacy}, Privacy issues in intrusion detection systems: A taxonomy, survey and future directions, 2017, 0
-Survey über existierende Lösungen im Bereich der Privacy preserving intrusion detection, für Kapitel Alternative Datenschutztechniken auch Übersicht über Privacy preserving techniques in IDS.
+%\cite{niksefat2017privacy}, Privacy issues in intrusion detection systems: A taxonomy, survey and future directions, 2017, 0
+%Survey über existierende Lösungen im Bereich der Privacy preserving intrusion detection, für Kapitel Alternative Datenschutztechniken auch Übersicht über Privacy preserving techniques in IDS.
