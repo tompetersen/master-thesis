@@ -71,3 +71,35 @@ Gerade die letzte Frage sorgt dafür, dass zusätzliche Anforderungen an den zu 
 
 \section{Related work}
 
+\cite{salem2008survey}, A Survey of Insider Attack Detection Research, 2008, 195
+Übersicht über verschiedene Arten der Insider-Erkennung (Host-based and network-based), 
+we also believe that any technologies developed to detect insider attack have to include strong privacy-preserving guarantees,
+How might a system alert a supervisor of a possible attack without disclosing
+an employee’s true identity unless and until an attack has been validated?
+
+
+
+\cite{sobirey1997pseudonymous}, Pseudonymous Audit for Privacy Enhanced Intrusion Detection, 1997, 64
+Zwei Ansätze zur pseudonymen Intrusion Detection (IDA, AID), basieren auf symmetrischer Verschlüsselung (Erwähnung von 4-Augen-Prinzip durch Teilung des Schlüssels), Pseudonymisierung geschieht jeweils bereits im Betriebssystem-Kernel
+
+\cite{buschkes1999privacy}, Privacy enhanced intrusion detection, 1999, 23
+Architekturansatz unter Pseudonymnutzung, benötigt TTP für die Generierung und Aufdeckung von Pseudonymen, praktische Umsetzung mithilfe von Kerberos oder MIXen
+
+\cite{lundin1999privacy, lundin2000anomaly}, Privacy vs. Intrusion Detection Analysis, 1999, 35
+Anomalieerkennung unter Nutzung von Pseudonymisierung, Experimente mit Firewalldaten, Pseudonymaufdeckung als durch organisatorische Maßnahmen zu regelnder Prozess
+
+\cite{biskup2000threshold, biskup2001pseudonymization} On pseudonymization of audit data for intrusion detection, Threshold-based identity recovery for privacy enhanced applications, 2000, 44
+Pseudonymisierungsansatz, der Shares (Shamir's Secret Sharing) als Pseudonyme nutzt. Bei Überschreitung eines Schwellwerts kann so ein Verursacher, der in genug Verdachtsfällen auffiel, ermittelt werden.
+
+
+
+\cite{park2007ppids}, PPIDS : Privacy Preserving Intrusion Detection System, 2007, 7
+Rule-based pattern matching auf HIDS unter Nutzung von homomorpher Verschlüsselung ohne TTP, nur für bestimmte Situationen und relativ hoher Performanzoverhead
+
+\cite{niksefat2013zids}, ZIDS: A Privacy-Preserving Intrusion Detection System Using Secure Two-Party Computation Protocols, 2013, 11
+Client-Server Lösung zur Privacy-Preserving Intrusion Detection mit Geheimhaltungsgarantien für Clients (im Bezug auf zur Erkennung notwendige Daten) und Server (im Bezug auf Signaturen von Zero-Day-Exploits)
+
+
+
+\cite{niksefat2017privacy}, Privacy issues in intrusion detection systems: A taxonomy, survey and future directions, 2017, 0
+Survey über existierende Lösungen im Bereich der Privacy preserving intrusion detection, für Kapitel Alternative Datenschutztechniken auch Übersicht über Privacy preserving techniques in IDS.
