@@ -28,6 +28,7 @@ Dadurch wird der Datenfluss in OSSIM gegenüber dem in Abschnitt \ref{TODO} vorg
 Hierdurch entstehen gegenüber den in Abschnitt \ref{TODO} beschriebenen Möglichkeiten zum Eingriff in den Datenfluss zwei weitere Möglichkeiten zum Eingriff:
 
 \begin{enumerate}
+ \setcounter{enumi}{3}
 
 \item \textbf{Patchen des OSSIM-Sensor-Agents}\\
   Bei dieser Lösung müsste der OSSIM-Agent des Sensors so verändert werden, dass vor dem Senden der Events an den Server die Pseudonymisierung stattfindet. Daten erreichen den OSSIM-Server nur pseudonymisiert und mehrfaches Parsen wie in der zweiten Lösung wird verhindert. Auf der anderen Seite erfordert diese Lösung einen Eingriff in die Funktionsweise von OSSIM, was beispielsweise bei Updates von OSSIM zu Problemen führen kann. Außerdem liegen die Daten zu Beginn in nicht-pseudonymisierter Form im Sensor vor. \todo{Syslog-Problematik erwähnen} Zusätzlich erfordert diese Lösung die verteilte Installation von OSSIM-Sensor und -Server, schließt also die All-In-One-Installation aus.

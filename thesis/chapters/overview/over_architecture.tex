@@ -9,23 +9,7 @@
 \todo{Hier allgemein - OSSIM erst in 5.1.}
 
 Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene Stellen im Datenfluss eines SIEM-Systems an. In diesem Abschnitt sollen die verschiedenen Möglichkeiten dargestellt und gegeneinander abgewogen werden. Eine Übersicht über die verschiedenen Stellen bietet Abbildung \ref{fig:siem_data_access_point}. Im Folgenden sollen diese Möglichkeiten bezogen auf die in Abschnitt \ref{subsec_impl_requirements_ossimintegration} dargestellten Eigenschaften\todo{EZ: Kannst du nochmal kurz sagen, um was fuer Eigenschaften es da ging? Ich weiss es jetzt schon nicht mehr.} bewertet werden.
-
-\todo{EZ: Es ist nicht gleich klar, dass sich diese Aufzaehlung auf die Nummern in der Abbildung beziehen.}
-
-\begin{enumerate}
-
-\item \textbf{In der Quelle der Logdaten}\\
-  Bei diesem Ansatz werden die Daten bereits pseudonymisiert, bevor sie die Datenquelle verlassen. Dieser Ansatz würde dafür sorgen, dass die Daten bereits pseudonymisiert auf der Übertragungsstrecke und im SIEM-System vorliegen. Es wäre kein mehrfaches Parsen der Daten notwendig und der Ansatz wäre unabhängig vom verwendeten SIEM-System. Auf der anderen Seite würde dieser Ansatz die universelle Veränderung jeder Datenquelle notwendig machen. 
-  Auch wenn dieser Ansatz aus datenschutztechnischer Sicht die beste Möglichkeit darstellen würde, so ist er doch nicht umsetzbar, da hierzu jede mögliche Quelle von Logdaten universell verändert werden müsste.
-  \todo{EZ: Hier machst du es dir ein bisschen zu einfach. In deinem Log-Proxy musst du ja auch alle moeglichen Logs, die dort ankommen, universell veraendern. Was spricht also dagegen, dass man diesen Proxy einfach lokal auf jeder Logquelle laufen laesst? Dann braeuchte nicht mal mehr die Searchable Encryption. Denn der lokale Proxy sieht ja immer wieder das gleiche identifizierende Merkmal und kann sich dazu einfach eine Tabelle aufbauen mit den zugehoerigen Pseudonymen. Das kann im Klartext passieren, da die Merkmale auf der Logquelle ja sowieso im Klartext sichtbar sind.}
-
-\item \textbf{Proxy-basierter Ansatz}\\
-  Dieser Ansatz pseudonymisiert die Daten vor dem ersten Kontakt mit dem SIEM-System, indem Datenquellen ihre Logdaten an einen Proxy senden, der die Daten pseudonymisiert und erst anschließend an das SIEM-System weiterreicht. Hierdurch wird erreicht, dass die Daten zu keiner Zeit nicht-pseudonymisiert in dem SIEM-System vorliegen. Außerdem ist er unabhängig von Datenquellen und SIEM-System und erfordert keinen direkten Eingriff in diese (abgesehen von geringen Konfigurationsanpassungen). Ein Nachteil dieser Lösung ist, dass sie das Parsen und Neuzusammensetzen der Logdaten im Proxy zusätzlich zu deren anschließender Behandlung im SIEM-System erfordert.
-
-\item \textbf{Patchen des SIEM-Systems}\\
-  Die letzte Möglichkeit ist das Verändern des SIEM-Systems selbst. Hierzu wird in die Logdaten parsende Komponente eingegriffen, um vor, während oder nach diesem Vorgang die Logdaten zu pseudonymisieren. Dieser Ansatz erfordert kein mehrfaches Bearbeiten von Logdaten wie in dem Proxy-basierten Ansatz. Auf der anderen Seite ist er abhängig vom eingesetzten SIEM-System und erfordert seine Veränderung. Zusätzlich liegen die Daten erst einmal in nicht veränderter Form im SIEM-System vor, was die in Abschnitt \ref{subsec_impl_requirements_ossimintegration} erwähnten Nachteile mit sich bringt.
-
-\end{enumerate}
+Die Ziffern beziehen sich dabei auf die in der Abbildung gekennzeichneten Stellen.
 
 \begin{figure}[]
     \centering
@@ -34,15 +18,29 @@ Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene St
     \label{fig:siem_data_access_point}
 \end{figure}
 
-Insbesondere der aus datenschutztechnischer Sicht relevante Vorteil, dass die Daten bereits pseudonymisiert in dem SIEM-System eintreffen, ließ die Entscheidung auf die \textbf{zweite Möglichkeit} fallen. \todo{Digitalgipfel:   Die	 Pseudonymisierung	 ist	 im	 Verarbeitungsprozess	so	früh	wie möglich	durchzuführen.	 }
-Dass die Lösung außerdem noch keine Anpassungen an dem SIEM-System selbst erfordert, wiegt den Nachteil des zusätzlichen Parsens und wieder Zusammensetzens der Lognachricht bei Weitem auf.\todo{Auch auf Angreifermodell beziehen}
+\begin{enumerate}
 
+\item \textbf{In der Quelle der Logdaten}\\
+  Bei diesem Ansatz werden die Daten bereits pseudonymisiert, bevor sie die Datenquelle verlassen. Dieser Ansatz sorgt dafür, dass die Daten bereits pseudonymisiert auf der Übertragungsstrecke und im SIEM-System vorliegen. Es ist kein mehrfaches Parsen der Daten notwendig und der Ansatz ist unabhängig vom verwendeten SIEM-System zu realisieren. Auf der anderen Seite macht der Ansatz die universelle Veränderung jeder Datenquelle notwendig. Dies kann bei Datenquellen, die auf ähnlichen gut erweiterbaren Plattformen beruhen, relativ einfach umzusetzen sein. Beispielsweise könnte die im nächsten Ansatz vorgestellte Proxy-Komponente lokal auf der Datenquelle eingesetzt werden. Schwierigkeiten würde dieser Ansatz hingegen bei Datenquellen bereithalten, die beispielsweise aus Gründen abgespeckter zugrundeliegender Betriebssysteme oder geringer Rechenleistung nur schwer erweiterbar sind. Außerdem würde er in vielen Fällen die Kooperation des Herstellers voraussetzen, wenn es sich um nicht quelloffene \glqq{}Box\grqq{}-Lösungen handelt.
 
+\item \textbf{Proxy-basierter Ansatz}\\
+  Dieser Ansatz pseudonymisiert die Daten vor dem ersten Kontakt mit dem SIEM-System, indem Datenquellen ihre Logdaten an einen Proxy senden, der die Daten pseudonymisiert und erst anschließend an das SIEM-System weiterreicht. Hierdurch wird erreicht, dass die Daten zu keiner Zeit nicht-pseudonymisiert in dem SIEM-System vorliegen. Außerdem ist er unabhängig von Datenquellen und SIEM-System und erfordert keinen direkten Eingriff in diese (abgesehen von geringen Konfigurationsanpassungen). Ein Nachteil dieser Lösung ist, dass sie das Parsen und Neuzusammensetzen der Logdaten im Proxy zusätzlich zu deren anschließender Behandlung im SIEM-System erfordert. Außerdem müssen für verschiedene Arten der Logdatenübermittlung (Protokolle wie syslog oder SNMP) unterschiedliche Proxys entwickelt werden.
+
+\item \textbf{Patchen des SIEM-Systems}\\
+  Die letzte Möglichkeit ist das Verändern des SIEM-Systems selbst. Hierzu wird in die Logdaten parsende Komponente eingegriffen, um vor, während oder nach diesem Vorgang die Logdaten zu pseudonymisieren. Dieser Ansatz erfordert kein mehrfaches Bearbeiten von Logdaten wie in dem Proxy-basierten Ansatz. Auf der anderen Seite ist er abhängig vom eingesetzten SIEM-System und erfordert seine Veränderung. Zusätzlich liegen die Daten erst einmal in nicht veränderter Form im SIEM-System vor, was die in Abschnitt \ref{subsec_impl_requirements_ossimintegration} erwähnten Nachteile mit sich bringt.
+
+\end{enumerate}
+
+Aus datenschutztechnischer Sicht ist eine frühestmögliche Pseudonymisierung zu bevorzugen, wie sie auch in \cite{schwartmann2017} empfohlen wird: 
+\glqq{}Die Pseudonymisierung ist im Verarbeitungsprozess so früh wie möglich durchzuführen.\grqq{}
+Daher wäre eine Pseudonymisierung bereits in der Datenquelle der Optimalfall. Demgegenüber stehen jedoch die erwähnten Nachteile des ersten Ansatzes im Bezug auf die Umsetzbarkeit, da hierzu jede mögliche Quelle von Logdaten universell verändert werden müsste. Eine erst im SIEM-System stattfindende Pseudonymisierung bringt jedoch die beschriebenen Risiken im Bezug auf das Vorliegen des pseudonymisierten Daten im Originalformat mit.
+
+Dies ließ die Entscheidung auf den Proxy-basierten Ansatz fallen. Dass die Lösung außerdem noch keine Anpassungen an dem SIEM-System selbst erfordert, wiegt den Nachteil des zusätzlichen Parsens und wieder Zusammensetzens der Lognachricht bei Weitem auf.
+\todo{Auch auf Angreifermodell beziehen?}
 
 \subsection{Architektur}
 
-%- Beschreibung Architektur
-%
+\todo{Insgesamt eher noch auf Anforderungen überprüfen:}
 %- Wie deckt dieser Ansatz die Anforderungen ab?
 %  - Einbindung OSSIM
 %  - Pseudonymisierung
@@ -51,13 +49,13 @@ Dass die Lösung außerdem noch keine Anpassungen an dem SIEM-System selbst erfo
 %  - Erweiterbarkeit Datenquellen
 %  - Erweiterbarkeit Datenschutztechniken
 
-\todo{Hier erweitern: 
-Warum verteilte Lsg (ProxyPlugin - Service):
+Ausgehend von diesen Überlegungen wurde ein System entworfen, dass die Anforderungen aus Abschnitt \ref{sec_impl_requirements} erfüllt und an der beschriebenen Stelle in den Datenfluss eingreift. 
+
+\todo{Hier erweitern: Warum verteilte Lsg (ProxyPlugin - Service):
   - Erweiterbarkeit (Mehrere Proxy-Server mit verschiedenen Protokollen, evtl. auch direkt Client-seitig, ...) => Absicherung einer Komponente, die jedoch auch nicht alles erfährt
   - Trennung Verarbeitung und Speicherung (Kompr. DB -> Pseudonyme bleiben verdeckt, Kompr. Proxy -> bisherige Daten und Daten evtl. anderer Proxys bleiben abgesichert)
 }
 
-Ausgehend von diesen Überlegungen wurde ein verteiltes System entworfen, dass die Anforderungen aus Abschnitt \ref{sec_impl_requirements} erfüllt und an der beschriebenen Stelle in den Datenfluss eingreift. 
 Einen Überblick bietet Abbildung \ref{fig:high__level_architecture}. Das System besteht aus verschiedenen Komponenten, die im Folgenden näher beschrieben werden.
 
 \begin{figure}[]
