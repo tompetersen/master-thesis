@@ -6,10 +6,16 @@
 
 \subsection{Eingriff in den Datenfluss des SIEM-Systems}
 
-\todo{Hier allgemein - OSSIM erst in 5.1.}
+\label{sec_over_dataflow_siem}
 
-Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene Stellen im Datenfluss eines SIEM-Systems an. In diesem Abschnitt sollen die verschiedenen Möglichkeiten dargestellt und gegeneinander abgewogen werden. Eine Übersicht über die verschiedenen Stellen bietet Abbildung \ref{fig:siem_data_access_point}. Im Folgenden sollen diese Möglichkeiten bezogen auf die in Abschnitt \ref{subsec_impl_requirements_ossimintegration} dargestellten Eigenschaften\todo{EZ: Kannst du nochmal kurz sagen, um was fuer Eigenschaften es da ging? Ich weiss es jetzt schon nicht mehr.} bewertet werden.
-Die Ziffern beziehen sich dabei auf die in der Abbildung gekennzeichneten Stellen.
+Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene Stellen im Datenfluss eines SIEM-Systems an. Im Folgenden sollen diese Möglichkeiten dargestellt und bezogen auf die in Abschnitt \ref{subsec_impl_requirements_ossimintegration} dargestellten Eigenschaften bewertet werden:
+\begin{itemize}
+  \item Veränderung des SIEM-Systems
+  \item Nicht-pseudonymisierte Daten im SIEM-System
+  \item Mehrfaches Parsen von Logdaten
+  \item Abhängigkeit von Besonderheiten des SIEM-Systems
+\end{itemize}
+Eine Übersicht über die verschiedenen Stellen bietet Abbildung \ref{fig:siem_data_access_point}. Die Ziffern der Möglichkeiten beziehen sich auf die in der Abbildung gekennzeichneten Stellen.
 
 \begin{figure}[]
     \centering
