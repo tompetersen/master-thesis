@@ -1,9 +1,15 @@
 \chapter{Ueberblick}
 
-\todo{Einführendes mit High-Level-Übersicht}
+Das Ziel dieser Arbeit ist es ein System zu entwickeln, das mithilfe von Pseudonymisierung die datenschutzgerechte Speicherung von Überwachungsdaten ermöglicht, wobei die Identität eines Pseudonymhalters im Bedarfsfall durch die Kollaboration verschiedener Akteure unter Nutzung eines kryptographischen Schwellwertschemas aufdeckbar sein muss.
 
+Um eine Basis für die Erarbeitung von Anforderungen und eines Systementwurfs zu erhalten, soll nun kurz dargelegt werden, wie die verschiedenen Verfahren ineinander greifen. Aus Datenquellen wie Firewalls, Zugriffsdaten von Dateisystemen oder auch elektronischen Türschlössern werden personenbeziehbare Logdaten\footnote{
+  Da im Bereich technischer Systeme eher von Logdaten oder Protokolldaten im Gegensatz zu Überwachungsdaten gesprochen wird, wird diese Terminologie hier verwendet. Im Rahmen dieser Arbeit sind die Begriffe jedoch synonym zu verstehen.
+} an ein SIEM-System gesendet und dort gespeichert. In diesen Datenfluss wird nun durch ein zu entwickelndes System eingegriffen, das die personenbeziehbaren Informationen des Logdatums durch ein Pseudonym ersetzt. Die Zuordnung zwischen dem gesetzten Pseudonym und der personenbeziehbaren Information wird durch ein kryptographisches Schwellwertschema verschlüsselt und in dem System gespeichert. Damit die anschließend auf den pseudonymisierten Logdaten stattfindende Anomalieerkennung Aktionen eines Mitarbeiters verknüpfen kann, muss sichergestellt werden, dass für einen speziellen Benutzer das gleiche Pseudonym verwendet wird. Wird nun durch die Anomalieerkennung ein Angriff erkannt, so können berechtigte Benutzer durch kollaborative Entschlüsselung der Pseudonymzuordnung den hinter dem Pseudonym stehenden Benutzer wieder aufdecken.
+\todo{Schaubild?}
 
-Dazu werden in diesem Kapitel zentrale Anforderungen an ein solches System entwickelt und eine abstrakte Architektur entworfen. Begonnen wird jedoch mit der Erstellung eines Angreifermodells, das eine zentrale Voraussetzung für die nachfolgenden Schritte darstellt.
+In diesem Kapitel werden nun zentrale Anforderungen an ein solches System entwickelt und eine abstrakte Architektur für ein solches entworfen.
+
+Begonnen wird jedoch mit der Erstellung eines Angreifermodells, das eine zentrale Voraussetzung für die nachfolgenden Schritte darstellt.\todo{Oder AM erst als letztes basierend auf Architektur??}
 
 \input{chapters/overview/over_attacker}
 
