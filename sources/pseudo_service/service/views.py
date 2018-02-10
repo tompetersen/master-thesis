@@ -39,10 +39,18 @@ class SuperuserDashboardView(SuperuserRequiredMixin, TemplateView):
 
 
 KEY_PARAM_STATIC_512 = 'static_512'
-KEY_PARAM_GENERATE_512 = 'generate'
+KEY_PARAM_STATIC_1024 = 'static_1024'
+KEY_PARAM_STATIC_2048 = 'static_2048'
+KEY_PARAM_GENERATE_512 = 'generate_512'
+KEY_PARAM_GENERATE_1024 = 'generate_1024'
+KEY_PARAM_GENERATE_2048 = 'generate_2048'
 KEY_PARAM_CHOICES = [
     (KEY_PARAM_STATIC_512, 'Fixed parameters (512 Bit)'),
+    (KEY_PARAM_STATIC_1024, 'Fixed parameters (1024 Bit)'),
+    (KEY_PARAM_STATIC_2048, 'Fixed parameters (2048 Bit)'),
     (KEY_PARAM_GENERATE_512, 'Generate new parameters (512 Bit)'),
+    (KEY_PARAM_GENERATE_1024, 'Generate new parameters (1024 Bit)'),
+    (KEY_PARAM_GENERATE_2048, 'Generate new parameters (2048 Bit)'),
 ]
 
 
@@ -109,11 +117,17 @@ class ThresholdSetupView(FormView):
         Config(Config.PSEUDONYM_UPDATE_INTERVAL, str(pseudonym_update_interval)).save()
 
     def get_key_params(self, key_param_strategy) -> KeyParameters:
-        # TODO: extend key strategies
-        if key_param_strategy == KEY_PARAM_STATIC_512:
-            return ThresholdCrypto.generate_static_key_parameters()
-
-        raise Exception('Unknown key parameter strategy.')
+        try:
+            return {
+                KEY_PARAM_STATIC_512: ThresholdCrypto.static_512_key_parameters(),
+                KEY_PARAM_STATIC_1024: ThresholdCrypto.static_1024_key_parameters(),
+                KEY_PARAM_STATIC_2048: ThresholdCrypto.static_2048_key_parameters(),
+                KEY_PARAM_GENERATE_512: ThresholdCrypto.generate_key_parameters(512),
+                KEY_PARAM_GENERATE_1024: ThresholdCrypto.generate_key_parameters(1024),
+                KEY_PARAM_GENERATE_2048: ThresholdCrypto.generate_key_parameters(2048),
+            }[key_param_strategy]
+        except KeyError:
+            raise Exception('Unknown key parameter strategy.')
 
 
 class ApplicantRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):

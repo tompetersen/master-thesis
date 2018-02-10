@@ -1,8 +1,5 @@
 import unittest
 
-import nacl.utils
-import nacl.secret
-
 from threshold_crypto import (ThresholdCrypto,
                               ThresholdParameters,
                               KeyParameters,
@@ -19,7 +16,7 @@ class TCTestCase(unittest.TestCase):
 
     def setUp(self):
         self.tp = ThresholdParameters(3, 5)
-        self.kp = ThresholdCrypto.generate_static_key_parameters()
+        self.kp = ThresholdCrypto.static_512_key_parameters()
         self.pk, self.shares = ThresholdCrypto.create_public_key_and_shares_centralized(self.kp, self.tp)
         self.em = ThresholdCrypto.encrypt_message('Some secret message', self.pk)
         self.reconstruct_shares = [self.shares[i] for i in [0, 2, 4]]  # choose 3 of 5 key shares
@@ -57,12 +54,26 @@ class TCTestCase(unittest.TestCase):
 
         self.assertEqual(self.kp, k_j)
 
-    def test_static_key_parameter_generation(self):
-        kp = ThresholdCrypto.generate_static_key_parameters()
+    def test_static_512_key_parameters(self):
+        kp = ThresholdCrypto.static_512_key_parameters()
 
-        self.assertEqual(self.kp.p, 2*self.kp.q + 1) # safe prime
-        self.assertEqual(pow(self.kp.g, self.kp.q, self.kp.p), 1) # g generates q order subgroup
-        self.assertNotEqual(pow(self.kp.g, 2, self.kp.p), 1)
+        self.assertEqual(kp.p, 2*kp.q + 1) # safe prime
+        self.assertEqual(pow(kp.g, kp.q, kp.p), 1) # g generates q order subgroup
+        self.assertNotEqual(pow(kp.g, 2, kp.p), 1)
+
+    def test_static_1024_key_parameters(self):
+        kp = ThresholdCrypto.static_1024_key_parameters()
+
+        self.assertEqual(kp.p, 2*kp.q + 1) # safe prime
+        self.assertEqual(pow(kp.g, kp.q, kp.p), 1) # g generates q order subgroup
+        self.assertNotEqual(pow(kp.g, 2, kp.p), 1)
+
+    def test_static_2048key_parameters(self):
+        kp = ThresholdCrypto.static_2048_key_parameters()
+
+        self.assertEqual(kp.p, 2 * kp.q + 1)  # safe prime
+        self.assertEqual(pow(kp.g, kp.q, kp.p), 1)  # g generates q order subgroup
+        self.assertNotEqual(pow(kp.g, 2, kp.p), 1)
 
     def test_central_key_generation(self):
         pk, shares = ThresholdCrypto.create_public_key_and_shares_centralized(self.kp, self.tp)
@@ -129,7 +140,7 @@ class TCTestCase(unittest.TestCase):
         self.assertNotEqual(testkey_element, rec_testkey_element)
 
     def test_complete_process_with_enough_shares(self):
-        key_params = ThresholdCrypto.generate_static_key_parameters()
+        key_params = ThresholdCrypto.static_512_key_parameters()
         thresh_params = ThresholdParameters(3, 5)
 
         pub_key, key_shares = ThresholdCrypto.create_public_key_and_shares_centralized(key_params, thresh_params)
@@ -144,7 +155,7 @@ class TCTestCase(unittest.TestCase):
         self.assertEqual(message, decrypted_message)
 
     def test_complete_process_without_enough_shares(self):
-        key_params = ThresholdCrypto.generate_static_key_parameters()
+        key_params = ThresholdCrypto.static_512_key_parameters()
         thresh_params = ThresholdParameters(3, 5)
 
         pub_key, key_shares = ThresholdCrypto.create_public_key_and_shares_centralized(key_params, thresh_params)

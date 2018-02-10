@@ -30,9 +30,9 @@ class ThresholdSetupForm(forms.Form):
 
     key_params = forms.ChoiceField(
         label='Key parameters',
-        help_text='Determines the used key parameters p, q and g.',
+        help_text='Determines the used key parameters p, q and g. Generating parameters yourself takes some time.',
         widget=forms.RadioSelect(),
-        initial='static_512',
+        initial='static_2048',
     )
 
     clients = forms.MultipleChoiceField(

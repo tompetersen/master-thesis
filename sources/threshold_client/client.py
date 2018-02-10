@@ -128,6 +128,8 @@ class ThresholdClient:
         self.config.save_config(p, self.config_path)
         print('Stored config with share.')
 
+        # TODO: Wait for server OK after finishing generation process?
+
         self.start_request_process()
 
     def _is_valid_pw(self, p: str):
