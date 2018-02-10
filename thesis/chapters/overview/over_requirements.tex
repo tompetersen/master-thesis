@@ -2,7 +2,7 @@
 
 \label{sec_impl_requirements}
 
-Der umgesetzte Prototyp soll es ermöglichen, aufbauend auf dem bestehenden Open-Source-SIEM-System OSSIM Logdaten mittels Pseudonymisierung und Schwellwertschemata so zu verändern, dass diese erst durch Kollaboration einer bestimmten Anzahl an Teilnehmern wieder aufgedeckt werden können. Neben dieser primären Anforderung sollte er noch weitere wie die Erweiterbarkeit um weitere Dateschutztechniken erfüllen. Alle diese Anforderungen sollen im folgenden Abschnitt näher erläutert werden. \todo{Umschreiben, wenn Einführung steht}
+Neben den primären Anforderungen, die sich direkt aus der Funktionsbeschreibung des Systems und dem Zusammenspiel der enthaltenen Verfahren ergeben, sollte das System noch weitere Eigenschaften wie beispielsweise die Erweiterbarkeit um weitere Dateschutztechniken erfüllen. Alle diese Anforderungen sollen im folgenden Abschnitt aufgestellt und näher erläutert werden.
 
 \subsection{Anforderungen an die Integration in das SIEM-System}
 
@@ -61,7 +61,7 @@ In der Phase der Schlüsselgenerierung muss das System die Kommunikation und Koo
 
 Der für die Verschlüsselung erforderliche öffentliche Schlüssel muss so vorliegen, dass er bei der Verschlüsselung eines Pseudonym-Datensatzes genutzt werden kann.
 
-Bei der Entschlüsselung eines Eintrags, also der Aufdeckung eines Pseudonyms, muss das System wiederum die beteiligten Aktuere koordinieren und anschließend die Rolle des \textit{Combiners} übernehmen, so dass anschließend der entschlüsselte Datensatz zentral vorliegt.
+Bei der Entschlüsselung eines Eintrags, also der Aufdeckung eines Pseudonyms, muss das System wiederum die beteiligten Akteure koordinieren und anschließend die Rolle des \textit{Combiners} übernehmen, so dass anschließend der entschlüsselte Datensatz zentral vorliegt.
 
 \subsection{Benutzerinteraktion}
 
@@ -101,5 +101,10 @@ Neben der im Fokus dieser Arbeit stehenden Pseudonymisierung und dem Einsatz von
 Zusammenfassend sollte ein System, wie es in dieser Arbeit angestrebt wird, also folgende Anforderungen erfüllen:
 
 \begin{itemize}
-  \item TBD
+  \item Geeignete Stelle zum Eingriff in den Datenfluss zwischen Logdatenquelle und SIEM-System
+  \item Parameterabhängige Generierung eindeutiger, aber in gewissem Rahmen verknüpfbarer Pseudonyme
+  \item Sicherer, verteilter Einsatz eines anpassbaren kryptographischen Schwellwertschemas
+  \item Geeignete Benutzerinteraktion mit dem System an notwendigen Stellen
+  \item Erweiterbarkeit um unbekannte Datenquellen
+  \item Erweiterbarkeit um weitere Datenschutztechniken
 \end{itemize}
