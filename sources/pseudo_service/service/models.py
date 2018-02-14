@@ -114,3 +114,12 @@ class Config(models.Model):
 
     def __str__(self):
         return self.key.replace('_', ' ').upper() + ' : ' + self.value
+
+    @staticmethod
+    def has_stored_config() -> bool:
+        try:
+            c = Config.objects.get(key=Config.THRESHOLD_PARAMS)
+            return True
+        except Config.DoesNotExist:
+            return False
+
