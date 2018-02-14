@@ -11,7 +11,7 @@ from threshold_crypto import ThresholdParameters, ThresholdCrypto, KeyParameters
 from service.client_api import ClientApiCaller, ClientApiError
 from service.forms import PseudonymSearchForm, ThresholdSetupForm
 from service.models import Applicant, StoreEntryRequest, StoreEntry, ThresholdClient, Config, \
-    PartialDecryptionForRequest
+    PartialDecryptionForRequest, StoreClient
 
 
 class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -42,7 +42,7 @@ class SuperuserDashboardView(SuperuserRequiredMixin, TemplateView):
         context['partial_decryption_number'] = PartialDecryptionForRequest.objects.count()
         context['applicant_number'] = Applicant.objects.count()
         context['threshold_client_number'] = ThresholdClient.objects.count()
-        context['storing_clients_number'] = 17 # TODO: Update number
+        context['storing_clients_number'] = StoreClient.objects.count()
 
         # config values
         if Config.has_stored_config():
