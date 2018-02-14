@@ -1,7 +1,7 @@
 import threading
 
 import nacl.utils
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.exceptions import APIException
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from threshold_crypto.threshold_crypto import EncryptedMessage, PublicKey, PartialDecryption, ThresholdParameters, \
     ThresholdCrypto, KeyParameters
 
+from api.permissions import SetupPerformedPermission
 from api.serializers import ClientSerializer, PartialDecryptionSerializer
 from service.models import StoreEntry, Config, ThresholdClient, StoreEntryRequest, PartialDecryptionForRequest
 
@@ -18,13 +19,8 @@ class InvalidAPICallError(APIException):
     default_detail = 'The request contained invalid parameters.'
 
 
-# TODO:  Check for every call if setup has happened
-
 class CreatePseudonym(APIView):
-
-    # TODO: Extract to general config app (existing status or own app?)
-    PSEUDONYM_VALID_SECONDS = 60 * 60 * 24
-    PSEUDONYM_USE_PFP = True
+    permission_classes = (SetupPerformedPermission, )
 
     def post(self, request):
         if not self._is_valid_request(request):
@@ -40,7 +36,7 @@ class CreatePseudonym(APIView):
             entry = StoreEntry.objects.get(
                 search_token=search_token,
                 usages__lt=max_pseudonym_usage
-            ) # TODO: MAC collisions?
+            )
         except StoreEntry.DoesNotExist:
             entry = self._create_entry(em.to_json(), search_token)
         entry.save()
@@ -70,6 +66,7 @@ class CreatePseudonym(APIView):
 
 
 class ConfigView(APIView):
+    permission_classes = (SetupPerformedPermission,)
 
     def get(self, request):
         public_key = Config.objects.get(key=Config.PUBLIC_KEY).value
@@ -107,6 +104,7 @@ class ClientConnectView(CreateAPIView):
 
 
 class ListStoreEntryRequestsView(APIView):
+    permission_classes = (SetupPerformedPermission,)
 
     def post(self, request):
         try:
@@ -141,6 +139,7 @@ class ListStoreEntryRequestsView(APIView):
 
 
 class CreatePartialDecryptionView(APIView):
+    permission_classes = (SetupPerformedPermission,)
 
     def post(self, request):
         if not self._is_valid_request(request):
