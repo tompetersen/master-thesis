@@ -11,16 +11,13 @@
                <strong>Actions</strong>
             </p>
             <div class="card-body bg-lightgray">
-                <!--<div class="container">-->
-                    <div class="row align-items-center ">
-                        <div class="col-7"><p class="text-secondary">Perform the initial system setup including pseudonym and threshold scheme initialisation.</p></div>
-                        <div class="col-5"><a href="{% url 'service:setup' %}"><button class="btn btn-success btn-block">Setup</button></a></div>
-                    </div>
-                    <div class="row align-items-center">
-                        <div class="col-7"><p class="text-secondary">Perform some other action.</p></div>
-                        <div class="col-5"><a href=""><button class="btn btn-success btn-block">Whatever</button></a></div>
-                    </div>
-                <!--</div>-->
+                <p class="text-secondary">Perform the initial system setup including pseudonym and threshold scheme initialisation.</p>
+                <a href="{% url 'service:setup' %}"><button class="btn btn-success btn-block btn-sm">Setup</button></a>
+
+                <hr />
+
+                <p class="text-secondary">Perform some other action.</p>
+                <a href=""><button class="btn btn-success btn-block btn-sm">Whatever</button></a>
             </div>
         </div>
 
