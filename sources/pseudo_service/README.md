@@ -1,5 +1,1 @@
-To be done ...
-
-# Tests
-
-`python -m unittest discover`
+To be done ...# Tests`python -m unittest discover`# Creating fixture```$ python manage.py dumpdata -o service/fixtures/initial_data.json --indent=2 --exclude=contenttypes --exclude=service.StoreEntry --exclude=service.StoreEntryRequest--exclude=service.PartialDecryptionForRequest --exclude=service.Config --exclude=auth.permission--exclude=sessions.session --exclude=admin.logentry```# Loading fixtures```$ python manage.py loaddata service/fixtures/initial_data.json```

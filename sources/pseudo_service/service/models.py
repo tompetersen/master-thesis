@@ -23,10 +23,13 @@ class Applicant(models.Model):
             return False
         return True
 
+    def __str__(self):
+        return 'Applicant ' + self.user.username
+
 
 class ThresholdClient(models.Model):
-    client_address = models.GenericIPAddressField(null=True)
-    client_port = models.IntegerField(null=True)
+    client_address = models.GenericIPAddressField(blank=True, null=True)
+    client_port = models.IntegerField(blank=True, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     @staticmethod
@@ -46,7 +49,10 @@ class ThresholdClient(models.Model):
         return True
 
     def __str__(self):
-        return '%s [%s:%d]' % (self.user.username, self.client_address, self.client_port)
+        if self.client_address and self.client_port:
+            return 'Threshold client %s [%s:%d]' % (self.user.username, self.client_address, self.client_port)
+        else:
+            return 'Threshold client %s' % self.user.username
 
 
 class StoreClient(models.Model):
@@ -67,6 +73,9 @@ class StoreClient(models.Model):
             # AttributeError for AnonymousUser
             return False
         return True
+
+    def __str__(self):
+        return 'Store client ' + self.user.username
 
 
 class StoreEntry (models.Model):
