@@ -9,10 +9,10 @@ class EntrySerializer(serializers.ModelSerializer):
         fields = ('pseudonym', 'content', 'created')
 
 
-class ClientSerializer(serializers.ModelSerializer):
+class ThresholdClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThresholdClient
-        fields = ('id', 'name', 'client_address', 'client_port')
+        fields = ('client_address', 'client_port')
 
 
 class StoreEntryRequestSerializer(serializers.Serializer):

@@ -29,7 +29,7 @@ class ThresholdClientTest(unittest.TestCase):
         c.save_config('password', path)
         c_load = Config.load_config('password', path)
 
-        self.assertEqual(c.address, c_load.address)
+        self.assertEqual(c.client_address, c_load.address)
 
 
 if __name__ == '__main__':

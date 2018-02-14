@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from service.models import Config, StoreClient
+from service.models import Config, StoreClient, ThresholdClient
 
 
 class SetupPerformedPermission(permissions.BasePermission):
@@ -13,3 +13,8 @@ class SetupPerformedPermission(permissions.BasePermission):
 class IsStoreClientUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return StoreClient.user_is_store_client(request.user)
+
+
+class IsThresholdClientUser(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return ThresholdClient.user_is_threshold_client(request.user)

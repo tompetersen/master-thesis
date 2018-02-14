@@ -25,12 +25,28 @@ class Applicant(models.Model):
 
 
 class ThresholdClient(models.Model):
-    client_address = models.GenericIPAddressField()
-    client_port = models.IntegerField()
-    name = models.CharField(max_length=50, unique=True)
+    client_address = models.GenericIPAddressField(null=True)
+    client_port = models.IntegerField(null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    @staticmethod
+    def user_is_threshold_client(user: User) -> bool:
+        """
+        Checks if a user is a threshold client.
+
+        :param user: the user
+        :return: True, if the user is a threshold client, False otherwise.
+        """
+        try:
+            applicant = user.thresholdclient
+        except (ObjectDoesNotExist, AttributeError):
+            # ObjectDoesNotExist for not threshold client users
+            # AttributeError for AnonymousUser
+            return False
+        return True
 
     def __str__(self):
-        return '%s [%s:%d]' % (self.name, self.client_address, self.client_port)
+        return '%s [%s:%d]' % (self.user.username, self.client_address, self.client_port)
 
 
 class StoreClient(models.Model):

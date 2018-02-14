@@ -4,6 +4,7 @@ Client application for ElGamal-based threshold decryption.
 This application uses Bottle as local webserver to enable server -> client and client -> client calls.
 """
 import argparse
+import getpass
 import json
 import os
 import threading
@@ -25,29 +26,31 @@ DEFAULT_CONFIG_PATH = './config.txt'
 
 class Config:
 
-    def __init__(self, address: str, port: int, name: str, key_share: KeyShare=None):
-        self.address = address
-        self.port = port
-        self.name = name
+    def __init__(self, address: str, port: int, service_username: str, service_password: str, key_share: KeyShare=None):
+        self.client_address = address
+        self.client_port = port
+        self.service_username = service_username
+        self.service_password = service_password
         self.key_share = key_share
 
     @staticmethod
     def from_json(json_string):
         dict = json.loads(json_string)
         key_share = KeyShare.from_dict(dict['key_share']) if len(dict['key_share']) > 0 else None
-        return Config(dict['address'], dict['port'], dict['name'], key_share)
+        return Config(dict['address'], dict['port'], dict['service_username'], dict['service_password'], key_share)
 
     def to_json(self):
         return json.dumps({
-            'address': self.address,
-            'port': self.port,
-            'name': self.name,
+            'address': self.client_address,
+            'port': self.client_port,
+            'service_username': self.service_username,
+            'service_password': self.service_password,
             'key_share': self.key_share.to_dict() if self.key_share else ''
         })
 
-    def save_config(self, password: str, filepath: str):
+    def save_config(self, local_password: str, filepath: str):
         encoded_message = self.to_json().encode()
-        key, salt = Config._key_from_password(password)
+        key, salt = Config._key_from_password(local_password)
         box = secret.SecretBox(key)
         encrypted = box.encrypt(encoded_message)
 
@@ -56,14 +59,14 @@ class Config:
             file.write(encrypted.hex() + '\n')
 
     @staticmethod
-    def load_config(password: str, filepath: str):
+    def load_config(local_password: str, filepath: str):
         with open(filepath) as file:
             salt = file.readline().strip('\n ')
             salt = bytes.fromhex(salt)
             encrypted = file.readline().strip('\n ')
             encrypted = bytes.fromhex(encrypted)
 
-        key, _ = Config._key_from_password(password, salt)
+        key, _ = Config._key_from_password(local_password, salt)
         box = secret.SecretBox(key)
         decrypted = box.decrypt(encrypted).decode()
 
@@ -99,22 +102,36 @@ class ThresholdClient:
         self.config_path = config_path
 
         if os.path.exists(config_path):
-            p = input('Please enter your password: ')
+            p = getpass.getpass('Please enter your local password: ')
             try:
                 self.config = Config.load_config(p, config_path)
             except exceptions.CryptoError as e:
                 print('Could not decrypt required client data. Exiting...')
                 exit(-1)
             print('Loaded config.')
+            self.service_api_caller = ServiceApiCaller(self.config.service_username, self.config.service_password)
 
             self.start_request_process()
         else:
-            name = input('Please enter your name: ')
-            self.config = Config(client_address, client_port, name)
+            service_username = input('Please enter your service username: ')
+            service_password = getpass.getpass('Please enter your service password: ')
+
+            self.config = Config(client_address, client_port, service_username, service_password)
+            self.service_api_caller = ServiceApiCaller(self.config.service_username, self.config.service_password)
             print('Created config.')
-            ServiceApiCaller.send_client_data(client_address, client_port, name)
+
+            try:
+                self.service_api_caller.send_client_data(client_address, client_port)
+            except ServiceApiError as e:
+                print('Could not send initial client data. Please check that server is reachable and credentials are valid.')
+                exit(-1)
+
             print('Sent client data.')
             print('Please wait for server to create shares and respond. This may take some time...')
+
+    def create_api_caller_from_config(self):
+        c = self.config
+        self.service_api_caller = ServiceApiCaller(c.service_username, c.service_password)
 
     def store_share(self, received: dict):
         print('Received share.')
@@ -123,7 +140,7 @@ class ThresholdClient:
 
         p = ''
         while not self._is_valid_pw(p):
-            p = input('Please enter a valid password: ')
+            p = getpass.getpass('Please enter a valid password used to store your config and share: ')
 
         self.config.save_config(p, self.config_path)
         print('Stored config with share.')
@@ -138,7 +155,7 @@ class ThresholdClient:
     def start_request_process(self):
         while True:
             input('\nPress a key to ask for new decryption requests requiring your choice...')
-            store_entry_requests = ServiceApiCaller.get_store_entry_requests(self.config.name)
+            store_entry_requests = self.service_api_caller.get_store_entry_requests()
             if len(store_entry_requests) == 0:
                 print('No action required.')
             else:
@@ -161,10 +178,10 @@ class ThresholdClient:
         try:
             if choice == 'A':
                 partial_decryption = ThresholdCrypto.compute_partial_decryption(encrypted_message, self.config.key_share)
-                ServiceApiCaller.send_partial_decryption(req_id, self.config.name, True, partial_decryption)
+                self.service_api_caller.send_partial_decryption(req_id, True, partial_decryption)
                 print('Accepted pseudonym decryption request.')
             elif choice == 'D':
-                ServiceApiCaller.send_partial_decryption(req_id, self.config.name, False)
+                self.service_api_caller.send_partial_decryption(req_id, False)
                 print('Declined pseudonym decryption request.')
             elif choice == 'P':
                 print('Choosing action postponed.')
@@ -179,44 +196,41 @@ class ServiceApiError(Exception):
 
 class ServiceApiCaller:
 
-    @staticmethod
-    def get_store_entry_requests(name: str, service_address: str=SERVICE_ADDRESS, service_port: int=SERVICE_PORT) -> [dict]:
-        route = 'api/requests/'
-        data = {
-            'name': name
-        }
+    def __init__(self, username: str, password: str, service_address: str=SERVICE_ADDRESS, service_port: int=SERVICE_PORT):
+        self._address = service_address
+        self._port = service_port
+        self._username = username
+        self._password = password
 
-        response = ServiceApiCaller._call_service_api(service_address, service_port, route, data)
+    def get_store_entry_requests(self) -> [dict]:
+        route = 'api/requests/'
+
+        response = self._call_service_api(route)
         return response.json()
 
-    @staticmethod
-    def send_client_data(client_address: str, client_port: int, name: str, service_address: str=SERVICE_ADDRESS, service_port: int=SERVICE_PORT):
+    def send_client_data(self, client_address: str, client_port: int):
         route = 'api/clientconnect/'
         data = {
-            'name': name,
             'client_address': client_address,
             'client_port': client_port,
         }
 
-        response = ServiceApiCaller._call_service_api(service_address, service_port, route, data)
+        response = self._call_service_api(route, data)
 
-    @staticmethod
-    def send_partial_decryption(request_id: int, name: str, accepted: bool, partial_decryption: PartialDecryption=None, service_address: str=SERVICE_ADDRESS, service_port: int=SERVICE_PORT):
+    def send_partial_decryption(self, request_id: int, accepted: bool, partial_decryption: PartialDecryption=None):
         route = 'api/partial_decryption/'
         data = {
-            'name': name,
             'request': request_id,
             'accepted': accepted,
             'partial_decryption': partial_decryption.to_json() if partial_decryption else ''
         }
 
-        response = ServiceApiCaller._call_service_api(service_address, service_port, route, data)
+        response = self._call_service_api(route, data)
 
-    @staticmethod
-    def _call_service_api(address: str, port: int, route: str, data=None) -> Response:
+    def _call_service_api(self, route: str, data=None) -> Response:
         result = None
         try:
-            url = 'http://' + address + ':' + str(port) + '/' + route
+            url = 'http://' + self._address + ':' + str(self._port) + '/' + route
 
             if data:
                 result = requests.post(url, data=data)

@@ -3,15 +3,15 @@ import threading
 import nacl.utils
 from rest_framework import status, permissions
 from rest_framework.exceptions import APIException
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from threshold_crypto.threshold_crypto import EncryptedMessage, PublicKey, PartialDecryption, ThresholdParameters, \
     ThresholdCrypto, KeyParameters
 
-from api.permissions import SetupPerformedPermission, IsStoreClientUser
-from api.serializers import ClientSerializer, PartialDecryptionSerializer
+from api.permissions import SetupPerformedPermission, IsStoreClientUser, IsThresholdClientUser
+from api.serializers import ThresholdClientSerializer, PartialDecryptionSerializer
 from service.models import StoreEntry, Config, ThresholdClient, StoreEntryRequest, PartialDecryptionForRequest
 
 
@@ -89,44 +89,27 @@ class ConfigView(APIView):
         return Response(response_dict, status=status.HTTP_200_OK)
 
 
-class ClientConnectView(CreateAPIView):
+class ClientConnectView(UpdateAPIView):
     permission_classes = (
         IsAuthenticated,
+        IsThresholdClientUser,
     )
-    serializer_class = ClientSerializer
+    serializer_class = ThresholdClientSerializer
     queryset = ThresholdClient.objects.all()
 
-    def create(self, request, *args, **kwargs):
-        """
-        Create or update an existing Threshold client.
-        """
-        try:
-            name = request.data.get('name')
-            tc = ThresholdClient.objects.get(name=name)
-            for attr, value in request.data.items():
-                setattr(tc, attr, value)
-            tc.save()
-
-            serializer_class = self.get_serializer_class()
-            serializer = serializer_class(tc)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ThresholdClient.DoesNotExist:
-            return super(ClientConnectView, self).create(request)
+    def get_object(self):
+        return self.request.user.thresholdclient
 
 
 class ListStoreEntryRequestsView(APIView):
     permission_classes = (
         SetupPerformedPermission,
         IsAuthenticated,
+        IsThresholdClientUser,
     )
 
     def post(self, request):
-        try:
-            name = request.data.get('name')
-            tc = ThresholdClient.objects.get(name=name)
-        except ThresholdClient.DoesNotExist:
-            raise InvalidAPICallError('Invalid client name.')
+        tc = request.user.thresholdclient
 
         c = Config.objects.get(key=Config.CLIENT_ID_LIST)
         ids = c.value.split(',')
@@ -157,18 +140,14 @@ class CreatePartialDecryptionView(APIView):
     permission_classes = (
         SetupPerformedPermission,
         IsAuthenticated,
+        IsThresholdClientUser,
     )
 
     def post(self, request):
         if not self._is_valid_request(request):
             raise InvalidAPICallError
 
-        # Load client for name
-        try:
-            name = request.data.get('name')
-            tc = ThresholdClient.objects.get(name=name)
-        except ThresholdClient.DoesNotExist:
-            raise InvalidAPICallError('Invalid client name.')
+        tc = request.user.thresholdclient
 
         # Load store entry request for id
         try:
@@ -221,7 +200,6 @@ class CreatePartialDecryptionView(APIView):
         store_entry.save()
 
     def _is_valid_request(self, request):
-        return ('name' in request.data and
-                'accepted' in request.data and
+        return ('accepted' in request.data and
                 'request' in request.data and
                 'partial_decryption')

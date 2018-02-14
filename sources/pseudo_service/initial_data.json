@@ -1,0 +1,157 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$36000$eVB4aA9wsw8l$rxW1k51ctXTvzUYzVuOc901d3eG/IlFrI3K4U7u9IUQ=",
+    "last_login": "2018-02-14T18:44:27.160Z",
+    "is_superuser": true,
+    "username": "tom",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2018-01-10T11:40:48.438Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$36000$HHmd2c3IKQpI$QsRlWU99sbbMlszd1QVzxFTJ3czu88JXht+t2P2C8LI=",
+    "last_login": "2018-02-14T12:58:38.020Z",
+    "is_superuser": false,
+    "username": "applicant",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-01-10T13:05:32.793Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$36000$qUAQQNh1iQDO$dNOnURbSG5Fm+QRpNcILgog1648XUKTfl669ASXjd6Y=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "store",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-02-14T18:44:47.252Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$36000$kDRDkCazl50f$Q1jN4NMvhqvRJ2DPD6TSYMlEEkoZWeojjh/WIESb3YE=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "client1",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-02-14T20:00:19.320Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$36000$kP5FQsyxTrW8$nfARt+rRMhAL7ydH/f1KMz2zIzdzObyub8FcP+xsDSo=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "client2",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-02-14T20:00:36.098Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$36000$SVVyYmnvcDWC$xTzqTA1/8rMbQaQ0A7Xl39gNUczzT6N99BwJdFlkeGE=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "client3",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-02-14T20:00:44.512Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "service.applicant",
+  "pk": 1,
+  "fields": {
+    "user": 2
+  }
+},
+{
+  "model": "service.thresholdclient",
+  "pk": 1,
+  "fields": {
+    "client_address": null,
+    "client_port": null,
+    "user": 4
+  }
+},
+{
+  "model": "service.thresholdclient",
+  "pk": 2,
+  "fields": {
+    "client_address": null,
+    "client_port": null,
+    "user": 5
+  }
+},
+{
+  "model": "service.thresholdclient",
+  "pk": 3,
+  "fields": {
+    "client_address": null,
+    "client_port": null,
+    "user": 6
+  }
+},
+{
+  "model": "service.storeclient",
+  "pk": 1,
+  "fields": {
+    "user": 3
+  }
+}
+]
+
+
+/*
+$ python manage.py dumpdata -o initial_data.json --indent=2 --exclude=contenttypes --exclude=service.StoreEntry --exclude=service.StoreEntryRequest
+--exclude=service.PartialDecryptionForRequest --exclude=service.Config --exclude=auth.permission --exclude=sessions.session --exclude=admin.logentry
+*/
