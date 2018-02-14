@@ -4,6 +4,7 @@ from django.views.generic.base import View, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
+from pip._vendor.ipaddress import _compat_bit_length
 
 from threshold_crypto import ThresholdParameters, ThresholdCrypto, KeyParameters
 
@@ -34,6 +35,28 @@ class SuperuserDashboardView(SuperuserRequiredMixin, TemplateView):
         context['entries'] = StoreEntry.objects.all()
         context['requests'] = StoreEntryRequest.objects.all()
         context['partial_decryptions'] = PartialDecryptionForRequest.objects.all()
+
+        # entity numbers
+        context['store_entry_number'] = StoreEntry.objects.count()
+        context['request_number'] = StoreEntryRequest.objects.count()
+        context['partial_decryption_number'] = PartialDecryptionForRequest.objects.count()
+        context['applicant_number'] = Applicant.objects.count()
+        context['threshold_client_number'] = ThresholdClient.objects.count()
+        context['storing_clients_number'] = 17 # TODO: Update number
+
+        # config values
+        # TODO: no config exceptions
+        threshold_params = ThresholdParameters.from_json(Config.objects.get(key=Config.THRESHOLD_PARAMS).value)
+        key_params = KeyParameters.from_json(Config.objects.get(key=Config.KEY_PARAMS).value)
+        pseudonym_length = Config.objects.get(key=Config.PSEUDONYM_LENGTH).value
+        pseudonym_update_interval = Config.objects.get(key=Config.PSEUDONYM_UPDATE_INTERVAL).value
+        pseudonym_max_usages = Config.objects.get(key=Config.MAX_PSEUDONYM_USAGES).value
+
+        context['threshold_scheme'] = threshold_params
+        context['key_size'] = key_params.p.bit_length()
+        context['pseudonym_length'] = pseudonym_length
+        context['pseudonym_update_interval'] = pseudonym_update_interval
+        context['pseudonym_max_usages'] = pseudonym_max_usages
 
         return context
 
