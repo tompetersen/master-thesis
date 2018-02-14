@@ -4,23 +4,6 @@ from django.db import models
 from threshold_crypto.threshold_crypto import ThresholdParameters
 
 
-class StoreEntry (models.Model):
-    pseudonym = models.CharField(primary_key=True, max_length=256, editable=False)
-    content = models.TextField()
-    decrypted_content = models.TextField(null=True)
-    search_token = models.TextField()
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    usages = models.IntegerField(default=0)
-    last_access = models.DateTimeField(auto_now=True, editable=False)
-
-    def save(self, *args, **kwargs):
-        self.usages += 1
-        super(StoreEntry, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return '%s [Usages: %d, Token: %s]' % (self.pseudonym, self.usages, self.search_token)
-
-
 class Applicant(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
@@ -39,6 +22,52 @@ class Applicant(models.Model):
             # AttributeError for AnonymousUser
             return False
         return True
+
+
+class ThresholdClient(models.Model):
+    client_address = models.GenericIPAddressField()
+    client_port = models.IntegerField()
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return '%s [%s:%d]' % (self.name, self.client_address, self.client_port)
+
+
+class StoreClient(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    @staticmethod
+    def user_is_store_client(user: User) -> bool:
+        """
+        Checks if a user is a store client.
+
+        :param user: the user
+        :return: True, if the user is a store client, False otherwise.
+        """
+        try:
+            applicant = user.storeclient
+        except (ObjectDoesNotExist, AttributeError):
+            # ObjectDoesNotExist for users without store client connection
+            # AttributeError for AnonymousUser
+            return False
+        return True
+
+
+class StoreEntry (models.Model):
+    pseudonym = models.CharField(primary_key=True, max_length=256, editable=False)
+    content = models.TextField()
+    decrypted_content = models.TextField(null=True)
+    search_token = models.TextField()
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    usages = models.IntegerField(default=0)
+    last_access = models.DateTimeField(auto_now=True, editable=False)
+
+    def save(self, *args, **kwargs):
+        self.usages += 1
+        super(StoreEntry, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return '%s [Usages: %d, Token: %s]' % (self.pseudonym, self.usages, self.search_token)
 
 
 class StoreEntryRequest(models.Model):
@@ -79,15 +108,6 @@ class StoreEntryRequest(models.Model):
 
     def __str__(self):
         return 'Request for %s by %s' % (self.store_entry.pseudonym, self.applicant.user.username)
-
-
-class ThresholdClient(models.Model):
-    client_address = models.GenericIPAddressField()
-    client_port = models.IntegerField()
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return '%s [%s:%d]' % (self.name, self.client_address, self.client_port)
 
 
 class PartialDecryptionForRequest(models.Model):

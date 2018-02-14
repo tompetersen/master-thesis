@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from threshold_crypto.threshold_crypto import EncryptedMessage, PublicKey, PartialDecryption, ThresholdParameters, \
     ThresholdCrypto, KeyParameters
 
-from api.permissions import SetupPerformedPermission
+from api.permissions import SetupPerformedPermission, IsStoreClientUser
 from api.serializers import ClientSerializer, PartialDecryptionSerializer
 from service.models import StoreEntry, Config, ThresholdClient, StoreEntryRequest, PartialDecryptionForRequest
 
@@ -24,6 +24,7 @@ class CreatePseudonym(APIView):
     permission_classes = (
         SetupPerformedPermission,
         IsAuthenticated,
+        IsStoreClientUser,
     )
 
     def post(self, request):
@@ -73,6 +74,7 @@ class ConfigView(APIView):
     permission_classes = (
         SetupPerformedPermission,
         IsAuthenticated,
+        IsStoreClientUser,
     )
 
     def get(self, request):
