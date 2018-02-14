@@ -135,3 +135,12 @@ LOGOUT_REDIRECT_URL = 'login'
 # Crispy forms
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# REST framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}

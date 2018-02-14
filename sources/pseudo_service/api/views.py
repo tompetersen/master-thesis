@@ -4,6 +4,7 @@ import nacl.utils
 from rest_framework import status, permissions
 from rest_framework.exceptions import APIException
 from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from threshold_crypto.threshold_crypto import EncryptedMessage, PublicKey, PartialDecryption, ThresholdParameters, \
@@ -20,7 +21,10 @@ class InvalidAPICallError(APIException):
 
 
 class CreatePseudonym(APIView):
-    permission_classes = (SetupPerformedPermission, )
+    permission_classes = (
+        SetupPerformedPermission,
+        IsAuthenticated,
+    )
 
     def post(self, request):
         if not self._is_valid_request(request):
@@ -66,7 +70,10 @@ class CreatePseudonym(APIView):
 
 
 class ConfigView(APIView):
-    permission_classes = (SetupPerformedPermission,)
+    permission_classes = (
+        SetupPerformedPermission,
+        IsAuthenticated,
+    )
 
     def get(self, request):
         public_key = Config.objects.get(key=Config.PUBLIC_KEY).value
@@ -81,6 +88,9 @@ class ConfigView(APIView):
 
 
 class ClientConnectView(CreateAPIView):
+    permission_classes = (
+        IsAuthenticated,
+    )
     serializer_class = ClientSerializer
     queryset = ThresholdClient.objects.all()
 
@@ -104,7 +114,10 @@ class ClientConnectView(CreateAPIView):
 
 
 class ListStoreEntryRequestsView(APIView):
-    permission_classes = (SetupPerformedPermission,)
+    permission_classes = (
+        SetupPerformedPermission,
+        IsAuthenticated,
+    )
 
     def post(self, request):
         try:
@@ -139,7 +152,10 @@ class ListStoreEntryRequestsView(APIView):
 
 
 class CreatePartialDecryptionView(APIView):
-    permission_classes = (SetupPerformedPermission,)
+    permission_classes = (
+        SetupPerformedPermission,
+        IsAuthenticated,
+    )
 
     def post(self, request):
         if not self._is_valid_request(request):
