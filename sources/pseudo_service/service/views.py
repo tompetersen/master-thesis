@@ -38,25 +38,24 @@ class SuperuserDashboardView(SuperuserRequiredMixin, TemplateView):
         return context
 
 
-KEY_PARAM_STATIC_512 = 'static_512'
-KEY_PARAM_STATIC_1024 = 'static_1024'
-KEY_PARAM_STATIC_2048 = 'static_2048'
-KEY_PARAM_GENERATE_512 = 'generate_512'
-KEY_PARAM_GENERATE_1024 = 'generate_1024'
-KEY_PARAM_GENERATE_2048 = 'generate_2048'
-KEY_PARAM_CHOICES = [
-    (KEY_PARAM_STATIC_512, 'Fixed parameters (512 Bit)'),
-    (KEY_PARAM_STATIC_1024, 'Fixed parameters (1024 Bit)'),
-    (KEY_PARAM_STATIC_2048, 'Fixed parameters (2048 Bit)'),
-    (KEY_PARAM_GENERATE_512, 'Generate new parameters (512 Bit)'),
-    (KEY_PARAM_GENERATE_1024, 'Generate new parameters (1024 Bit)'),
-    (KEY_PARAM_GENERATE_2048, 'Generate new parameters (2048 Bit)'),
-]
-
-
 class ThresholdSetupView(FormView):
     template_name = "service/setup.html"
     form_class = ThresholdSetupForm
+
+    KEY_PARAM_STATIC_512 = 'static_512'
+    KEY_PARAM_STATIC_1024 = 'static_1024'
+    KEY_PARAM_STATIC_2048 = 'static_2048'
+    KEY_PARAM_GENERATE_512 = 'generate_512'
+    KEY_PARAM_GENERATE_1024 = 'generate_1024'
+    KEY_PARAM_GENERATE_2048 = 'generate_2048'
+    KEY_PARAM_CHOICES = [
+        (KEY_PARAM_STATIC_512, 'Fixed parameters (512 Bit)'),
+        (KEY_PARAM_STATIC_1024, 'Fixed parameters (1024 Bit)'),
+        (KEY_PARAM_STATIC_2048, 'Fixed parameters (2048 Bit)'),
+        (KEY_PARAM_GENERATE_512, 'Generate new parameters (512 Bit)'),
+        (KEY_PARAM_GENERATE_1024, 'Generate new parameters (1024 Bit)'),
+        (KEY_PARAM_GENERATE_2048, 'Generate new parameters (2048 Bit)'),
+    ]
 
     def form_valid(self, form, **kwargs):
         key_param_strategy = form.cleaned_data['key_params']    # 'static_512'
@@ -78,7 +77,7 @@ class ThresholdSetupView(FormView):
     def get_form_kwargs(self):
         kwargs = super(ThresholdSetupView, self).get_form_kwargs()
 
-        kwargs.update({'key_params': KEY_PARAM_CHOICES})
+        kwargs.update({'key_params': self.KEY_PARAM_CHOICES})
         client_arg = [(client.id, "%s [%s:%d]" % (client.name, client.client_address, client.client_port)) for client in ThresholdClient.objects.all()]
         if len(client_arg) == 0:
             client_arg = [('no_client', 'No clients available')]
@@ -119,12 +118,12 @@ class ThresholdSetupView(FormView):
     def get_key_params(self, key_param_strategy) -> KeyParameters:
         try:
             return {
-                KEY_PARAM_STATIC_512: ThresholdCrypto.static_512_key_parameters(),
-                KEY_PARAM_STATIC_1024: ThresholdCrypto.static_1024_key_parameters(),
-                KEY_PARAM_STATIC_2048: ThresholdCrypto.static_2048_key_parameters(),
-                KEY_PARAM_GENERATE_512: ThresholdCrypto.generate_key_parameters(512),
-                KEY_PARAM_GENERATE_1024: ThresholdCrypto.generate_key_parameters(1024),
-                KEY_PARAM_GENERATE_2048: ThresholdCrypto.generate_key_parameters(2048),
+                self.KEY_PARAM_STATIC_512: ThresholdCrypto.static_512_key_parameters(),
+                self.KEY_PARAM_STATIC_1024: ThresholdCrypto.static_1024_key_parameters(),
+                self.KEY_PARAM_STATIC_2048: ThresholdCrypto.static_2048_key_parameters(),
+                self.KEY_PARAM_GENERATE_512: ThresholdCrypto.generate_key_parameters(512),
+                self.KEY_PARAM_GENERATE_1024: ThresholdCrypto.generate_key_parameters(1024),
+                self.KEY_PARAM_GENERATE_2048: ThresholdCrypto.generate_key_parameters(2048),
             }[key_param_strategy]
         except KeyError:
             raise Exception('Unknown key parameter strategy.')

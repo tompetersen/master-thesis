@@ -9,6 +9,7 @@
             <tr class="table-secondary">
                 <th>Request</th>
                 <th>Pseudonym</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -16,6 +17,13 @@
             <tr>
                 <td>{{ request.id }}</td>
                 <td><a href="{% url 'service:detail' request.id %}">{{ request.store_entry.pseudonym }}</a> </td>
+                {%  if request.is_accepted %}
+                    <td class="text-success"><strong>ACCEPTED</strong></td>
+                {% elif request.is_declined %}
+                    <td class="text-danger"><strong>DECLINED</strong></td>
+                {% else %}
+                    <td class="text-secondary"><strong>OPEN</strong></td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>
