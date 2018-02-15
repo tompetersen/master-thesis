@@ -26,6 +26,18 @@ class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.is_superuser
 
 
+class ApplicantRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """
+    A mixin testing if the request comes from a logged in applicant.
+    Otherwise an exception is raised.
+    """
+    raise_exception = True
+    permission_denied_message = 'Just applicants are allowed here!'
+
+    def test_func(self):
+        return Applicant.user_is_applicant(self.request.user)
+
+
 class SuperuserDashboardView(SuperuserRequiredMixin, TemplateView):
 
     template_name = "service/dashboard_superuser.html"
@@ -64,7 +76,7 @@ class SuperuserDashboardView(SuperuserRequiredMixin, TemplateView):
         return context
 
 
-class ThresholdSetupView(FormView):
+class ThresholdSetupView(SuperuserRequiredMixin, FormView):
     template_name = "service/setup.html"
     form_class = ThresholdSetupForm
 
@@ -95,7 +107,7 @@ class ThresholdSetupView(FormView):
 
         try:
             self.perform_centralized_setup(key_param_strategy, client_ids, threshold_t, pseudonym_length, max_pseudonym_usages, pseudonym_update_interval)
-            return redirect('index') # TODO: redirect to correct place
+            return redirect('index')
         except Exception as e:
             form.add_error(None, str(e)) # error handled as non-field error
             return super(ThresholdSetupView, self).form_invalid(form)
@@ -160,18 +172,6 @@ class ThresholdSetupView(FormView):
             return ThresholdCrypto.generate_key_parameters(2048)
         else:
             raise Exception('Unknown key parameter strategy.')
-
-
-class ApplicantRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
-    """
-    A mixin testing if the request comes from a logged in applicant.
-    Otherwise an exception is raised.
-    """
-    raise_exception = True
-    permission_denied_message = 'Just applicants are allowed here!'
-
-    def test_func(self):
-        return Applicant.user_is_applicant(self.request.user)
 
 
 class ApplicantDashboardView(ApplicantRequiredMixin, ListView):
