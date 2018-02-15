@@ -104,7 +104,7 @@ class ThresholdSetupView(FormView):
         kwargs = super(ThresholdSetupView, self).get_form_kwargs()
 
         kwargs.update({'key_params': self.KEY_PARAM_CHOICES})
-        client_arg = [(client.id, "%s [%s:%d]" % (client.name, client.client_address, client.client_port)) for client in ThresholdClient.objects.all()]
+        client_arg = [(client.id, "%s [%s:%d]" % (client.user.username, client.client_address, client.client_port)) for client in ThresholdClient.objects.all()]
         if len(client_arg) == 0:
             client_arg = [('no_client', 'No clients available')]
         kwargs.update({'clients': client_arg})
@@ -117,22 +117,26 @@ class ThresholdSetupView(FormView):
 
     def perform_centralized_setup(self, key_param_strategy, client_ids, threshold_t, pseudonym_length, max_pseudonym_usages, pseudonym_update_interval):
         # Create parameters, keys and shares
+        print('Creating parameters...')
         threshold_n = len(client_ids)
         threshold_params = ThresholdParameters(threshold_t, threshold_n)
         key_params = self.get_key_params(key_param_strategy)
 
+        print('Creating keys...')
         pk, shares = ThresholdCrypto.create_public_key_and_shares_centralized(key_params, threshold_params)
 
         # Send shares to clients
+        print('Sending shares...')
         clients = ThresholdClient.objects.filter(id__in=client_ids)
         for client, share in zip(clients, shares):
             try:
                 ClientApiCaller.send_share(client.client_address, client.client_port, share)
             except ClientApiError as e:
-                print('Could not reach client [%s]. INTERNAL: %s' % (client.name, str(e)))
-                raise Exception('Could not reach client [%s]. Please make sure the client is online and reachable!' % (client.name))
+                print('Could not reach client [%s]. INTERNAL: %s' % (str(client), str(e)))
+                raise Exception('Could not reach client [%s]. Please make sure the client is online and reachable!' % str(client))
 
         # Store public values
+        print('Storing config values...')
         Config(Config.CLIENT_ID_LIST, ','.join(client_ids)).save()
         Config(Config.THRESHOLD_PARAMS, threshold_params.to_json()).save()
         Config(Config.PUBLIC_KEY, pk.to_json()).save()
@@ -142,16 +146,19 @@ class ThresholdSetupView(FormView):
         Config(Config.PSEUDONYM_UPDATE_INTERVAL, str(pseudonym_update_interval)).save()
 
     def get_key_params(self, key_param_strategy) -> KeyParameters:
-        try:
-            return {
-                self.KEY_PARAM_STATIC_512: ThresholdCrypto.static_512_key_parameters(),
-                self.KEY_PARAM_STATIC_1024: ThresholdCrypto.static_1024_key_parameters(),
-                self.KEY_PARAM_STATIC_2048: ThresholdCrypto.static_2048_key_parameters(),
-                self.KEY_PARAM_GENERATE_512: ThresholdCrypto.generate_key_parameters(512),
-                self.KEY_PARAM_GENERATE_1024: ThresholdCrypto.generate_key_parameters(1024),
-                self.KEY_PARAM_GENERATE_2048: ThresholdCrypto.generate_key_parameters(2048),
-            }[key_param_strategy]
-        except KeyError:
+        if key_param_strategy == self.KEY_PARAM_STATIC_512:
+            return ThresholdCrypto.static_512_key_parameters()
+        elif key_param_strategy == self.KEY_PARAM_STATIC_1024:
+            return ThresholdCrypto.static_1024_key_parameters()
+        elif key_param_strategy == self.KEY_PARAM_STATIC_2048:
+            return ThresholdCrypto.static_2048_key_parameters()
+        elif key_param_strategy == self.KEY_PARAM_GENERATE_512:
+            return ThresholdCrypto.generate_key_parameters(512)
+        elif key_param_strategy == self.KEY_PARAM_GENERATE_1024:
+            return ThresholdCrypto.generate_key_parameters(1024)
+        elif key_param_strategy == self.KEY_PARAM_GENERATE_2048:
+            return ThresholdCrypto.generate_key_parameters(2048)
+        else:
             raise Exception('Unknown key parameter strategy.')
 
 

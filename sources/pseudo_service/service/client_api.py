@@ -21,7 +21,8 @@ class ClientApiCaller:
             url = 'http://' + client_address + ':' + str(client_port) + '/' + route
 
             if data:
-                result = requests.post(url, data=data)
+                print('Sending with data: ' + str(data))
+                result = requests.post(url, json=data)
             else:
                 result = requests.get(url)
             result.raise_for_status()

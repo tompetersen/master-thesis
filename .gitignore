@@ -30,3 +30,4 @@ __pycache__/
 
 
 /sources/pseudo_service/db.sqlite3
+fixtures/

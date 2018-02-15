@@ -142,7 +142,7 @@ class PartialDecryptionForRequest(models.Model):
     partial_decryption = models.TextField(null=True)
 
     def __str__(self):
-        return 'Partial decryption for request #%d by %s (%s)' % (self.request.id, self.client.name, 'accepted' if self.accepted else 'declined')
+        return 'Partial decryption for request #%d by %s (%s)' % (self.request.id, self.client.user.username, 'accepted' if self.accepted else 'declined')
 
 
 class Config(models.Model):

@@ -108,7 +108,7 @@ class ListStoreEntryRequestsView(APIView):
         IsThresholdClientUser,
     )
 
-    def post(self, request):
+    def get(self, request):
         tc = request.user.thresholdclient
 
         c = Config.objects.get(key=Config.CLIENT_ID_LIST)

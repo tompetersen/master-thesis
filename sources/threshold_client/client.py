@@ -124,6 +124,7 @@ class ThresholdClient:
                 self.service_api_caller.send_client_data(client_address, client_port)
             except ServiceApiError as e:
                 print('Could not send initial client data. Please check that server is reachable and credentials are valid.')
+                print(e)
                 exit(-1)
 
             print('Sent client data.')
@@ -155,7 +156,12 @@ class ThresholdClient:
     def start_request_process(self):
         while True:
             input('\nPress a key to ask for new decryption requests requiring your choice...')
-            store_entry_requests = self.service_api_caller.get_store_entry_requests()
+            try:
+                store_entry_requests = self.service_api_caller.get_store_entry_requests()
+            except ServiceApiError as e:
+                print('Could not get decryption requests. Reason: ' + str(e))
+                continue
+
             if len(store_entry_requests) == 0:
                 print('No action required.')
             else:
@@ -215,7 +221,7 @@ class ServiceApiCaller:
             'client_port': client_port,
         }
 
-        response = self._call_service_api(route, data)
+        response = self._call_service_api(route, data, use_patch=True)
 
     def send_partial_decryption(self, request_id: int, accepted: bool, partial_decryption: PartialDecryption=None):
         route = 'api/partial_decryption/'
@@ -227,15 +233,17 @@ class ServiceApiCaller:
 
         response = self._call_service_api(route, data)
 
-    def _call_service_api(self, route: str, data=None) -> Response:
+    def _call_service_api(self, route: str, data=None, use_patch: bool=False) -> Response:
         result = None
         try:
             url = 'http://' + self._address + ':' + str(self._port) + '/' + route
 
-            if data:
-                result = requests.post(url, data=data)
+            if data and use_patch:
+                result = requests.patch(url, data=data, auth=(self._username, self._password))
+            elif data and not use_patch:
+                result = requests.post(url, data=data, auth=(self._username, self._password))
             else:
-                result = requests.get(url)
+                result = requests.get(url, auth=(self._username, self._password))
             result.raise_for_status()
 
             return result
@@ -265,7 +273,7 @@ def create_bottle_app(client: ThresholdClient) -> bottle.Bottle:
     @app.post('/share')
     def store_share():
         received = bottle.request.json
-        t = threading.Thread(target=ThresholdClient.store_share, args=(client, json.loads(received)))
+        t = threading.Thread(target=ThresholdClient.store_share, args=(client, received))
         t.start()
 
         return "SUCCESS"
