@@ -1,7 +1,6 @@
 import datetime
 
 import requests
-import hashlib
 from nacl import utils, hash
 from requests.auth import HTTPBasicAuth
 
@@ -26,8 +25,8 @@ class Pseudonymize(AbstractPlugin):
             self.pk, self.pseudonym_update_interval = self._apicaller.get_config()
             print('\tReceived service public key: ' + str(self.pk.g_a))
             print('\tReceived service pseudonym_update_interval: ' + str(self.pseudonym_update_interval))
-        except Exception:
-            raise Exception('Could not receive required public encryption key from pseudonym service! Make sure service is reachable!')
+        except Exception as e:
+            raise Exception('Could not receive required config values from pseudonym service! Reason: ' + str(e))
 
         self._generate_new_mac_key_if_required()
 
@@ -62,7 +61,7 @@ class ServiceApiError(Exception):
 
 class ServiceApiCaller:
 
-    def __init__(self, address, port, username, password):
+    def __init__(self, address: str, port: int, username: str, password: str):
         self._address = address
         self._port = port
         self._username = username
@@ -98,4 +97,8 @@ class ServiceApiCaller:
 
             return result
         except RequestException as e:
-            raise ServiceApiError(str(e))
+            try:
+                message = str(e.response.status_code) + ' - ' + e.response.json()['detail']
+            except:
+                message = str(e.response)
+            raise ServiceApiError(message)
