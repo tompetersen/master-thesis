@@ -38,7 +38,7 @@ Um zu beurteilen, an welcher Stelle in den Datenfluss der Logdaten in dem verwen
 
 Die Pseudonymisierung muss es ermöglichen nach Aufdecken eines Eintrags wieder auf den ursprünglichen Dateninhalt schließen zu können. Daher müssen die Pseudonyme für die Zeit ihrer Speicherung eindeutig sein, d.h. es darf zu keiner gleichzeitigen Mehrfachverwendung von Pseudonymen kommen. 
 
-Weiterhin muss es eine Möglichkeit beim Pseudonymisieren von Logeinträgen geben, zu überprüfen, ob für ein Datum bereits ein Pseudonym vergeben wurde. So kann sichergestellt werden, dass in einem bestimmten Zeitraum Logeinträge zu einer Person mit dem gleichen Pseudonym versehen werden, um über die Verknüpfung von Einträgen die gewünschte Erkennung von Insider-Angriffen erreichen zu können. Auf diese Anforderung wird in Abschnitt \ref{sec_state_se} noch genauer eingegangen.
+Weiterhin muss es eine Möglichkeit beim Pseudonymisieren von Logeinträgen geben, zu überprüfen, ob für ein Datum bereits ein Pseudonym vergeben wurde. So kann sichergestellt werden, dass in einem bestimmten Zeitraum Logeinträge zu einer Person mit dem gleichen Pseudonym versehen werden, um mithilfe der Verknüpfung von Einträgen Anomalieerkennungsverfahren sinnvoll einsetzen zu können. Auf diese Anforderung wird in Abschnitt \ref{sec_state_se} noch genauer eingegangen.
 
 Außerdem muss es eine Möglichkeit geben, die Parameter der Pseudonymisierung wie den Zeitraum ihrer Verwendung konfigurierbar zu machen (siehe Abschnitt \ref{sec_state_pseudonymity}).
 
@@ -51,9 +51,9 @@ Außerdem muss es eine Möglichkeit geben, die Parameter der Pseudonymisierung w
 %- Schlüsselmanagement
 %- ...
 
-Der Einsatz eines kryptographischen Schwellwertschemas setzt eine verteilte Anwendung voraus, die den Zugriff für die Pseudonymisierungskomponente sowie für die bei der Entschlüsselung eines Eintrags beteiligten Akteure bereitstellt. Die für das Schwellwertschema nötigen Parameter \(t\) und \(n\) sowie die beteiligten Akteure müssen anpassbar bzw auswählbar sein.
+Der Einsatz eines kryptographischen Schwellwertschemas setzt eine verteilte Anwendung voraus, die den Zugriff für die Pseudonymisierungskomponente sowie für die bei der Entschlüsselung eines Eintrags beteiligten Akteure bereitstellt. Die für das Schwellwertschema nötigen, in Abschnitt \ref{sec_basics_threshold} beschriebenen Parameter \(t\) und \(n\)  sowie die beteiligten Share-Besitzer müssen in dem System initial konfigurierbar sein.
 
-In der Phase der Schlüsselgenerierung muss das System die Kommunikation und Koordination aller Beteiligten unterstützen. Die hier erstellten Schlüssel und \textit{Shares} müssen an geeigneten Stelle sicher gespeichert und abrufbar sein. Es existieren zwei Möglichkeiten für diese Phase:
+In der Phase der Schlüsselgenerierung muss das System die Kommunikation und Koordination aller Beteiligten unterstützen. Die hier erstellten Schlüssel und \textit{Shares} müssen an geeigneten Stellen sicher gespeichert und abrufbar sein. Es existieren zwei Möglichkeiten für diese Phase:
 \begin{itemize}
   \item \textbf{Zentrale Generierung von öffentlichem Schlüssel und Shares}: Eine vertrauenswürdige Komponente generiert ein Schlüsselpaar und zerlegt den geheimen Schlüssel in die einzelnen Shares, die anschließend verteilt werden können. 
   \item \textbf{Verteilte Schlüsselgenerierung}: Hierbei generieren die einzelnen Share-Besitzer jeweils ihre Shares. Durch verteilte Berechnungen kann hieraus der gemeinsame öffentliche Schlüssel generiert werden. Der geheime Schlüssel liegt dadurch niemals an einer Stelle vor und ein vertrauenswürdiger Dritter ist nicht notwendig. Aus diesem Grund ist diese Lösung zu bevorzugen.
@@ -61,7 +61,7 @@ In der Phase der Schlüsselgenerierung muss das System die Kommunikation und Koo
 
 Der für die Verschlüsselung erforderliche öffentliche Schlüssel muss so vorliegen, dass er bei der Verschlüsselung eines Pseudonym-Datensatzes genutzt werden kann.
 
-Bei der Entschlüsselung eines Eintrags, also der Aufdeckung eines Pseudonyms, muss das System wiederum die beteiligten Akteure koordinieren und anschließend die Rolle des \textit{Combiners} übernehmen, so dass anschließend der entschlüsselte Datensatz zentral vorliegt.
+Bei der Entschlüsselung eines Eintrags, also der Aufdeckung eines Pseudonyms, muss das System wiederum die beteiligten Akteure koordinieren. Anschließend muss eine Komponente die Rolle des \textit{Combiners} übernehmen, so dass anschließend der den Pseudonymhalter beschreibende entschlüsselte Datensatz im System  vorliegt.
 
 \subsection{Benutzerinteraktion}
 

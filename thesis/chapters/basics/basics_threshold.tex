@@ -7,7 +7,7 @@
 %- Was ist das? (siehe auch Paper für Definition)
 %- Fünde (RSA, Paillier, ...) und Desmedt/Frankel evtl. hier schon Pedersen/...
 
-Mit der Verbreitung technischer Systeme, die kryptographische Verfahren nutzen, in den 70er Jahren musste auch das Problem der sicheren Aufbewahrung und Verteilung kryptographischer Schlüssel betrachtet werden. Die Sicherheit dieser Schlüssel ist essentiell für den Betrieb solcher Systemen. Das einfache Speichern eines Schlüssels an einem einzigen Ort resultiert in einer hohen Verlustwahrscheinlichkeit, da ein einzelner Fehler wie unbeabsichtigtes Löschen oder Speichermedienausfall den Schlüssel unwiederbringlich verloren gehen lassen kann. Das mehrfache Speichern eines Schlüssels an verschiedenen Orten erhöht hingegen die Gefahr eines Schlüsseldiebstahls oder -missbrauchs, da auch die Angriffsoberfläche vergrößert wird. Bei möglichen Lösungen dieses Problems müssen also immer die Integrität und die Vertraulichkeit eines Schlüssels gegeneinander abgewogen werden. \cite{gemmell1997}
+Mit der Verbreitung technischer Systeme, die kryptographische Verfahren nutzen, in den 70er Jahren musste auch das Problem der sicheren Aufbewahrung und Verteilung kryptographischer Schlüssel betrachtet werden. Die Sicherheit dieser Schlüssel ist essentiell für den Betrieb solcher Systemen. Das einfache Speichern eines Schlüssels an einem einzigen Ort resultiert in einer hohen Verlustwahrscheinlichkeit, da ein einzelner Fehler wie z.B. unbeabsichtigtes Löschen oder Speichermedienausfall den Schlüssel unwiederbringlich verloren gehen lassen kann. Das mehrfache Speichern eines Schlüssels an verschiedenen Orten erhöht hingegen die Gefahr eines Schlüsseldiebstahls oder -missbrauchs, da auch die Angriffsoberfläche vergrößert wird. Bei möglichen Lösungen dieses Problems müssen also immer die Integrität und die Vertraulichkeit eines Schlüssels gegeneinander abgewogen werden \cite{gemmell1997}.
 
 Ausgehend von diesen Überlegungen entwickelte Shamir das erste \((t,n)\)-Schwellwertschema: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) (engl. \textit{Shares}) zerlegt, dass durch Kenntnis von mindestens \(t\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus höchstens \(t-1\) Teilen keine Informationen über \(D\) liefert \cite{shamir1979}.\footnote{
   Im selben Jahr veröffentlichte auch Blakley eine Lösung dieses Problems, die auf den Schnittpunkten von Hyperebenen über endlichen Feldern beruht \cite{blakley1979}.
@@ -15,13 +15,13 @@ Ausgehend von diesen Überlegungen entwickelte Shamir das erste \((t,n)\)-Schwel
 
 Auf Basis dieses Verfahrens kann also die Integrität eines Schlüssels erhöht werden, da nun selbst bei Verlust von \(n-t\) Teilen der Schlüssel noch wiederhergestellt werden kann. Auf der anderen Seite ist die Vertraulichkeit jedoch höher als bei der mehrfachen Speicherung des Schlüssels im Original, da mindestens \(t\) Teile des Schlüssels zur Wiederherstellung vorliegen müssen.
 
-Shamirs Verfahren wird im Folgenden im Detail beschrieben, da es auch im später erläuterten und verwendeten Schwellwertschema eine wichtige Rolle spielt.
+Shamirs Verfahren wird nachfolgend im Detail beschrieben, da es auch im später erläuterten und verwendeten Schwellwertschema eine wichtige Rolle spielt.
 
 \subsection{Shamir's Secret Sharing}
 
 \label{sec_basics_threshold_shamir}
 
-Die Menge aller Ganzzahlen modulo einer Primzahl \(p\) bilden den (endlichen) Körper \(\mathbb{Z}_p\), dessen Eigenschaften für das Verfahren entscheidend sind. Soll das Geheimnis \(D\) (das o.B.d.A. als Ganzzahl angenommen wird) aufgeteilt werden, so wird eine Primzahl \(p\) mit \(p > D\) und \(p > n\) gewählt. Weiterhin wird ein Polynom 
+Die Menge aller Ganzzahlen modulo einer Primzahl \(p\) bilden den (endlichen) Körper \(\mathbb{Z}_p\), dessen Eigenschaften für das Verfahren entscheidend sind. Soll das Geheimnis \(D\) (das o.B.d.A. als Ganzzahl angenommen wird) aufgeteilt werden, so wird eine Primzahl \(p\) mit \(p > D\) und \(p > n\), wobei \(n\) die Anzahl an späteren Share-Besitzern bezeichnet, gewählt. Weiterhin wird ein Polynom 
 \[q(x) = a_0 + a_1x + \dots + a_{t-1}x^{t-1} \text{ mit } a_0 = D\] 
 derart gewählt, dass \(a_1, \dots, a_{t-1}\) zufällig gleichverteilt aus der Menge \(\mathbb{Z}_p \setminus \{0\}\) stammen. Die einzelnen \textit{Shares} werden nun als
 \[D_1=(x_1,q(x_1)), \dots, D_i=(x_i,q(x_i)), \dots, D_n=(x_n,q(x_n))\]
@@ -45,7 +45,7 @@ Das Problem dieser Lösung bezogen auf den in dieser Arbeit behandelten Anwendun
 
 \label{sec_basics_threshold_thresholddecryption}
 
-In \cite{desmedt1987} wird das erwähnte Problem das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird auch die zentrale Forderung an mögliche Lösungen des Problems aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. 
+In \cite{desmedt1987} wird das Verfahren der Schwellwertschemata das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird die zentrale Forderung an mögliche Lösungen des Problems aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. 
 
 In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{Threshold Decryption} und fordert weiterhin, dass praktisch einsatzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Besitzern der \textit{Shares} notwendig machen.
 
@@ -59,13 +59,13 @@ In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \tex
 In \cite{boneh2016} werden diese Systeme formalisiert. Ein \textit{Threshold-Public-Key-Decryption}-Schema \(\epsilon = (G, E, D, C)\) besteht aus vier Algorithmen: 
 
 \begin{itemize}
-  \item \(G(t, n, r)\) ist der Algorithmus zur Generation des öffentlichen Schlüssels \(pk\) und der \(n\) \textit{Shares} des geheimen Schlüssels \(\{sk_1, \dots, sk_n\}\). \(t\) steht für die Anzahl der zur Entschlüsselung benötigten \textit{Shares}, wie bereits beschrieben. \(r\) ist als stellvertretend für die einfließenden Zufallswerte zu betrachten.
+  \item \(G(t, n, r)\) ist der Algorithmus zur Generation des öffentlichen Schlüssels \(pk\) und der \(n\) \textit{Shares} des geheimen Schlüssels \(\{sk_1, \dots, sk_n\}\). \(t\) steht für die Anzahl der zur Entschlüsselung benötigten \textit{Shares}. \(r\) ist als stellvertretend für die einfließenden Zufallswerte zu betrachten.
   
   \item \(E(pk, m, r)\) steht für den Algorithmus, der der Verschlüsselung eines Klartexts \(m\) mit dem öffentlichen Schlüssel \(pk\) dient. \(r\) dient der Vermeidung von \textit{Known-Ciphertext-Angriffen}. \todo{Vmtl.? Mehr Details...}
   
-  \item \(D(sk_i, c)\) ist der Algorithmus der für einen bestimmten \textit{Share} und einen Schlüsseltext \(c\) eine partielle Entschlüsselung \(c_j'\) liefert.
+  \item \(D(sk_i, c)\) ist der Algorithmus der für einen bestimmten \textit{Share} und einen Schlüsseltext \(c\) eine partielle Entschlüsselung \(c_j'\) liefert.\todo{EZ: c' ist ungeeignet fuer die Benennung eines Entschluesselungsergebnisses, wenn du den Schluesseltext mit c bezeichnest. Wo kommt das j her?}
   
-  \item \(C(c, c_1', \dots, c_t')\) ist der Algorithmus, der aus dem Schlüsseltext \(c\) und aus \(t\) durch \(D\) generierten partiellen Verschlüsselungen wieder den Klartext \(m\) liefert. Dieser Algorithmus wird auch \textit{Combiner} genannt. 
+  \item \(C(c, c_1', \dots, c_t')\) ist der Algorithmus, der aus dem Schlüsseltext \(c\) und aus \(t\) durch \(D\) generierten partiellen Entschlüsselungen wieder den Klartext \(m\) liefert. Dieser Algorithmus wird auch \textit{Combiner} genannt. 
 \end{itemize}
 
 Zusätzlich wird von diesen Algorithmen die folgende Eigenschaft verlangt. Sie beschreibt die korrekte Entschlüsselung von validen Schlüsseltexten im Kontext eines Schwellwertschemas: Für alle möglichen Ergebnisse \((pk, \{sk_1, \dots, sk_n\})\) von \(G\), alle möglichen Nachrichten \(m\) und alle \(t\)-elementigen Teilmengen der \textit{Shares} \(\{sk_1', \dots, sk_t'\}\) soll für alle möglichen Schlüsseltexte \(c=E(pk, m, r)\) gelten: \(C(c, D(sk_1', c), \dots, D(sk_t', c)) = m\).
