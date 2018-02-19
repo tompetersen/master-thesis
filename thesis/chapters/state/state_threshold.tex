@@ -26,6 +26,8 @@ Einen Überblick über weitere Veröffentlichungen in diesem Bereich bieten beis
 
 \subsection{ElGamal-basiertes Schwellwertschema}
 
+\label{sec_state_threshold_scheme}
+
 Ein Verfahren zur \textit{Threshold Decryption}, das auf auf einer geschickten Kombination von Shamir's Secret Sharing (Abschnitt \ref{sec_basics_threshold_shamir}) und des ElGamal-Kryptosystems (Abschnitt \ref{sec_basics_threshold_elgamal}) basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. Aufbereitete Darstellungen lassen sich in \cite{katz2014} und \cite{boneh2016} finden. \\
 Es ist eines der ersten veröffentlichten Schwellwertschemas und erfuhr dadurch viel Beachtung und entsprechend viele aufbauende Arbeiten, die Verbesserungen vorschlugen. Durch die hinterliegende Mathematik bietet das Schema einfachere Umsetzbarkeit (auch von Erweiterungen wie dezentraler Schlüsselgenerierung) gegenüber RSA\footnote{
   Das ElGamal-Verfahren nutzt zur Berechnung eine öffentlich bekannter Ordnung (sie ist Teil des öffenltichen Schlüssels). Im Gegensatz dazu werden Berechnungen bei RSA in \(\Phi(n)\) ausgeführt, das jedoch nicht öffentlich vorliegen darf \cite{nguyen2005}.
