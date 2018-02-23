@@ -68,25 +68,22 @@ Nach \cite{katz2014} beeinträchtigt es nicht die Sicherheit des ElGamal-Verfahr
 %  - schnell
 %  - Beliebiger Nachrichteninhalt ohne Auswirkungen auf die Verschlüsselung
 
-Die Verschlüsselung bzw. Entschlüsselung wurden in Form eines hybriden Verschlüsselungsverfahrens umgesetzt, wie es auch in \cite{katz2014} empfohlen und beschrieben wird: Bei der Verschlüsselung wird ein zufälliger Schlüssel \(k^{symm}\) für ein symmetrisches Verfahren \(E^{symm}\) erzeugt und dazu genutzt den Klartext \(m\) zu verschlüsseln. Das kryptographische Schwellwertschema wird lediglich dazu verwendet, \(k^{symm}\) zu verschlüsseln. Ein Schlüsseltext besteht daher aus drei Teilen: 
+Die Verschlüsselung bzw. Entschlüsselung wurden in Form eines hybriden Verschlüsselungsverfahrens umgesetzt (siehe Abschnitt \ref{sec_basics_hybrid}): Bei der Verschlüsselung wird ein zufälliger Schlüssel \(k^{symm}\) für ein symmetrisches Verfahren \(E^{symm}\) erzeugt und dazu genutzt den Klartext \(m\) zu verschlüsseln. Das kryptographische Schwellwertschema wird lediglich dazu verwendet, \(k^{symm}\) zu verschlüsseln. Ein Schlüsseltext besteht daher aus drei Teilen: 
 \begin{itemize}
   \item \(v = g^k\): Der erste Teil der ElGamal-Verschlüsselung des symmetrischen Schlüssels (siehe Abschnitte \ref{sec_basics_threshold_elgamal} und \ref{sec_state_threshold_scheme})
   \item \(c^{tc} = k^{symm} \cdot g^{ak}\): Der zweite Teil der ElGamal-Verschlüsselung des symmetrischen Schlüssels (siehe Abschnitte \ref{sec_basics_threshold_elgamal} und \ref{sec_state_threshold_scheme})
   \item \(c^{symm} = E^{symm}_{k^{symm}}(m)\): Der symmetrisch verschlüsselte Klartext
 \end{itemize}
 
-Bei der Entschlüsselung wird ähnlich vorgegangen: Das kryptographische Schwellwertschema wird dazu genutzt, den symmetrischen Schlüssel wiederherzustellen. Anschließend kann der ursprüngliche Klartext mit diesem Schlüssel wieder entschlüsselt werden. Dieses hybride Vorgehen bietet einige Vorteile: 
+Bei der Entschlüsselung wird ähnlich vorgegangen: Das kryptographische Schwellwertschema wird dazu genutzt, den symmetrischen Schlüssel wiederherzustellen. Anschließend kann der ursprüngliche Klartext mit diesem Schlüssel wieder entschlüsselt werden. Dieses hybride Vorgehen bietet neben dem im Grundlagenkapitel erwähnten Geschwindigkeitsvorteil weitere Vorteile:
 
-Symmetrische Verfahren sind im Allgemeinen deutlich schneller als asymmetrische. Durch die Kombination beider Verfahren wird also erreicht, dass die Eigenschaften des kryptographischen Schwellwertschemas im Bezug auf die verteilte Ver- bzw. Entschlüsselung erhalten werden, jedoch mit dem Geschwindigkeitsvorteil der symmetrischen Verschlüsselung. 
+Das Vorgehen ermöglicht es beliebige Nachrichten relativ einfach zu verschlüsseln, da die Beschränkung des asymmetrischen Verfahrens bezogen auf die Nachrichtenlänge (die in kodierter Form kleiner sein muss als der Parameter \(p\)) nur noch für den Schlüssel des symmetrischen Verfahrens erfüllt werden muss. Dies stellt kein Problem dar, da symmetrische Verfahren für vergleichbare Sicherheit geringere Schlüssellängen benötigen als asymmetrische Verfahren, die auf dem Diskreten-Logarithmus-Problem beruhen.
 
-Das Vorgehen ermöglicht es weiterhin beliebige Nachrichten relativ einfach zu verschlüsseln, da die Beschränkung des asymmetrischen Verfahrens bezogen auf die Nachrichtenlänge (die in kodierter Form kleiner sein muss als der Parameter \(p\)) nur noch für den Schlüssel des symmetrischen Verfahrens erfüllt werden muss. Dies stellt kein Problem dar, da symmetrische Verfahren für vergleichbare Sicherheit geringere Schlüssellängen benötigen als asymmetrische Verfahren, die auf dem Diskreten-Logarithmus-Problem beruhen.
-
-Weiterhin kann für die symmetrische Verschlüsselung ein Verfahren genutzt werden, dass neben der Verschlüsselung auch die Validität der Daten überprüft - ein sogenanntes \textit{Authenticated Encryption Scheme}. Hierdurch wird erreicht, dass Änderungen am Schlüsseltext bei der Entschlüsselung erkannt werden und der Vorgang abgebrochen werden kann, also neben der Vertraulichkeit auch die Integrität der Nachricht geschützt ist. 
-
+Weiterhin kann für die symmetrische Verschlüsselung ein Verfahren genutzt werden, dass neben der Verschlüsselung auch die Validität der Daten überprüft - ein sogenanntes \textit{Authenticated Encryption} (AE) Schema (siehe Abschnitt \ref{sec_basics_ae}). \\
 In der Implementierung wird die Standardfunktion zur symmetrischen Verschlüsselung aus der Kryptographie-Bibliothek NaCl\footnote{
   NaCl: Networking and Cryptography library: https://nacl.cr.yp.to
 } 
-genutzt. Hierbei handelt es sich um ein \textit{Authenticated Encryption Scheme} auf Basis der Algorithmen Salsa20 und Poly1305. Neben den bereits erwähnten Vorteilen eines hybriden Kryptosystems handelt es sich hierbei zusätzlich um eine weit verbreitete und von erfahrenen Kryptographen entwickelte und überprüfte Bibliothek. Dies erhöht das Vertrauen in eine sichere Umsetzung der Verfahren.
+genutzt -- ein AE-Schema auf Basis der Algorithmen Salsa20 und Poly1305. Diese verwendete Bibliothek ist weit verbreitet und von erfahrenen Kryptographen entwickelt und überprüft. Dies erhöht das Vertrauen in eine sichere Umsetzung der Verfahren.
 
 Eine direkte Implementierung des bis hierhin beschriebenen hybriden Schemas enthält jedoch noch eine Schwäche: In \cite{boneh2000} wird von den Autoren ein Angriff vorgestellt, der bei der direkten Implementierung von auf dem ElGamal-Verfahren basierenden Schemata möglich ist. Der Angriff besteht darin, dass bei der Verschlüsselung symmetrischer Schlüssel durch deren geringere Länge und die Berechnungen in speziellen Untergruppen im ElGamal-Verfahren die Möglichkeit besteht, die symmetrischen Schlüssel mit geringerem Aufwand zu entschlüsseln.
 
@@ -98,7 +95,7 @@ Als Gegenmaßnahme wird die Vorverarbeitung der symmetrischen Schlüssel empfohl
   \item \(c^{symm} = E^{symm}_{H(r)}(m)\): Als symmetrischer Schlüssel wird nun der durch \(H\) berechnete Hashwert von \(r\) genutzt
 \end{itemize}
 
-Zusätzlich schreibt das Schema nach \cite{abdalla1999} die Benutzung eines MACs zur Sicherung der Integrität der Nachricht vor. Auf diesen Schritt kann in dem in dieser Arbeit implementierten Schema verzichtet werden, da die Integrität bereits durch das verwendete AE-Verfahren\todo{EZ: Wird die Abkürzung irgendwo eingeführt?} geschützt ist. Einen Überblick über das letztlich umgesetzte Schema, das auch diesen Angriff verhindert, bietet Abbildung \ref{fig:hybrid_scheme}.
+Zusätzlich schreibt das Schema nach \cite{abdalla1999} die Benutzung eines MACs zur Sicherung der Integrität der Nachricht vor. Auf diesen Schritt kann in dem in dieser Arbeit implementierten Schema verzichtet werden, da die Integrität bereits durch das verwendete AE-Schema geschützt ist. Einen Überblick über das letztlich umgesetzte Schema, das auch diesen Angriff verhindert, bietet Abbildung \ref{fig:hybrid_scheme}.
 
 \begin{figure}[]
     \centering

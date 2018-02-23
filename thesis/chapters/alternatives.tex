@@ -1,4 +1,4 @@
-\chapter{Alternativen}
+\chapter{Ergänzende und alternative Datenschutztechniken}
 
 \label{cha_alternatives}
 
@@ -27,10 +27,11 @@
 
 
 
-Pseudonymisierung nicht für alle Felder sinnvoll, daher hier ergänzende Möglichkeiten und auch weitere Ansätze. 
-Natürlich auch mehrere kombinierte Verfahren möglich bzw sinnvoll.
+Der in dieser Arbeit verfolgte Ansatz der Pseudonymisierung unter Einsatz kryptographischer Schwellwertschemata ist nicht für alle Arten von Logdaten sinnvoll. Sollen beispielsweise Zeitstempel verändert werden, um keine direkten Rückschlüsse auf eine Person durch Kombination mit typischen Verhaltensmustern zu ermöglichen, auf der anderen Seite jedoch zumindest grobe Erkenntnisse aus dem Zeitstempel für die Anomalieerkennung genutzt werden, so kann eine auf Pseudonymisierung basierende Lösung dies nicht leisten. 
 
+Daher werden in diesem Abschnitt ergänzende Techniken zum Erhalt der Privatspäre eines Arbeitnehmers bei der Speicherung von Logdaten dargestellt und erläutert, wie diese in den entwickelten Prototypen eingebunden werden können. Natürlich können auch mehrere kombinierte Techniken für einzelne Logdaten bestehend aus mehreren Feldern sinnvoll sein. Mit Zeitstempeln versehene Logdaten eines Türschließsystems, die die Benutzerkennungen der Mitarbeiter enthalten, könnten so beispielsweise durch Pseudonymisierung der Benutzerkennungen und Verrauschung der Zeitstempel geschützt werden.
 
+Eine Übersicht über weitere in sehr speziellen Einsatzgebieten zu nutzende Datenschutztechniken sind in \cite{niksefat2017privacy} zu finden.
 
 \section{Unterdrückung} % Suppression
 
@@ -49,5 +50,15 @@ Die Maßnahme ist jedoch nur für bestimmte Felder bzw. Datenarten sinnvoll eins
 
 Neben der zufälligen Generierung von Pseudonymen, wie es in dieser Arbeit genutzt wird, ist auch die Nutzung von Hashwerten als Pseudonym für Daten denkbar. Dies würde die Verknüpfbarkeit von Logdaten ermöglichen, da für gleiche Daten der gleiche Hashwert berechnet wird. Durch den geschickten Einsatz von zusätzlichen zeitabhängig wechselnden Eingaben für das Hashverfahren (sogenannte \textit{Salts}) ließe sich auch die nötige Verknüpfbarkeit für die Anomalieerkennung gegenüber dem Schutz der Privatsphäre eines Benutzers abstimmen. Auf der anderen Seite wäre der Einsatz von Hashverfahren bei einem kleinen Wertebereich für Eingaben wie Benutzernamen wie in Abschnitt \ref{sec_state_se} beschrieben anfällig für Wörterbuchangriffe. Außerdem wären auch Rückschlüsse auf den Pseudonymhalter nicht ohne zusätzlichen Aufwand möglich. Für Datenfelder, bei denen nur die Verknüpfbarkeit, jedoch nicht der ursprüngliche Wert für die Anomalieerkennung entscheidend sind, könnten Hashverfahren sinnvoll sein. \todo{Beispiel}
 
+\section{Bloom Filter}
+
+Könnten es ermöglichen nur mit gewisser Wahrscheinlichkeit auf MengenInklusion zu tippen, aber bestimmte Fälle ausschließen zu können.
+
+\section{Homomorphe Verschlüsselung}
+
+Bezug zu Anomalieerkennung mit HV, s. Related work
+
 
 \section{Vorgehen zur Integration}
+
+\todo{TBW}
