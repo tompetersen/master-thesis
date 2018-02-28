@@ -154,7 +154,7 @@ class Config(models.Model):
     MAX_PSEUDONYM_USAGES = 'max_pseudonym_usages'
     PSEUDONYM_UPDATE_INTERVAL = 'pseudonym_update_interval'
 
-    key = models.CharField(max_length=20, primary_key=True)
+    key = models.CharField(max_length=50, primary_key=True)
     value = models.TextField()
 
     def __str__(self):
