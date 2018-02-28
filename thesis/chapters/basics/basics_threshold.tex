@@ -99,7 +99,7 @@ In der Kryptographie werden meist kryptographisch sichere Hashfunktionen eingese
 
 \label{sec_mac}
 
-Ein Message Authentication Code (MAC) ist ein Verfahren, das dazu dient, die Authentizität und die Integrität einer Nachricht sicherzustellen. Dazu wird vom Sender aus einem geheimen Schlüssel \(k\) und der Nachricht \(m\) eine Art Prüfsumme generiert und zusammen mit der Nachricht versendet. Ein Empfänger kann den MAC überprüfen, wenn er im Besitz des gleichen geheimen Schlüssels ist, und so sicher sein, dass die Nachricht nicht verändert wurde \cite{Schneier2006}.
+Ein Message Authentication Code (MAC) ist ein symmetrisches Verfahren, das dazu dient, die Authentizität und die Integrität einer Nachricht sicherzustellen. Dazu wird vom Sender aus einem geheimen Schlüssel \(k\) und der Nachricht \(m\) eine Art Prüfsumme generiert und zusammen mit der Nachricht versendet. Ein Empfänger kann den MAC überprüfen, wenn er im Besitz des gleichen geheimen Schlüssels ist, und so sicher sein, dass die Nachricht nicht verändert wurde \cite{Schneier2006}.
 
 \subsection{Hybride Kryptosysteme}
 
@@ -121,6 +121,8 @@ Ein solches System kann durch Berechnung eines MACs zusätzlich zur Verschlüsse
 \subsection{ElGamal-Kryptosystem}
 
 \label{sec_basics_threshold_elgamal}
+
+Das ElGamal-Kryptosystem ist ein von Taher ElGamal entwickeltes asymmetrisches Kryptosystem, das zur Verschlüsselung und der Erstellung von Signaturen genutzt werden kann \cite{elgamal1985}. Im Folgenden wird die Ver- und Entschlüsselung beschrieben, die für das in dieser Arbeit verwendete Skryptographische Schwellwertschema relevant ist.
 
 Im Folgenden sei \(\mathbb{G}\) eine zyklische Gruppe der primen Ordnung \(p\) und \(g\) ein Generator dieser Gruppe. Diese Parameter können öffentlich bekannt gegeben werden. Alle folgenden Berechnungen werden in \(\mathbb{G}\) (also modulo \(p\)) ausgeführt.
 

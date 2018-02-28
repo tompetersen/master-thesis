@@ -29,3 +29,9 @@ Liegen die Events nun in einem vorgebenen Format im System vor, so können sie w
 Anschließend lassen sich vorgegebene Regeln anwenden, um aus der Korrelation von Ereignissen aus verschiedenen Datenquellen auf eine Bedrohung schließen zu können, die in den einzelnen Events nicht erkennbar wäre (Event Correlation).
 
 \tbc{Wäre hier ein Beispiel für Event Correlation nötig/hilfreich?}
+
+\subsection{Das Syslog-Protokoll}
+
+\label{sec_basics_siem_syslog}
+
+Das Syslog-Protokoll wird in dieser Arbeit als Grundlage für den Empfang von Logdaten im SIEM-System genutzt und soll daher hier kurz dargestellt werden. Das Protokoll wird weitverbreitet für die Übertragung von Logdaten in Rechnernetzen genutzt. Nachrichten enthalten drei Felder: die \textit{Priority}, die die Schwere des gemeldeten Vorfalls beschreibt, die \textit{Facility}, die die Komponente beschreibt, in der der Vorfall auftrat, und die eigentliche Nachricht in textueller Form \cite{rfc5424}.

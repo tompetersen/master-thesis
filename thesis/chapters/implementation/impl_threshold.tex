@@ -2,7 +2,7 @@
 
 \label{sec_impl_threshold}
 
-\todo{Einführender Text}
+In diesem Abschnitt wird zuerst die entwickelte Bibliothek zur Nutzung eines kryptographischen Schwellwertschemas dargetsellt und anschließend ihre Nutzung in den unterschiedlichen Systemkomponenten beschrieben.
 
 \subsection{ThresholdCrypto \glqq Lib\grqq{}}
 
@@ -43,7 +43,9 @@ Im Folgenden soll kurz auf zwei Kernelemente des implementierten Verfahrens eing
 % Introduction to modern cryptography 8.3.3 (pdf 343ff)
 % Sharing of parameters: Introduction to modern cryptography ElGamal implementation issues (pdf 425)
 
-Die für das Verfahren benötigten sicheren Primzahlen \(p\) und \(q\) lassen sich mithilfe eines einfachen Ansatzes finden \cite{hoc1996}: Es wird solange eine Primzahl \(q\) im Bereich der vorgegebenen Schlüsselstärke zufällig gewählt, bis \(2q + 1\) ebenfalls eine Primzahl ist. Zur Überprüfung der Primalität der entsprechenden Zahlen wird der Miller-Rabin-Test genutzt.\todo{EZ: Miller Rabin ganz kurz erklären}
+Die für das Verfahren benötigten sicheren Primzahlen \(p\) und \(q\) lassen sich mithilfe eines einfachen Ansatzes finden \cite{hoc1996}: Es wird solange eine Primzahl \(q\) im Bereich der vorgegebenen Schlüsselstärke zufällig gewählt, bis \(2q + 1\) ebenfalls eine Primzahl ist. Zur Überprüfung der Primalität der entsprechenden Zahlen wird der Miller-Rabin-Test\footnote{
+  Der Miller-Rabin-Primzahltest ist ein Algorithmus, der basierend auf probabilistischen Annahmen die Primalität einer Zahl mit durch Angabe von einer Rundenzahl beliebig hoher Wahrscheinlichkeit bestätigen kann.
+} genutzt.
 
 Zusätzlich benötigt das Verfahren einen Generator \(g\) einer Untergruppe der Ordnung \(q\) von \(\mathbb{Z}_p^*\). Hierzu wird lediglich solange ein zufälliges Element \(g\) aus \(\mathbb{Z}_p^*\) gewählt bis 
 
