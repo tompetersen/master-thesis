@@ -10,6 +10,8 @@ class ClientApiError(Exception):
 
 class ClientApiCaller:
 
+    TIMEOUT = 1
+
     @staticmethod
     def send_share(client_address: str, client_port: int, share: KeyShare):
         route = 'share'
@@ -22,9 +24,9 @@ class ClientApiCaller:
 
             if data:
                 print('Sending with data: ' + str(data))
-                result = requests.post(url, json=data)
+                result = requests.post(url, json=data, timeout=ClientApiCaller.TIMEOUT)
             else:
-                result = requests.get(url)
+                result = requests.get(url, timeout=ClientApiCaller.TIMEOUT)
             result.raise_for_status()
 
             return result
