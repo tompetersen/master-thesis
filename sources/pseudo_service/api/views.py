@@ -38,10 +38,12 @@ class CreatePseudonym(APIView):
         max_pseudonym_usage = int(Config.objects.get(key=Config.MAX_PSEUDONYM_USAGES).value)
 
         try:
-            entry = StoreEntry.objects.get(
+            entry = StoreEntry.objects.filter(
                 search_token=search_token,
                 usages__lt=max_pseudonym_usage
-            )
+            ).first()
+            if not entry:
+                entry = self._create_entry(em.to_json(), search_token)
         except StoreEntry.DoesNotExist:
             entry = self._create_entry(em.to_json(), search_token)
         entry.save()
