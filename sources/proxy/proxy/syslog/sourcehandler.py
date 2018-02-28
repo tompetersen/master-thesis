@@ -57,6 +57,9 @@ class SyslogSourceHandler:
             result.append(self._alter_group(key, group, section))
             last_idx = end
 
+        # Append part after last substituted group
+        result.append(orig_message[last_idx:len(orig_message)])
+
         return "".join(result)
 
     def _alter_group(self, field: str, group_content: str, section: PatternSection) -> str:
