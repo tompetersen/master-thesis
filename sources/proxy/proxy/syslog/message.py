@@ -14,6 +14,9 @@ class SyslogMessage:
         if re.match('<\d+>.+', logdata):
             facility_priority_str, message = logdata.split('>', 1)
 
+            # Remove trailing null bytes which get sent by some OS
+            message = message.strip('\x00')
+
             facility_priority = int(facility_priority_str[1:])
             priority = facility_priority & 0x7 # lowest 3 bits
             facility = facility_priority >> 3 # upper 28 bits
