@@ -1,21 +1,11 @@
-\section{Searchable Encryption}
+\section{Searchable Symmetric Encryption}
 
 \label{sec_basisc_se}
 
-\tbc{
-Ist es nötig Searchable Encryption zu verwenden? 
-
-Reicht eine lokale Zuordnungstabelle (User -> Pseudonym)? Kompromittierung des Systems würde Schlüssel für Tokengenerierung oder äquivalent dazu Tabelle betreffen, oder? 
-
-Möglicher Vorteil: Eindeutige Pseudonymgenerierung kann in Store stattfinden, aber das wäre auch durch Create(enc-user), das Pseudonym liefert, möglich?}
-
-\todo{Einführung SE (aus dem DB-Bereich) und s.u.}
-
 %- Searchable Symmetric encryption vs Public Key Encryption With Keyword Search
-
 %- Hier relevant SSE
 
-Ein allgemeines SSE-Schema besteht aus vier effizient berechenbaren Algorithmen \cite{wang2016}:
+\textit{Searchable Symmetric Encryption} (SSE) ist ein Konzept , das es ermöglicht, Daten in verschlüsselter Form auf einen Server auszulagern und trotzdem Suchanfragen auf den Daten ausführen zu können. Ein allgemeines SSE-Schema besteht aus vier effizient berechenbaren Algorithmen \cite{wang2016}:
 
 \begin{itemize}
   \item \textbf{GenerateKey}\((k)\) generiert einen geheimen Schlüssel \(K\) anhand eines (verfahrensabhängigen) Sicherheitsparameters \(k\).
@@ -24,4 +14,4 @@ Ein allgemeines SSE-Schema besteht aus vier effizient berechenbaren Algorithmen 
   \item \textbf{Search}\((I, T_w)\) liefert eine Menge von Dokumenten basierend auf einem Suchwort-Index \(I\) und einem Trapdoor-Element \(T_w\).
 \end{itemize}
 
-Der Besitzer der Daten erstellt sich einen Schlüssel mithilfe von \textbf{GenerateKey} und generiert durch \textbf{BuildIndex} einen Suchwort-Index für seine Dokumente. Anschließend lädt er diese Dokumente in verschlüsselter Form zusammen mit dem Index auf den Server. Möchte der Besitzer nun alle Dokumente erhalten, auf die ein spezielles Suchwort zutrifft, so erstellt er für dieses Suchwort mithilfe von \textbf{GenerateTrapdoor} ein Trapdoor-Element und sendet dieses an den Server. Dort wird nun auf dem Suchwort-Index durch \textbf{Search} die Suche nach dem Trapdoor-Element ausgeführt, die eine Menge von verschlüsselten Dokumenten liefert, auf die das Suchwort zutrifft. Diese können zurück an den Besitzer gesendet werden, der sie lokal entschlüsseln kann. \todo{Übersichtsdiagramm angelehnt an overview-sse, p.3}
+Der Besitzer der Daten erstellt sich einen Schlüssel mithilfe von \textbf{GenerateKey} und generiert durch \textbf{BuildIndex} einen Suchwort-Index für seine Dokumente. Anschließend lädt er diese Dokumente in verschlüsselter Form zusammen mit dem Index auf den Server. Möchte der Besitzer nun alle Dokumente erhalten, auf die ein spezielles Suchwort zutrifft, so erstellt er für dieses Suchwort mithilfe von \textbf{GenerateTrapdoor} ein Trapdoor-Element und sendet dieses an den Server. Dort wird nun auf dem Suchwort-Index durch \textbf{Search} die Suche nach dem Trapdoor-Element ausgeführt, die eine Menge von verschlüsselten Dokumenten liefert, auf die das Suchwort zutrifft. Diese können zurück an den Besitzer gesendet werden, der sie lokal entschlüsseln kann. 

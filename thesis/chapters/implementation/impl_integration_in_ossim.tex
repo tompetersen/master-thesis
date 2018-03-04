@@ -48,6 +48,7 @@ Weiterhin wird sich auf den am häufigsten\footnote{
 Der entwickelte Log-Proxy nimmt Logdaten über das Syslog-Protokoll entgegen. Verschiedene Datenquellen und Eventformate können mithilfe von Konfigurationsdateien angelegt werden wie im nächsten Abschnitt beschrieben. Für einzelne Felder eines Logdatums können dabei Plugins angegeben werden, die die Behandlung des Feldes übernehmen. Der Proxy-Server kann durch einfach zu entwickelnde Plugins leicht um weitere Datenschutztechniken erweitert werden. Dies wird im übernächsten Abschnitt beschrieben. Nach der Behandlung eines Logdatums wird es anschließend über das Syslog-Protokoll an den OSSIM-Server oder -Sensor geschickt.
 
 \subsection{Konfiguration von Datenquellen}
+\label{sec_integration_in_ossim_datasource_config}
 
 Die Behandlung von verschiedenen Datenquellen wird durch Konfigurationsdateien ermöglicht:
 
@@ -69,6 +70,7 @@ test=Pseudonymize()
 Eine Konfigurationsdatei kann aus mehreren Bereichen bestehen. Der \texttt{general}-Bereich enthält allgemeine Angaben über das Plugin. Um unterschiedliche Lognachrichten eines Gerätes bündeln zu können, kann eine Konfigurationsdatei weiterhin mehrere Bereiche enthalten, die jeweils die Verarbeitung einer bestimmten Lognachricht beschreiben. Angegeben werden muss jeweils ein regulärer Audruck, der die Nachricht beschreibt und mehrere Gruppen (\texttt{(?P<name>...)}) enthalten kann. Für jede dieser Gruppen muss eine Angabe zu dem Plugin inklusive notwendiger Parameter gemacht werden, das die Gruppe verarbeiten soll. Durch diese Konfigurationsdateien können Nachrichten unbekannter Formate aus neuen Datenquellen leicht in das bestehende System eingebunden werden.
 
 \subsection{Umsetzung von Datenschutztechniken durch Plugins}
+\label{sec_integration_in_ossim_plugins}
 
 Die Erweiterbarkeit um neue Datenschutztechniken wird durch leicht erweiterbare Plugins ermöglicht. Ein Plugin muss lediglich die Methode \texttt{handle\_data} implementieren, die die originalen Daten und alle in der Konfiguration angegebenen Parameter erhält. Ein einfaches Plugin, das die Daten durch ein in der Konfiguration angegebenen Wert ersetzt, könnte so aussehen:
 

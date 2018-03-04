@@ -8,24 +8,7 @@ Neben den primären Anforderungen, die sich direkt aus der Funktionsbeschreibung
 
 \label{subsec_impl_requirements_ossimintegration}
 
-\todo{Diese Eigenschaften hier oder erst Entwurf und hier nur allgemein?}
-
-Um zu beurteilen, an welcher Stelle in den Datenfluss der Logdaten in dem verwendeten SIEM-System  eingegriffen wird, um die Daten zu verändern, müssen Vor- bzw. Nachteile der verschiedenen Möglichkeiten gegeneinander abgewogen werden. Folgende Eigenschaften einer Möglichkeit sollten betrachtet werden:
-
-\begin{itemize}
-
-  \item \textbf{Veränderung des SIEM-Systems: } Muss das eingesetzte SIEM-System für die Umsetzung der Lösung angepasst werden? Dies wäre im Hinblick auf zukünftige Updates, die das SIEM-System durch seinen Entwickler erfährt, nicht wünschenswert, da jedes dieser Updates dafür sorgen könnte, dass die umgesetzte Lösung angepasst werden muss. Weiterhin würde dieser Ansatz ein SIEM-System erfordern, dass entweder quelloffen vorliegt und verändert werden darf oder die gewünschte Verhaltensänderung zumindest durch Erweiterungen zulässt. 
-  
-  \item \textbf{Nicht-pseudonymisierte Daten im SIEM-System: } Um das Ziel der Arbeit -- die Pseudonymisierung, die nur durch Kollaboration aufgedeckt werden kann -- zu erreichen, muss sichergestellt sein, dass Logdaten nirgendwo in nicht pseudonymisierter Form vorliegen. Da insbesondere das zukünftige Verhalten des SIEM-Systems nicht beeinflusst werden kann, wäre es wünschenswert, dass die Logdaten bereits in pseudonymisierter Form das SIEM-System erreichen.\\
-  Die Relevanz dieser Eigenschaft lässt sich am Beispiel des später in dieser Arbeit genutzten SIEM-Systems OSSIM erkennen: Wird das Syslog-Protokoll genutzt, um Logdaten in OSSIM aufzunehmen, so werden die Einträge erst in einer Logdatei abgelegt und von dort aus geparst, normalisiert und in der Datenbank gespeichert. Das Datum verbleibt in der Logdatei. Kommen die Daten in nicht-pseudonymisierter Form in dem OSSIM-Sensor an, so muss sichergestellt werden, dass verarbeitete Einträge gelöscht oder verändert werden.
-  
-  \item \textbf{Mehrfaches Parsen von Logdaten: } Durch das SIEM-System werden die Logdaten - wie in Abschnitt \ref{sec_basics_siem} beschrieben - geparst und normalisiert. Aus Performancegründen ist eine Lösung zu bevorzugen, die diesen Vorgang oder Teile davon nicht mehrfach voraussetzt.
-  
-  \item \textbf{Abhängigkeit von Besonderheiten des SIEM-Systems: } Einige SIEM-Systeme bieten Möglichkeite der verteilten Installation oder andere spezifische Eigenschaften. Eine Lösung, die unabhängig von dem verwendeten SIEM-System funktioniert, ist zu bevorzugen, da sie universell einsetzbar ist.    
-  
-%  \item \textbf{Manipulierbarkeit auf den Übertragungswegen(?): }
-
-\end{itemize}
+Es muss eine geeignete Stelle für den Eingriff in den Datenfluss der Logdaten in dem verwendeten SIEM-System gefunden werden. Hierzu müssen Auswirkungen des Eingriffs betrachtet und Vor- bzw. Nachteile der verschiedenen Möglichkeiten gegeneinander abgewogen werden. 
 
 \subsection{Anforderungen an die Pseudonymisierung}
 

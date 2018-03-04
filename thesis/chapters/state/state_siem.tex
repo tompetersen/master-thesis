@@ -2,19 +2,19 @@
 
 \label{sec_state_siem}
 
-Zur Zeit gibt es eine vielfältige Auswahl an SIEM-Systemen auf dem Markt, die die grundsätzlichen Aufgaben eines SIEM-Systems erfüllen und über diese hinausgehen: Splunk\footnote{
+Zur Zeit gibt es eine vielfältige Auswahl an SIEM-Systemen auf dem Markt: Splunk\footnote{
   https://www.splunk.com
 }, QRadar von IBM\footnote{
   https://www.ibm.com/us-en/marketplace/ibm-qradar-siem
 } oder ArcSight von Micro Focus\footnote{
   https://software.microfocus.com/en-us/software/siem-security-information-event-management
-} sind nur einige Beispiele aus diesem Bereich. \todo{Die Funktionen dieser Systeme sind alle ähnlich/total unterschiedlich/ gehen von bis usw.}
+} sind nur einige Beispiele aus diesem Bereich. Neben den in Abschnitt \ref{sec_basics_siem} beschriebenen grundlegenden Funktionen eines SIEM-Systems, die von allen Kandidaten in unterschiedlichem Maße bereitgestellt werden, unterscheiden sie sich insbesondere in darüber hinausgehenden Techniken: Die Nutzung von Machine Learning zur Erkennung ungewöhnlichem Verhaltens oder die Automatisierung von Handlungen im Bedrohungsfall sind hier beispielhafte Möglichkeiten.
 
-\todo{Umschreiben - OSSIM weil ...}
-
-Die Auswahl an Open-Source-Software in diesem Bereich ist jedoch sehr gering. Eine der wenigen Ausnahmen stellt OSSIM - ein SIEM-System der Firma AlienVault\footnote{
+Die Auswahl an quelloffener Software in diesem Bereich ist jedoch sehr gering. Eine Ausnahme stellt OSSIM - ein SIEM-System der Firma AlienVault\footnote{
 	AlienVault OSSIM: The World’s Most Widely Used Open Source SIEM\\https://www.alienvault.com/products/ossim
 } - dar, das auf Basis weiterer quelloffener Lösungen aus dem Netzwerksicherheits-Bereich unter anderem die in Abschnitt \ref{sec_basics_siem} beschriebenen Funktionen bereitstellt. AlienVault bietet zusätzliche eine kommerzielle Variante seines Produkts namens USM an, das insbesondere in den Bereichen Event-Korrelation und Compliance-Reporting die Funktionalität von OSSIM übersteigt. Von der Entwicklungsarbeit die in USM fließt, profitiert jedoch auch OSSIM, beispielsweise durch die Aktualisierung von Plugins für die Einbindung von aktuellen Netzwerkgeräten.
+
+Da die Quelloffenheit auch die Möglichkeit bietet, Komponenten des SIEM-Systems direkt zu verändern, und außerdem gerade im Sicherheitsbereich generell zu bevorzugen ist, fiel die Entscheidung des in dieser Arbeit verwendeten SIEM-Systems auf OSSIM.
 
 \subsection{OSSIM-Überblick}
 

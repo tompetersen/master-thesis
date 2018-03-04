@@ -17,9 +17,6 @@
 %  - Mehrere Suchworte zu einem Pseudonym möglich? (zB Name, IP, ... ) Gewünscht? Welche Vorteile könnte dies beispielsweise bezogen auf den Anwendungsfall der Insidererkennung bringen?
 %  - Verteilte Pseudonymhaltung möglich? Was müsste verteilt werden?
 
-
-\todo{Problematik bereits in Übersichtskapitel darstellen -> auslagern?}
-
 Trifft ein neues Datum in dem System ein und soll pseudonymisiert werden, so muss überprüft werden, ob bereits ein Pseudonym für das Datum vergeben wurde. 
 Da die Daten jedoch in  verschlüsselter Form vorliegen, stellt sich die Frage, wie diese Überprüfung erreicht werden kann. In Abbildung \ref{fig:se_overview} ist dieses Problem noch einmal anhand eines Beispiels dargestellt. Zu einem Zeitpunkt liegen in der Pseudonymtabelle Pseudonyme für zwei Benutzer \textit{User A} und \textit{User B} vor. Das diese Benutzer zu den Pseudonymen gehören, ist jedoch nicht offensichtlich, da die Daten verschlüsselt gespeichert sind. Sollen nun neue Logdaten verarbeitet werden, liegen zwei mögliche Fälle vor: 
 
