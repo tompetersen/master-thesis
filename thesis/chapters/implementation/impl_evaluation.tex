@@ -48,12 +48,27 @@ Regelmäßige, parameterabhängige Pseudonymwechsel, wie sie implementiert wurde
 
 \subsection{Performanz}
 
-- Zeitmessungen für einzelne Systemfunktionen
+Zu Beginn der Setup-Phase können vorberechnete Parameter gewählt werden oder diese Parameter neu generiert werden. Die (nicht optimierte) Umsetzung dieses Algorithmus wie in Abschnitt \ref{sec_impl_threshold_keyparams} beschrieben in Python erfordert lange Berechnungsdauern, deren Mittelwert und Standardabweichung in Tabelle \ref{tab_key_generation} zu finden sind. Die hohe Standardabweichung folgt aus einer geringen Messanzahl (den langen Zeiten geschuldet), aber insbesondere auch dem Einfließen von Zufallszahlen und der zufälligen Verteilung der Primzahlen. 
 
-- Performance bzw. Auswirkungen der Nutzung (theoretische Rechenlast, Zeit-/Lastmessung, zusätzlicher Speicherbedarf, ...)
+\begin{table}
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+  \hline 
+   & \textbf{512 Bit} & \textbf{1024 Bit} & \textbf{2048 Bit }\\ 
+  \hline 
+  \(\mu\) & 25  & 509 & 5394 \\ 
+  \hline 
+  \(\sigma\) & 28  & 297 & 6719 \\ 
+  \hline 
+  \end{tabular} 
+  \caption{Mittelwert(\(\mu\)) und Standardabweichung(\(\sigma\)) in Sekunden für die Dauer der Schlüsselgenerierung bei unterschiedlichen Schlüsselstärken.}
+  \label{tab_key_generation}
+\end{table}
 
+Es zeigt sich, dass die Zeiten für angemessende Schlüsselstärken um 2000 Bit nicht mehr geeignet für die interaktive Nutzung während der Setup-Phase des Systems sind. Diese ließen sich durch eine optimierte Implementierung sicherlich deutlich reduzieren. Wie in Abschnitt \ref{sec_impl_threshold_keyparams} bereits beschrieben sollte jedoch die Nutzung vorberechneter Parameter kein Sicherheitsrisiko darstellen. 
 
-- Bar Chart Times per Key size
+Die Schlüsselgenerierung muss nur einmalig während der Setup-Phase ausgeführt werden. Entscheidender für die Performanz des Systems im Betrieb sind die Betrachtungen zur Dauer der Logdatenbehandlung. Hierfür wurden Messungen an einem einfachen Aufbau aus zwei Rechnern vorgenommen, von denen der eine den Log-Proxy, der andere den Pseudo-Service inklusive dessen Datenbank beherbergte. Gemessen wurde die Zeit des Empfangs von Logdaten in praxisnaher Größe (etwa 0.5 KB), die ohne Pseudonymisierung bzw. mit Pseudonymisierung in unterschiedlichen Schlüsselstärken durch den Log-Proxy verändert wurden. Die gemessenen Zeiten sind Abbildung \ref{fig:eval_barchart} zu entnehmen.
+
 \begin{figure}[]
     \centering
     \begin{tikzpicture}
@@ -80,6 +95,13 @@ Regelmäßige, parameterabhängige Pseudonymwechsel, wie sie implementiert wurde
     \label{fig:eval_barchart}
 \end{figure}
 
+Abbildung \ref{fig:eval_piecharts} zeigt zusätzlich die im für die Pseudonymisierung zuständigen Plugin des Log-Proxy gemessenen Zeitanteile, die die jeweiligen Teilfunktionen bei den unterschiedlichen Schlüssellängen benötigten:
+\begin{itemize}
+  \item \textbf{Hash} Zeitanteil für die Berechnung des MACs, der für die Suche nach existierenden Pseudonymen genutzt wird %(siehe Abschnitt \ref{sec_state_se_mac})
+  \item \textbf{Schwellwert} Zeitanteil für die Verschlüsselung durch das kryptographische Schwellwertschema %(siehe Abschnitt \ref{sec_impl_threshold})
+  \item \textbf{Pseudonym} Zeitanteil für die Kommunikation mit dem Pseudo-Service und die dort stattfindende Suche nach existierenden Pseudonymen
+\end{itemize} 
+
 \begin{figure}[]
     \centering
     \begin{tikzpicture}
@@ -87,13 +109,13 @@ Regelmäßige, parameterabhängige Pseudonymwechsel, wie sie implementiert wurde
     \pie[
        rotate = 90, 
        radius = 2,
-       color = {blue!20, green!40, red!60},
+       color = {white, red!40, gray!40},
        %text = legend,
        after number={},
      ] {
-         97/,
-         2/, 
-         1/
+         1/,
+         2/,
+         97/
      }
     
     %1024
@@ -101,36 +123,42 @@ Regelmäßige, parameterabhängige Pseudonymwechsel, wie sie implementiert wurde
         pos={4.5,0},
         rotate = 90, 
         radius = 2,
-        color = {blue!20, green!40, red!60},
+        color = {white, red!40, gray!40},
         %text = legend,
         after number={},
      ] {
-         93/,
-         6/, 
-         1/
+         1/,
+         6/,
+         93/
      }
     %2048
      \pie[
          pos={9,0},
           rotate = 90, 
           radius = 2,
-          color = {blue!20, green!40, red!60},
+          color = {white, red!40, gray!40},
           text = legend,
           after number={},
       ] {
-          63/Pseudonym,
+          1/Hash,
           36/Schwellwert, 
-          1/Hash
+          63/Pseudonym     
       }
     \end{tikzpicture}
     \caption{Zeitlicher Anteil der verschiedenen Berechnungen im Pseudonymisierungs-Plugin bei  Schlüssellängen von 512 Bit (links), 1024 Bit (Mitte) und 2048 Bit (rechts).}
     \label{fig:eval_piecharts}
 \end{figure}
 
+Aus diesen Messungen ergibt sich, dass der größte Anteil an Bearbeitungszeit einer Lognachricht in der Abfrage des Pseudo-Service nach einem existierenden Pseudonym und der Kommunikation zwischen dem Log-Proxy und dem Pseudo-Service liegt. Sollte sich die benötigte Zeit für die Bearbeitung von Logdaten im produktiven Einsatz als zu lang herausstellen, könnten die Komponenten zusammengeführt werden -- unter Verzicht auf die in Abschnitt \ref{sec_over_architecture} beschriebenen Vorteile im Bezug auf die Sicherheit des Pseudonymzusammenhangs durch ein verteiltes System.\\
+Mit steigenden Schlüssellängen steigt jedoch auch der Zeitanteil, den die Berechnungen des kryptographischen Schwellwertschemas benötigen, erheblich. Die Veränderung ist hier alleinig auf den asymmetrischen Teil des umgesetzten hybriden Schemas (siehe Abschnitt \ref{sec_impl_threshold_hybrid}) zurückzuführen, da sich der symmetrische Teil nicht verändert. Um die Performanz der Verschlüsselungsfunktion zu erhöhen, bietet sich die Nutzung von \textit{Elliptic Curve Cryptography} an (siehe Abschnitt \ref{sec_state_threshold_ecc}). Eine zusätzliche Möglichkeit ist auch die Implementierung dieser zeitkritischen Funktion durch eine maschinennähere Sprache als Python wie beispielsweise C. 
 
+Für die Berechnung der partiellen Entschlüsselungen und der kompletten Entschlüsselung eines Schlüsseltextes (und damit Aufdeckung eines Pseudonyms) wurde auf Performanzmessungen verzichtet. Diese Aktionen sind im umgesetzten System nicht zeitkritisch. Zusätzlich werden sie nur in seltenen Fällen -- nämlich bei der Aufdeckung eines Pseudonyms -- eingesetzt.
 
-- Pie Chart Times per Computational part
-
-- Not  deployed in a standard way (uWSGI, Apache, ...)
-- Crashes of PostgresSQl database driver
-- Unreliability of UDP
+Insgesamt kam es bei den Messungen zu einigen Problemen, insbesondere wenn die Nachrichtenlast und damit die Rechenlast stieg:
+\begin{itemize}
+\item seltene Komplettausfälle des Systems aufgrund des Datenbanktreibers für die verwendete PostgreSQL-Datenbank
+\item Nicht-Behandlung von Nachrichten durch das unzuverlässige UDP-Protokoll
+\end{itemize}
+Bessere (Mess-)Ergebnisse sollte das Deployment der Komponenten auf dafür ausgelegter Infrastruktur mit Standardlösungen für Python (Apache mit modWSGI, uWSGI, ...) und enstsprechender Rechenleistung bringen. Auch die Nutzung von TCP-Verbindungen für das verwendete syslog-Protokoll sollte mehr Zuverlässigkeit bringen \footnote{
+  RFC 3195 (Reliable Delivery for syslog) beschreibt diese Erweiterung. Ob dies in der Praxis durch verbreitete Logdaten produzierende Geräte genutzt wird, übersteigt das Wissen des Autors.
+}. 

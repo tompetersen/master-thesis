@@ -75,9 +75,11 @@ Das umzusetzende System sollte es ermöglichen, Daten aus verschiedenen Quellen 
 
 \label{subsec_impl_requirements_plugins}
 
-Neben der im Fokus dieser Arbeit stehenden Pseudonymisierung und dem Einsatz von kryptographischen Schwellwertschemata zum Schutz der Logdaten gibt es weitere Datenschutztechniken, die für den Anwendungsfall genutzt werden könnten (siehe Kapitel \ref{cha_alternatives}). Der umgesetzte Prototyp sollte leicht um diese Techniken erweiterbar sein, d.h. so gestaltet sein, dass andere Techniken ohne große Änderungen am System integriert und auf eingehende Logdaten angewendet werden können.
+Neben der im Fokus dieser Arbeit stehenden Pseudonymisierung und dem Einsatz von kryptographischen Schwellwertschemata zum Schutz der Logdaten gibt es weitere Datenschutztechniken, die für den Anwendungsfall genutzt werden könnten (siehe Kapitel \ref{cha_alternatives}). Das zu entwickelnde System sollte leicht um diese Techniken erweiterbar sein, d.h. so gestaltet sein, dass andere Techniken ohne große Änderungen am System integriert und auf eingehende Logdaten angewendet werden können.
 
-\todo{Performance?}
+\subsection{Performanz}
+
+Das System sollte es, eingesetzt in einem Unternehmensnetzwerk, ermöglichen eine ausreichende Menge von Logdaten in einer Zeitspanne behandeln zu können. 
 
 \subsection{Übersicht}
 
@@ -90,4 +92,5 @@ Zusammenfassend sollte ein System, wie es in dieser Arbeit angestrebt wird, also
   \item Geeignete Benutzerinteraktion mit dem System an notwendigen Stellen
   \item Erweiterbarkeit um unbekannte Datenquellen
   \item Erweiterbarkeit um weitere Datenschutztechniken
+  \item Performanz
 \end{itemize}
