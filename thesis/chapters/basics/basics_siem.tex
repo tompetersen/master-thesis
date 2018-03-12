@@ -15,7 +15,7 @@ Ein SIEM-System sollte nach \cite{detken2015} die folgenden Aufgaben erfüllen k
 	\item \textbf{Compliance Reporting:} Überprüfung der Einhaltung von durch Regelungen vorgeschriebenen Anforderungen wie Integrität, Risiko und Effektivität.
 	\item \textbf{API:} Bereitstellung von Schnittstellen zur Integration heterogener Systeme im Netzwerk.
 	\item \textbf{Role based access control:} Zuständigkeitsabhängige Sichten auf sicherheitsrelevante Ereignisse.
-  \item \textbf{Event Correlation:} im Folgenden näher erläutert.
+  \item \textbf{Event Correlation:} siehe unten.
 \end{itemize} 
 
 Eine besondere Bedeutung im Kontext dieser Arbeit kommt hier der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detectionen-Systemen oder aus den Log-Daten von Firewalls, Switches oder anderen Netzwerkgeräten stammen können. 
@@ -28,10 +28,8 @@ Liegen die Events nun in einem vorgebenen Format im System vor, so können sie w
 
 Anschließend lassen sich vorgegebene Regeln anwenden, um aus der Korrelation von Ereignissen aus verschiedenen Datenquellen auf eine Bedrohung schließen zu können, die in den einzelnen Events nicht erkennbar wäre (Event Correlation).
 
-\tbc{Wäre hier ein Beispiel für Event Correlation nötig/hilfreich?}
-
 \subsection{Das Syslog-Protokoll}
 
 \label{sec_basics_siem_syslog}
 
-Das Syslog-Protokoll wird in dieser Arbeit als Grundlage für den Empfang von Logdaten im SIEM-System genutzt und soll daher hier kurz dargestellt werden. Das Protokoll wird weitverbreitet für die Übertragung von Logdaten in Rechnernetzen genutzt. Nachrichten enthalten drei Felder: die \textit{Priority}, die die Schwere des gemeldeten Vorfalls beschreibt, die \textit{Facility}, die die Komponente beschreibt, in der der Vorfall auftrat, und die eigentliche Nachricht in textueller Form \cite{rfc5424}.
+Das Syslog-Protokoll wird in dieser Arbeit als Grundlage für den Empfang von Logdaten im SIEM-System genutzt und soll daher hier kurz dargestellt werden. Das Protokoll wird weitverbreitet für die Übertragung von Logdaten in Rechnernetzen genutzt. Nachrichten enthalten drei Felder: die \textit{Priority}, die die Schwere des gemeldeten Vorfalls beschreibt, die \textit{Facility}, die die Komponente beschreibt, in der der Vorfall auftrat, und die eigentliche Nachricht in textueller Form. Logdaten werden häufig über UDP übertragen, es gibt jedoch auch Erweiterungen, in denen TCP oder TLS genutzt wird \cite{rfc5424}.

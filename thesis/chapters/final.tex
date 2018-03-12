@@ -19,23 +19,73 @@
 
 %The Future Research subsection is included so that researchers picking up this work in future have the benefit of the ideas that you generated while you were working on the project. Again, concise numbered paragraphs are usually best. 
 
-\section{Conclusion}
+In dieser Arbeit wurde das Zusammenspiel von Pseudonymisierung und kryptographischen Schwellwertschemata als Lösung für die datenschutzgerechte Speicherung von Logdaten untersucht. 
+%Pseudonymisierung
+Als zentrale Anforderung an die Pseudonymisierung wurde die für unterschiedliche Einsatzkontexte per Parameter anpassbare Pseudonymwechselstrategie ausgemacht. Generell einsetzbare Parameter stellen die Nutzungshäufigkeit und das Zeitintervall der maximalen Nutzungsdauer dar. 
+%Schwellwertschema
+Es wurde das Feld der kryptographischen Schwellwertschemata exploriert und Schema auf Basis von Shamirs Secret Sharing und dem ElGamal-Verfahren ausgewählt sowie Verbesserungen in Form von \textit{Elliptic Curve Cryptography} und dezentraler Schlüsselgenerierung dargestellt.
+%Identifikation
+Das Problem der Identifikation bestehender Pseudonyme für verschlüsselte Daten wurde als zentrales Problem bei der Kombination beider Verfahren ausgemacht und verschiedene Lösungsansätze diskutiert. Ein Ansatz basierend auf der Nutzung von MACs als einfache Form deterministischer Verschlüsselung stellte sich als für das zu entwickelnde System als am geeignetsten heraus.
+%Eingriff
+Zusätzlich wurden verschiedene Ansätze für den Eingriff in den Logdatenfluss von Quelle zu SIEM-System betrachtet und ein Proxy-basierter Ansatz als sinnvolle Verknüpfung von frühestmöglicher Pseudonymisierung und praktischer Einsatzbarkeit ausgemacht.
+%Architektur für System
+Aus den beschriebenen Verfahren wurde ein verteiltes System entworfen, das in den Logdatenfluss eingreift, um Logdaten zu pseudonymisieren. Anschließend gibt es berechtigten Benutzern im Fall des Verdachts auf einen Insider-Angriff die Möglichkeit, die Aufdeckung von Pseudonymen zu beantragen bzw. über einen solchen Antrag zu entscheiden.
 
-In dieser Arbeit ...
+% Umsetzung
+% Threshold Bib, die in anderern Anwendungen eingesetzt werden kann
+Basierend auf diesen theoretischen Betrachtungen wurde ein Prototyp des entworfenen Systems implementiert, der Logdaten über das Syslog-Protokoll entgegennimmt. Neben der Entwicklung der verschiedenen Komponenten des verteilten Systems erwies sich inbesondere die Entwicklung des kryptographischen Schwellwertschemas als zentrale Herausforderung. Entgegen den Erwartungen vor Erstellung der Arbeit scheint es keine quelloffene und überprüfte Bibliothek zu geben, die die benötigten Funktionen bereitstellt -- eine Lücke, die die in dieser Arbeit entwickelte Bibliothek füllen kann. Dies erfordert jedoch eine ausgiebige Überprüfung durch erfahrene Kryptographen.
 
-\section{Contributions}
+% Ergänzende Ansätze in Kapitel 6
+In einem weiteren Kapitel wurden ergänzende Datenschutztechniken zu dem verfolgten Ansatz dargestellt, da die Pseudonymisierung nicht für alle Arten von Daten sinnvoll einsatzbar ist. Zusätzlich wurde ihre Einbindung in den entwickelten Prototypen dargestellt.
 
-- Zusammenarbeit von Pseudonymisierung + Schwellwertschema
-- Beleuchtung verschiedener Ansätze für das Suchproblem (Anwendung von Searchable Encryption für ...)
-- Prototypische Implementation
-- Implementation Schwellwertschema 
+% Löst die Arbeit den beschriebenen Zielkonflikt?
+% Evaluation -> für produktiven Einsatz wohl noch Arbeit notwendig
+Aus Sicht des Autors ist der in dieser Arbeit gewählte Ansatz zur datenschutzfreundlichen Speicherung von Logdaten gut geeignet, um (eingeschränkte) Verknüpfbarkeit dieser Daten zur Anomalieerkennung und durch das Mehraugenprinzip geschützte Aufdeckbarkeit eines möglichen Innentäters im Verdachtsfall zu ermöglichen. Im Gegensatz zu bisherigen Lösungen, die oftmals eine vertrauensvolle Partei für die Generierung und Aufdeckung von Pseudonymen voraussetzen, kann durch diesen Ansatz verteiltes Vertrauen mathematisch-technisch modelliert werden. Durch die parameterabhängige Erstellung von Pseudonymen kann 
+abhängig von unterschiedlichen Anforderungen des Einsatzkontexts gut zwischen den Anforderungen der Anomalieerkennung und dem Recht auf informationelle Selbstbestimmung des Arbeitnehmers abgewogen werden. Ob dies auch den rechtlichen Anforderungen des BDSG genügt, bleibt allerdings noch zu beurteilen.
+
+Der entwickelte Prototyp zeigt auch die praktische Einsatzbarkeit des Verfahrens. Wie in dem Evaluationsabschnitt allerdings schon beschrieben sind vor dem Produktiveinsatz des Systems gerade im Hinblick auf die Performanz noch einige Verbesserungen vorzunehmen.
+
+Insgesamt kann der Ansatz dieser Arbeit die Speicherung der zur Anomalie-basierten Erkennung von Insider-Angriffen erforderlichen Überwachungsdaten und die Privatsphäre eines Arbeitnehmers zusammenbringen. Verfahren der Anomalieerkennung können relativ unabhängig von dieser Datenspeicherung entwickelt werden. Lediglich die Wahl der Parameter für die Pseudonymisierung und damit die Verknüpfbarkeit verschiedener Logdaten muss für einzelne Verfahren getroffen werden. Damit ist ein Schritt zur datenschutzgerechten Erkennung und Verhinderung von Insider-Angriffen getan, auf dem kommende Arbeiten aufbauen können.
+
+%- Ansatz: gut geeignet den Zielkonflikt zu lösen
+%- System erfüllt die Anforderungen 
+%- Parameteranpassbarkeit macht den Einsatz von Anomalieerkennungssystemen möglich
+%- Abwägung zwischen Anom. und Privatsphäre -> Parameterwahl offen und kontextabhängig
+%- Evaluation: für produktiveinsatz wohl noch arbeit notwendig
+
+%\section{Contributions}
+%
+%- Zusammenarbeit von Pseudonymisierung + Schwellwertschema
+%- Beleuchtung verschiedener Ansätze für das Suchproblem (Anwendung von Searchable Encryption für ...)
+%- Prototypische Implementation
+%- Implementation Schwellwertschema 
 
 \section{Future work}
+%
+%- Implementation:
+%  - Verteilte Schlüsselgenerierung
+%  - Performance (Elliptic Curve Crypto), ...
+%  - Cryptographic Review
+%  - Access structures (irgendwo noch erwähnen!! State Threshold?)
+%- Parameterwahl für situationsabhängige Pseudonymisierung? (Evtl. dieses Problem in state noch ergänzen...) -> Forschungsarbeit notwendig
+%- Auswirkungen für verteilte Systeme (Schlüssel, SearchableEncryption, ...)
 
-- Implementation:
-  - Verteilte Schlüsselgenerierung
-  - Performance (Elliptic Curve Crypto), ...
-  - Cryptographic Review
-  - Access structures (irgendwo noch erwähnen!! State Threshold?)
-- Parameterwahl für situationsabhängige Pseudonymisierung? (Evtl. in state noch ergänzen...) -> Forschungsarbeit notwendig
-- Auswirkungen für verteilte Systeme (Schlüssel, SearchableEncryption, ...)
+Das in dieser Arbeit behandelte Thema bietet Potential für aufbauende Forschungs- und Entwicklungsarbeit. Aufbauend auf der vorgenommenen Implementierung des Prototypen lassen sich noch einige Verbesserungen daran vornehmen:
+
+\begin{itemize}
+  \item Implementierung der verteilten Schlüsselgenerierung (siehe Abschnitt \ref{sec_state_threshold_distributed})
+  \item Überprüfung der entwickelten Bibliothek für die Nutzung kryptographischer Schwellertschemata durch erfahrene Kryptographen
+  \item Performanzsteigerung durch die Nutzung von elliptischen Kurven (siehe Abschnitt \ref{sec_state_threshold_ecc})
+%  \item Access structures
+\end{itemize}
+
+Neben diesen Implementierungsarbeiten bieten sich jedoch auch einige Fragestellungen für weiterführende Forschungen an:
+
+\begin{itemize}
+  \item Welche Auswirkungen hat die Wahl der Parameter für Nutzungshäufigkeit und zeitliche Begrenzung der verwendeten Pseudonyme für bestehende oder zu entwickelnde Anomalieerkennungsverfahren? Wie lässt sich also am besten zwischen dem Schutz der Privatsphäre eines Arbeitnehmers und erfolgreicher Anomalieerkennung vermitteln?
+  \item Gibt es weitere (eventuell kontextabhängige) Parameter, die für die Pseudonymisierung genutzt werden sollten?
+  \item Wie könnte ein System umgesetzt werden, das verteilte Datenverarbeitung -- also beispielsweise auch die Pseudonymisierung direkt in der Datenquelle -- ermöglicht? Insbesondere das Suchproblem nach bereits verwendeten Pseudonymen aus Abschnitt \ref{sec_state_se} muss hier betrachtet werden.
+  %\item Gleiche Pseudonyme für unterschiedliche Daten eines Benutzers
+\end{itemize}
+
+

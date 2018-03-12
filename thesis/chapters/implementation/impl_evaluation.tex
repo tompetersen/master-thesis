@@ -97,9 +97,9 @@ Die Schlüsselgenerierung muss nur einmalig während der Setup-Phase ausgeführt
 
 Abbildung \ref{fig:eval_piecharts} zeigt zusätzlich die im für die Pseudonymisierung zuständigen Plugin des Log-Proxy gemessenen Zeitanteile, die die jeweiligen Teilfunktionen bei den unterschiedlichen Schlüssellängen benötigten:
 \begin{itemize}
-  \item \textbf{Hash} Zeitanteil für die Berechnung des MACs, der für die Suche nach existierenden Pseudonymen genutzt wird %(siehe Abschnitt \ref{sec_state_se_mac})
-  \item \textbf{Schwellwert} Zeitanteil für die Verschlüsselung durch das kryptographische Schwellwertschema %(siehe Abschnitt \ref{sec_impl_threshold})
-  \item \textbf{Pseudonym} Zeitanteil für die Kommunikation mit dem Pseudo-Service und die dort stattfindende Suche nach existierenden Pseudonymen
+  \item \textbf{Hash}: Zeitanteil für die Berechnung des MACs, der für die Suche nach existierenden Pseudonymen genutzt wird %(siehe Abschnitt \ref{sec_state_se_mac})
+  \item \textbf{Schwellwert}: Zeitanteil für die Verschlüsselung durch das kryptographische Schwellwertschema %(siehe Abschnitt \ref{sec_impl_threshold})
+  \item \textbf{Pseudonym}: Zeitanteil für die Kommunikation mit dem Pseudo-Service und die dort stattfindende Suche nach existierenden Pseudonymen
 \end{itemize} 
 
 \begin{figure}[]
@@ -149,7 +149,7 @@ Abbildung \ref{fig:eval_piecharts} zeigt zusätzlich die im für die Pseudonymis
     \label{fig:eval_piecharts}
 \end{figure}
 
-Aus diesen Messungen ergibt sich, dass der größte Anteil an Bearbeitungszeit einer Lognachricht in der Abfrage des Pseudo-Service nach einem existierenden Pseudonym und der Kommunikation zwischen dem Log-Proxy und dem Pseudo-Service liegt. Sollte sich die benötigte Zeit für die Bearbeitung von Logdaten im produktiven Einsatz als zu lang herausstellen, könnten die Komponenten zusammengeführt werden -- unter Verzicht auf die in Abschnitt \ref{sec_over_architecture} beschriebenen Vorteile im Bezug auf die Sicherheit des Pseudonymzusammenhangs durch ein verteiltes System.\\
+Aus diesen Messungen ergibt sich, dass der größte Anteil an Bearbeitungszeit einer Lognachricht in der Abfrage des Pseudo-Service nach einem existierenden Pseudonym und der Kommunikation zwischen dem Log-Proxy und dem Pseudo-Service liegt. Sollte sich die benötigte Zeit für die Bearbeitung von Logdaten im produktiven Einsatz als zu lang herausstellen, könnten die Komponenten zusammengeführt werden -- unter Verzicht auf die in Abschnitt \ref{sec_over_architecture} beschriebenen Vorteile bezogen auf die Sicherheit des Pseudonymzusammenhangs durch ein verteiltes System.\\
 Mit steigenden Schlüssellängen steigt jedoch auch der Zeitanteil, den die Berechnungen des kryptographischen Schwellwertschemas benötigen, erheblich. Die Veränderung ist hier alleinig auf den asymmetrischen Teil des umgesetzten hybriden Schemas (siehe Abschnitt \ref{sec_impl_threshold_hybrid}) zurückzuführen, da sich der symmetrische Teil nicht verändert. Um die Performanz der Verschlüsselungsfunktion zu erhöhen, bietet sich die Nutzung von \textit{Elliptic Curve Cryptography} an (siehe Abschnitt \ref{sec_state_threshold_ecc}). Eine zusätzliche Möglichkeit ist auch die Implementierung dieser zeitkritischen Funktion durch eine maschinennähere Sprache als Python wie beispielsweise C. 
 
 Für die Berechnung der partiellen Entschlüsselungen und der kompletten Entschlüsselung eines Schlüsseltextes (und damit Aufdeckung eines Pseudonyms) wurde auf Performanzmessungen verzichtet. Diese Aktionen sind im umgesetzten System nicht zeitkritisch. Zusätzlich werden sie nur in seltenen Fällen -- nämlich bei der Aufdeckung eines Pseudonyms -- eingesetzt.
@@ -159,6 +159,6 @@ Insgesamt kam es bei den Messungen zu einigen Problemen, insbesondere wenn die N
 \item seltene Komplettausfälle des Systems aufgrund des Datenbanktreibers für die verwendete PostgreSQL-Datenbank
 \item Nicht-Behandlung von Nachrichten durch das unzuverlässige UDP-Protokoll
 \end{itemize}
-Bessere (Mess-)Ergebnisse sollte das Deployment der Komponenten auf dafür ausgelegter Infrastruktur mit Standardlösungen für Python (Apache mit modWSGI, uWSGI, ...) und enstsprechender Rechenleistung bringen. Auch die Nutzung von TCP-Verbindungen für das verwendete syslog-Protokoll sollte mehr Zuverlässigkeit bringen \footnote{
+Bessere (Mess-)Ergebnisse sollte das Deployment der Komponenten auf dafür ausgelegter Infrastruktur mit Standardlösungen für Python (Apache mit mod\_wsgi, uWSGI, ...) und enstsprechender Rechenleistung bringen. Auch die Nutzung von TCP-Verbindungen für das verwendete syslog-Protokoll sollte mehr Zuverlässigkeit bringen \footnote{
   RFC 3195 (Reliable Delivery for syslog) beschreibt diese Erweiterung. Ob dies in der Praxis durch verbreitete Logdaten produzierende Geräte genutzt wird, übersteigt das Wissen des Autors.
 }. 
