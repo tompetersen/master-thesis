@@ -106,10 +106,13 @@ Vorteil der Verwendung ist eine deutlich geringere benötigte Schlüssellänge f
   Das BSI gibt eine Schlüssellänge von etwa 250 Bits für ECC-Verfahren als vergleichbare Sicherheit erreichend zu 2000-Bit-Schlüsseln für Verfahren wie RSA oder auf dem Diskreten-Logarithmus-Problem beruhenden Verfahren an \cite{bsi2018}.
 }. Durch diese kürzeren Schlüssel werden auch Berechnungszeit und Speicherverbrauch trotz komplexerer Berechnungen eingespart werden.
 
-\subsection{Verallgemeinerte Schwellwerte}
+\subsection{Komplexe Zugriffsstrukturen}
+\label{sec_state_threshold_access_structures}
 
-\cite{ito1989secret} \textit{Access structure}
-\todo{Schreiben!}
+Das bisher beschriebene Verfahren ermöglicht genau eine Art von Schema zur Entschlüsselung: Mindestens \(t\) Benutzer, die im Besitz von mindestens \(t\) von \(n\) Shares sind, können eine verschlüsselte Nachrichten entschlüsseln. Hierbei spricht man auch von der Zugriffstruktur des Verfahrens.\\
+Durch die Vergabe unterschiedlich vieler Shares an verschiedene Benutzer lassen sich verschiedene Zugriffsstrukturen ermöglichen. In \cite{ito1989secret} erbringen die Autoren den Beweis, dass durch dieses Vorgehen beliebige Zugriffsstrukturen ermöglicht werden können -- auf Kosten einer (strukturabhängig) relativ großen Zahl von Shares.
+
+Auf diese Weise kann die zur Entschlüsselung notwendige Benutzergruppe abhängig von der Organisationsstruktur eines Unternehmens beliebig modelliert werden.
 
 \subsection{Existierende Implementierungen}
 

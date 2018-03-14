@@ -19,15 +19,25 @@
 
 %The Future Research subsection is included so that researchers picking up this work in future have the benefit of the ideas that you generated while you were working on the project. Again, concise numbered paragraphs are usually best. 
 
+
+
+%- Ansatz: gut geeignet den Zielkonflikt zu lösen
+%- System erfüllt die Anforderungen 
+%- Parameteranpassbarkeit macht den Einsatz von Anomalieerkennungssystemen möglich
+%- Abwägung zwischen Anom. und Privatsphäre -> Parameterwahl offen und kontextabhängig
+%- Evaluation: für produktiveinsatz wohl noch arbeit notwendig
+
+
+
 In dieser Arbeit wurde das Zusammenspiel von Pseudonymisierung und kryptographischen Schwellwertschemata als Lösung für die datenschutzgerechte Speicherung von Logdaten untersucht. 
 %Pseudonymisierung
 Als zentrale Anforderung an die Pseudonymisierung wurde die für unterschiedliche Einsatzkontexte per Parameter anpassbare Pseudonymwechselstrategie ausgemacht. Generell einsetzbare Parameter stellen die Nutzungshäufigkeit und das Zeitintervall der maximalen Nutzungsdauer dar. 
 %Schwellwertschema
-Es wurde das Feld der kryptographischen Schwellwertschemata exploriert und Schema auf Basis von Shamirs Secret Sharing und dem ElGamal-Verfahren ausgewählt sowie Verbesserungen in Form von \textit{Elliptic Curve Cryptography} und dezentraler Schlüsselgenerierung dargestellt.
+Es wurde das Feld der kryptographischen Schwellwertschemata untersucht und ein Schema auf Basis von Shamirs Secret Sharing und dem ElGamal-Verfahren ausgewählt sowie Verbesserungen in Form von \textit{Elliptic Curve Cryptography}, dezentraler Schlüsselgenerierung und komplexen Zugriffsstrukturen dargestellt.
 %Identifikation
-Das Problem der Identifikation bestehender Pseudonyme für verschlüsselte Daten wurde als zentrales Problem bei der Kombination beider Verfahren ausgemacht und verschiedene Lösungsansätze diskutiert. Ein Ansatz basierend auf der Nutzung von MACs als einfache Form deterministischer Verschlüsselung stellte sich als für das zu entwickelnde System als am geeignetsten heraus.
+Das Problem der Identifikation bestehender Pseudonyme für verschlüsselte Daten wurde als zentrales Problem bei der Kombination beider Verfahren ausgemacht und verschiedene Lösungsansätze diskutiert. Ein Ansatz basierend auf der Nutzung von MACs als einfache Form deterministischer Verschlüsselung stellte sich für das entwickelte System als am geeignetsten heraus.
 %Eingriff
-Zusätzlich wurden verschiedene Ansätze für den Eingriff in den Logdatenfluss von Quelle zu SIEM-System betrachtet und ein Proxy-basierter Ansatz als sinnvolle Verknüpfung von frühestmöglicher Pseudonymisierung und praktischer Einsatzbarkeit ausgemacht.
+Zusätzlich wurden verschiedene Ansätze für den Eingriff in den Logdatenfluss zwischen Quelle und SIEM-System betrachtet und ein Proxy-basierter Ansatz als sinnvolle Balance von frühestmöglicher Pseudonymisierung und praktischer Einsatzbarkeit ausgemacht.
 %Architektur für System
 Aus den beschriebenen Verfahren wurde ein verteiltes System entworfen, das in den Logdatenfluss eingreift, um Logdaten zu pseudonymisieren. Anschließend gibt es berechtigten Benutzern im Fall des Verdachts auf einen Insider-Angriff die Möglichkeit, die Aufdeckung von Pseudonymen zu beantragen bzw. über einen solchen Antrag zu entscheiden.
 
@@ -40,18 +50,12 @@ In einem weiteren Kapitel wurden ergänzende Datenschutztechniken zu dem verfolg
 
 % Löst die Arbeit den beschriebenen Zielkonflikt?
 % Evaluation -> für produktiven Einsatz wohl noch Arbeit notwendig
-Aus Sicht des Autors ist der in dieser Arbeit gewählte Ansatz zur datenschutzfreundlichen Speicherung von Logdaten gut geeignet, um (eingeschränkte) Verknüpfbarkeit dieser Daten zur Anomalieerkennung und durch das Mehraugenprinzip geschützte Aufdeckbarkeit eines möglichen Innentäters im Verdachtsfall zu ermöglichen. Im Gegensatz zu bisherigen Lösungen, die oftmals eine vertrauensvolle Partei für die Generierung und Aufdeckung von Pseudonymen voraussetzen, kann durch diesen Ansatz verteiltes Vertrauen mathematisch-technisch modelliert werden. Durch die parameterabhängige Erstellung von Pseudonymen kann 
+Der in dieser Arbeit gewählte Ansatz zur datenschutzfreundlichen Speicherung von Logdaten ist gut geeignet, um (eingeschränkte) Verknüpfbarkeit dieser Daten zur Anomalieerkennung und durch das Mehraugenprinzip geschützte Aufdeckbarkeit eines möglichen Innentäters im Verdachtsfall zu ermöglichen. Im Gegensatz zu bisherigen Lösungen, die oftmals eine vertrauensvolle Partei für die Generierung und Aufdeckung von Pseudonymen voraussetzen, kann durch diesen Ansatz verteiltes Vertrauen mathematisch-technisch modelliert werden. Durch die parameterabhängige Erstellung von Pseudonymen kann 
 abhängig von unterschiedlichen Anforderungen des Einsatzkontexts gut zwischen den Anforderungen der Anomalieerkennung und dem Recht auf informationelle Selbstbestimmung des Arbeitnehmers abgewogen werden. Ob dies auch den rechtlichen Anforderungen des BDSG genügt, bleibt allerdings noch zu beurteilen.
 
 Der entwickelte Prototyp zeigt auch die praktische Einsatzbarkeit des Verfahrens. Wie in dem Evaluationsabschnitt allerdings schon beschrieben sind vor dem Produktiveinsatz des Systems gerade im Hinblick auf die Performanz noch einige Verbesserungen vorzunehmen.
 
 Insgesamt kann der Ansatz dieser Arbeit die Speicherung der zur Anomalie-basierten Erkennung von Insider-Angriffen erforderlichen Überwachungsdaten und die Privatsphäre eines Arbeitnehmers zusammenbringen. Verfahren der Anomalieerkennung können relativ unabhängig von dieser Datenspeicherung entwickelt werden. Lediglich die Wahl der Parameter für die Pseudonymisierung und damit die Verknüpfbarkeit verschiedener Logdaten muss für einzelne Verfahren getroffen werden. Damit ist ein Schritt zur datenschutzgerechten Erkennung und Verhinderung von Insider-Angriffen getan, auf dem kommende Arbeiten aufbauen können.
-
-%- Ansatz: gut geeignet den Zielkonflikt zu lösen
-%- System erfüllt die Anforderungen 
-%- Parameteranpassbarkeit macht den Einsatz von Anomalieerkennungssystemen möglich
-%- Abwägung zwischen Anom. und Privatsphäre -> Parameterwahl offen und kontextabhängig
-%- Evaluation: für produktiveinsatz wohl noch arbeit notwendig
 
 %\section{Contributions}
 %
@@ -60,7 +64,7 @@ Insgesamt kann der Ansatz dieser Arbeit die Speicherung der zur Anomalie-basiert
 %- Prototypische Implementation
 %- Implementation Schwellwertschema 
 
-\section{Future work}
+%\section{Future work}
 %
 %- Implementation:
 %  - Verteilte Schlüsselgenerierung
@@ -70,13 +74,13 @@ Insgesamt kann der Ansatz dieser Arbeit die Speicherung der zur Anomalie-basiert
 %- Parameterwahl für situationsabhängige Pseudonymisierung? (Evtl. dieses Problem in state noch ergänzen...) -> Forschungsarbeit notwendig
 %- Auswirkungen für verteilte Systeme (Schlüssel, SearchableEncryption, ...)
 
-Das in dieser Arbeit behandelte Thema bietet Potential für aufbauende Forschungs- und Entwicklungsarbeit. Aufbauend auf der vorgenommenen Implementierung des Prototypen lassen sich noch einige Verbesserungen daran vornehmen:
+Hierfür bietet das Themenfeld ausgehend von dem erreichten Stand dieser Arbeit noch einiges Potential für aufbauende Entwicklungs- und Forschungsarbeit. An dem entwickelten Prototypen lassen sich noch einige Verbesserungen vornehmen:
 
 \begin{itemize}
   \item Implementierung der verteilten Schlüsselgenerierung (siehe Abschnitt \ref{sec_state_threshold_distributed})
   \item Überprüfung der entwickelten Bibliothek für die Nutzung kryptographischer Schwellertschemata durch erfahrene Kryptographen
   \item Performanzsteigerung durch die Nutzung von elliptischen Kurven (siehe Abschnitt \ref{sec_state_threshold_ecc})
-%  \item Access structures
+  \item Ermöglichung von komplexen Zugriffsstrukturen, die über die 1:1-Zuweisung von Shares an Beteiligte hinausgehen (siehe Abschnitt \ref{sec_state_threshold_access_structures})
 \end{itemize}
 
 Neben diesen Implementierungsarbeiten bieten sich jedoch auch einige Fragestellungen für weiterführende Forschungen an:
