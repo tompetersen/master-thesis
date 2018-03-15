@@ -4,7 +4,7 @@
 
 In diesem Abschnitt wird zuerst die entwickelte Bibliothek zur Nutzung eines kryptographischen Schwellwertschemas dargetsellt und anschließend ihre Nutzung in den unterschiedlichen Systemkomponenten beschrieben.
 
-\subsection{ThresholdCrypto \glqq Lib\grqq{}}
+\subsection{Bibliothek für kryptographisches Schwellwertschema}
 
 %- Bibliothek, die statuslos in allen Teilen des Systems verwendet werden kann.
 %
@@ -13,7 +13,7 @@ In diesem Abschnitt wird zuerst die entwickelte Bibliothek zur Nutzung eines kry
 Um die Funktionen des Schwellwertschema unterschiedlichen Systemteilen einfach zur Verfügung zu stellen, wurde eine Bibliothek entwickelt, die in den verschiedenen Komponenten genutzt werden kann. Das öffentliche Interface der Bibliothek stellt folgende Funktionen bereit:
 
 \begin{itemize}
-  \item \textbf{Parametergenerierung: } Diese Funktion dient dem Erhalt der benötigten sicheren Primzahl bzw. des Generator (vgl. \todo{ergänzen}). Hierbei kann zwischen Neugenerierung und Verwendung vorberechneter Parameter verschiedener Schlüsselstärken entschieden werden. Näheres dazu ist im Unterabschnitt \textit{Parametegenerierung} zu finden.
+  \item \textbf{Parametergenerierung: } Diese Funktion dient dem Erhalt der benötigten sicheren Primzahl bzw. des Generator (siehe Abschnitt \ref{sec_state_threshold_scheme}). Hierbei kann zwischen Neugenerierung und Verwendung vorberechneter Parameter verschiedener Schlüsselstärken entschieden werden. Näheres dazu ist im Unterabschnitt \textit{Parametegenerierung} zu finden.
   \item \textbf{Schlüssel- und Sharegenerierung: } Durch diese Funktion wird ein zufälliger geheimer Schlüssel erzeugt und aus ihm der öffentliche Schlüssel sowie die einzelnen \textit{Shares} erzeugt. 
   \item \textbf{Verschlüsselung einer Nachricht: } Diese Funktion verschlüsselt mithilfe des öffentlichen Schlüssels eine Nachricht (siehe auch Unterabschnitt \textit{Hybride Kryptographie}). Sie wird im Proxy verwendet.
   \item \textbf{Berechnung einer partiellen Entchlüsselung: } Mithilfe eines \textit{Shares} wird die zugehörige partielle Entschlüsselung einer verschlüsselten Nachricht berechnet. Diese Funktion wird in den Threshold-Clients genutzt.
@@ -53,7 +53,7 @@ Zusätzlich benötigt das Verfahren einen Generator \(g\) einer Untergruppe der 
 
 gelten. Da Untergruppen von \(\mathbb{Z}_p^*\) nach dem Satz von Lagrange lediglich die Ordnungen \(1, 2, q\) oder \(2q\) besitzen, werden durch obenstehende Bedingungen lediglich Untergruppen der Ordnung \(q\) zugelassen.
 
-Nach \cite{katz2014} beeinträchtigt es nicht die Sicherheit des ElGamal-Verfahrens, wenn vorberechnete Parameter von verschiedenen Benutzern geteilt werden. Auch die Kombination dieses Verfahrens mit Shamirs Secret Sharing dürfte hieran nichts ändern, da das Secret Sharing lediglich für die Aufteilung des geheimen Schlüssels in Shares sorgt, aber an den grundlegenden Eigenschaften der Ver- und Entschlüsselung im ElGamal-Schema nichts ändert. Daher wurden verschiedene Parameter bereits vorberechnet und als statische Parameter zur Verfügung gestellt. Weiterhin ist es jedoch auch möglich eigene Parameter in gewünschter Stärke zu generieren. \todo{evtl. auf Evaluation beziehen.} In den meisten Empfehlungen werden heutzutage Schlüssellängen um 2000 Bit empfohlen\footnote{
+Nach \cite{katz2014} beeinträchtigt es nicht die Sicherheit des ElGamal-Verfahrens, wenn vorberechnete Parameter von verschiedenen Benutzern geteilt werden. Auch die Kombination dieses Verfahrens mit Shamirs Secret Sharing dürfte hieran nichts ändern, da das Secret Sharing lediglich für die Aufteilung des geheimen Schlüssels in Shares sorgt, aber an den grundlegenden Eigenschaften der Ver- und Entschlüsselung im ElGamal-Schema nichts ändert. Daher wurden verschiedene Parameter bereits vorberechnet und als statische Parameter zur Verfügung gestellt. Weiterhin ist es jedoch auch möglich eigene Parameter in gewünschter Stärke zu generieren. In den meisten Empfehlungen werden heutzutage Schlüssellängen um 2000 Bit als hinreichend sicher für die nächsten Jahre angegeben\footnote{
   Für einen Vergleich verschiedener Empfehlungen siehe: https://www.keylength.com
 }.
 
