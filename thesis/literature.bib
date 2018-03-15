@@ -6,7 +6,6 @@
 }
 
 @book{Schneier2006,
-  address = {München},
   author = {Schneier, Bruce},
   publisher = {Pearson Studium},
   title = {{Angewandte Kryptographie - Der Klassiker. Protokolle, Algorithmen und Sourcecode in C}},
@@ -18,17 +17,15 @@
 %%%%%%%%%
 
 @online{bitkom2016,
-  author={bitkom},
+  author={Bitkom},
   title={{Spezialstudie Wirtschaftsschutz}},
   year={2016},
-  organization={bitkom},
   url={https://www.bitkom.org/Bitkom/Publikationen/Spezialstudie-Wirtschaftsschutz.html},
   urldate={2017-06-24},
 }
 
 @online{ibm2015,
   author={Bradley, Nicholas and Alvarez, Michelle and Kuhn, John and McMillen, David},
-  organization={IBM},
   title={{IBM 2015 Cyber Security Intelligence Index}},
   year={2015},
   url={http://www-01.ibm.com/common/ssi/cgi-bin/ssialias?htmlfid=SEW03073USEN},
@@ -42,7 +39,7 @@
 @inproceedings{detken2014,
   title={{SIEM-Ansätze zur Erhöhung der IT-Sicherheit auf Basis von IF-MAP}},
   author={Detken, Kai-Oliver and Rossow, Thomas and Steuerwald, Ralf},
-  booktitle={Proceedings of the D A CH Security 2014: Bestandsaufnahme, Konzepte, Anwendungen und Perspektiven},
+  booktitle={D A CH Security 2014: Bestandsaufnahme, Konzepte, Anwendungen und Perspektiven},
   year={2014},
   editor={Schartner, Peter and Lipp, Peter},
   publisher={syssec}
@@ -51,17 +48,20 @@
 @inproceedings{detken2015,
   title={{SIEM approach for a higher level of IT security in enterprise networks}},
   author={Detken, Kai-Oliver and Rix, Thomas and Kleiner, Carsten and Hellmann, Bastian and Renners, Leonard},
-  booktitle={2015 IEEE 8th International Conference on Intelligent Data Acquisition and Advanced Computing Systems: Technology and Applications (IDAACS)},
+  booktitle={Proceedings of the 2015 IEEE 8th International Conference on Intelligent Data Acquisition and Advanced Computing Systems: Technology and Applications (IDAACS)},
   pages={322--327},
   year={2015},
-  organization={IEEE}
+  publisher={IEEE},
+  
 }
 
 @article{gartner2011,
   title={{Magic quadrant for security information and event management}},
   author={Nicolett, Mark and Kavanagh, Kelly M},
-  journal={Gartner Research Note G00212454},
-  year={2011}
+  year={2011},
+  month={may},
+  url={https://www.gartner.com/doc/1679814/magic-quadrant-security-information-event}
+  urldate={2017-10-04}
 }
 
 @online{gartner2005,
@@ -93,13 +93,15 @@
 %%%%%%%%%%%%
 
 @inproceedings{pfitzmann2001,
-  title={{Anonymity, unobservability, and pseudonymity — a proposal for terminology}},
+  title={{Anonymity, unobservability, and pseudonymity - a proposal for terminology}},
   author={Pfitzmann, Andreas and Köhntopp, Marit},
   booktitle={Designing privacy enhancing technologies},
   pages={1--9},
   year={2001},
   editor={Federrath, Hannes},
-  publisher={Springer}
+  publisher={Springer},
+  volume={2009},
+  series={Lecture Notes in Computer Science}
 }
 
 @online{pfitzmann2010,
@@ -133,7 +135,7 @@
   booktitle={IEEE Wireless Communications and Networking Conference},
   pages={3400--3405},
   year={2007},
-  organization={IEEE}
+  publisher={IEEE}
 }
 
 @inproceedings{schaub2009,
@@ -143,16 +145,19 @@
   volume={3},
   pages={139--145},
   year={2009},
-  organization={IEEE}
+  publisher={IEEE}
 }
 
 @inproceedings{dotzer2005,
   title={{Privacy issues in vehicular ad hoc networks}},
   author={Dötzer, Florian},
-  booktitle={International Workshop on Privacy Enhancing Technologies},
+  booktitle={Privacy Enhancing Technologies},
   pages={197--209},
   year={2005},
-  organization={Springer}
+  publisher={Springer},
+  editor={Danezis, George and Martin, David},
+  volume={3856},
+  series={Lecture Notes in Computer Science}
 }
 
 @article{petit2015,
@@ -185,7 +190,7 @@
 @article{gemmell1997,
   title={{An introduction to threshold cryptography}},
   author={Gemmell, Peter},
-  journal={CryptoBytes, a technical newsletter of RSA Laboratories},
+  journal={CryptoBytes},
   volume={2},
   number={7},
   pages={295--310},
@@ -199,11 +204,10 @@
   volume={22},
   number={11},
   pages={612--613},
-  year={1979},
-  publisher={ACM}
+  year={1979}
 }
 
-@article{boneh2016,
+@online{boneh2016,
   title={{A graduate course in applied cryptography}},
   author={Boneh, Dan and Shoup, Victor},
   year={2016},
@@ -218,27 +222,32 @@
   pages={313--317},
   year={1979},
   editor={Merwin, Richar E.},
-  publisher={AFIPS Press}
+  publisher={AFIPS Press},
+  volume={48}
 }
 
 @inproceedings{desmedt1987,
   title={{Society and Group Oriented Cryptography: a New Concept}},
   author={Desmedt, Yvo},
-  booktitle={Conference on the Theory and Application of Cryptographic Techniques 1987},
+  booktitle={Advances in Cryptology - CRYPTO '87},
   pages={120--127},
   year={1987},
   publisher={Springer},
-  editor={Pomerance, Carl}
+  editor={Pomerance, Carl},
+  volume={293},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{DesmedtFrankel1990,
   author={Desmedt, Yvo and Frankel, Yair},
   editor={Brassard, Gilles},
   title={{Threshold cryptosystems}},
-  booktitle={Advances in Cryptology - CRYPTO' 89 Proceedings},
+  booktitle={Advances in Cryptology - CRYPTO '89},
   year={1990},
   publisher={Springer},
-  pages={307--315}
+  pages={307--315},
+  volume={435},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{boneh2006,
@@ -248,27 +257,33 @@
   pages={226--243},
   year={2006},
   publisher={Springer},
-  editor={Pointcheval, David}
+  editor={Pointcheval, David},
+  volume={3680},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{pedersen1991,
   title={{A threshold cryptosystem without a trusted party}},
   author={Pedersen, Torben},
-  booktitle={Advances in Cryptology — EUROCRYPT’91},
+  booktitle={Advances in Cryptology - EUROCRYPT '91},
   pages={522--526},
   year={1991},
   publisher={Springer},
-  editor={Davies, Donald W.}
+  editor={Davies, Donald W.},
+  volume={547},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{gennaro1999,
   title={{Secure distributed key generation for discrete-log based cryptosystems}},
-  author={Gennaro, Rosario and Jarecki, Stanislaw and Krawczyk, Hugo and Rabin, Tal},
-  booktitle={Advances in Cryptology — EUROCRYPT’99},
+  author={Gennaro, Rosario and Jarecki, Stanis{\l}aw and Krawczyk, Hugo and Rabin, Tal},
+  booktitle={Advances in Cryptology - EUROCRYPT '99},
   pages={295--310},
   year={1999},
   publisher={Springer},
-  editor={Stern, Jaques}
+  editor={Stern, Jaques},
+  volume={1592},
+  series={Lecture Notes in Computer Science}
 }
 
 @online{nguyen2005,
@@ -282,22 +297,25 @@
 @inproceedings{paillier1999,
   title={{Public-key cryptosystems based on composite degree residuosity classes}},
   author={Paillier, Pascal},
-  booktitle={Advances in Cryptology — EUROCRYPT’99},
+  booktitle={Advances in Cryptology - EUROCRYPT '99},
   pages={223--238},
   year={1999},
   publisher={Springer},
-  editor={Stern, Jaques}
+  editor={Stern, Jaques},
+  volume={1592},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{damgard2001,
   title={{A generalisation, a simplification and some applications of Paillier's probabilistic public-key system}},
   author={Damgard, Ivan and Jurik, Mads},
-  booktitle={Public Key Cryptography -- Proceedings of the 4th International Workshop on Practice and Theory in Public Key Cryptosystems},
+  booktitle={Public Key Cryptography},
   volume={1992},
   pages={119--136},
   year={2001},
   publisher={Springer},
-  editor={Kim, Kwangjo}
+  editor={Kim, Kwangjo},
+  series={Lecture Notes in Computer Science}
 }
 
 @article{elgamal1985,
@@ -329,39 +347,44 @@
 @inproceedings{boneh2000,
   title={{Why textbook ElGamal and RSA encryption are insecure}},
   author={Boneh, Dan and Joux, Antoine and Nguyen, Phong Q},
-  booktitle={ASIACRYPT},
+  booktitle={Advances in Cryptology - ASIACRYPT 2000},
   volume={1976},
   pages={30--43},
   year={2000},
-  organization={Springer}
+  publisher={Springer},
+  editor={Okamoto, Tatsuaki},
+  series={Lecture Notes in Computer Science}
 }
 
 @article{abdalla1999,
   title={{DHAES: An Encryption Scheme Based on the Diffie-Hellman Problem}},
   author={Abdalla, Michel and Bellare, Mihir and Rogaway, Phillip},
   journal={IACR Cryptology ePrint Archive},
-  volume={1999},
-  pages={7},
   year={1999}
 }
 
 @inproceedings{desmedt1997some,
   title={{Some recent research aspects of threshold cryptography}},
   author={Desmedt, Yvo},
-  booktitle={International Workshop on Information Security},
+  booktitle={Information Security},
   pages={158--173},
   year={1997},
-  organization={Springer}
+  publisher={Springer},
+  volume={1396},
+  editor={Okamoto, Eiji and Davida, George and Mambo, Masahiro},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{desmedt1993,
   title={{Threshold cryptosystems}},
   author={Desmedt, Yvo},
-  booktitle={Advances in Cryptology — AUSCRYPT '92},
+  booktitle={Advances in Cryptology - AUSCRYPT '92},
   pages={1--14},
   year={1993},
   publisher={Springer},
-  editor={Seberry, Jennifer and Zheng, Yuliang}
+  editor={Seberry, Jennifer and Zheng, Yuliang},
+  volume={718},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{fouque2000sharing,
@@ -371,52 +394,69 @@
   volume={1962},
   pages={90--104},
   year={2000},
-  organization={Springer}
+  publisher={Springer},
+  editor={Frankel, Yair},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{frankel1997proactive,
-  title={{Proactive rsa}},
+  title={{Proactive RSA}},
   author={Frankel, Yair and Gemmell, Peter and MacKenzie, Philip D and Yung, Moti},
-  booktitle={Annual International Cryptology Conference},
+  booktitle={Advances in Cryptology - CRYPTO '97},
   pages={440--454},
   year={1997},
-  organization={Springer}
+  publisher={Springer},
+  volume={1294},
+  editor={Kaliski, Burton S.},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{gennaro1996robust,
   title={{Robust and efficient sharing of RSA functions}},
   author={Gennaro, Rosario and Jarecki, Stanis{\l}aw and Krawczyk, Hugo and Rabin, Tal},
-  booktitle={Advances in Cryptology—CRYPTO’96},
+  booktitle={Advances in Cryptology - CRYPTO '96},
   pages={157--172},
   year={1996},
-  organization={Springer}
+  publisher={Springer},
+  volume={1109},
+  editor={Koblitz, Neil},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{gennaro1996robustdss,
   title={{Robust threshold DSS signatures}},
   author={Gennaro, Rosario and Jarecki, Stanis{\l}aw and Krawczyk, Hugo and Rabin, Tal},
-  booktitle={International Conference on the Theory and Applications of Cryptographic Techniques},
+  booktitle={Advances in Cryptology - EUROCRYPT '96},
   pages={354--371},
   year={1996},
-  organization={Springer}
+  publisher={Springer}, 
+  volume={1070}, 
+  editor={Maurer, Ueli},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{rabin1998simplified,
   title={{A simplified approach to threshold and proactive RSA}},
   author={Rabin, Tal},
-  booktitle={Advances in Cryptology—CRYPTO'98},
+  booktitle={Advances in Cryptology - CRYPTO '98},
   pages={89--104},
   year={1998},
-  organization={Springer}
+  publisher={Springer},
+  volume={1462},
+  editor={Krawczyk, Hugo},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{shoup2000practical,
   title={{Practical threshold signatures}},
   author={Shoup, Victor},
-  booktitle={Advances in Cryptology—EUROCRYPT 2000},
+  booktitle={Advances in Cryptology - EUROCRYPT 2000},
   pages={207--220},
   year={2000},
-  organization={Springer}
+  publisher={Springer},
+  volume={1807},
+  editor={Preneel, Bar},
+  series={Lecture Notes in Computer Science}
 }
 
 @article{cramer1997secure,
@@ -433,11 +473,13 @@
 @inproceedings{stinson2001provably,
   title={{Provably secure distributed Schnorr signatures and a (t, n) threshold scheme for implicit certificates}},
   author={Stinson, Douglas R and Strobl, Reto},
-  booktitle={ACISP},
-  volume={1},
+  booktitle={Information Security and Privacy},
+  volume={2119},
   pages={417--434},
   year={2001},
-  organization={Springer}
+  publisher={Springer},
+  editor={Varadharajan, Vijay and Mu, Yi},
+  series={Lecture Notes in Computer Science}
 }
 
 @article{koblitz1987elliptic,
@@ -482,58 +524,63 @@
   volume={1},
   number={4},
   pages={52--65},
-  year={2016},
-  publisher={Springer}
+  year={2016}
 }
 
 %969
-@article{goh2003,
+@online{goh2003,
   title={{Secure indexes}},
   author={Goh, Eu-Jin},
-  journal={IACR Cryptology ePrint Archive},
-  volume={2003},
-  pages={216},
-  year={2003}
+  year={2004},
+  url={https://crypto.stanford.edu/~eujin/papers/secureindex/secureindex.pdf},
+  urldate={2017-11-23}
 }
 
 %668, Public Key
-@article{bellare2007deterministic,
-  title={Deterministic and efficiently searchable encryption},
+@inproceedings{bellare2007deterministic,
+  title={{Deterministic and efficiently searchable encryption}},
   author={Bellare, Mihir and Boldyreva, Alexandra and O’Neill, Adam},
-  journal={Advances in Cryptology-CRYPTO 2007},
+  journal={Advances in Cryptology - CRYPTO 2007},
   pages={535--552},
   year={2007},
-  publisher={Springer}
+  publisher={Springer},
+  editor={Menezes, Alfred},
+  volume={4622},
+  series={Lecture Notes in Computer Science}
 }
 
 %865
 @inproceedings{chang2005,
   title={{Privacy preserving keyword searches on remote encrypted data}},
   author={Chang, Yan-Cheng and Mitzenmacher, Michael},
-  booktitle={ACNS},
-  volume={5},
+  booktitle={Applied Cryptography and Network Security},
+  volume={3531},
   pages={442--455},
   year={2005},
-  organization={Springer}
+  publisher={Springer},
+  editor={Ioannidis, John and Keromytis, Angelos and Yung, Moti},
+  series={Lecture Notes in Computer Science}
 }
 
 @inproceedings{song2000practical,
   title={{Practical techniques for searches on encrypted data}},
   author={Song, Dawn Xiaoding and Wagner, David and Perrig, Adrian},
-  booktitle={Security and Privacy, 2000. S\&P 2000. Proceedings. 2000 IEEE Symposium on},
+  booktitle={Proceedings of the 2000 IEEE Symposium on Security and Privacy},
   pages={44--55},
   year={2000},
-  organization={IEEE}
+  publisher={IEEE}
 }
 
 @inproceedings{boneh2004public,
   title={{Public key encryption with keyword search}},
   author={Boneh, Dan and Di Crescenzo, Giovanni and Ostrovsky, Rafail and Persiano, Giuseppe},
-  booktitle={Eurocrypt},
+  booktitle={Advances in Cryptology - EUROCRYPT 2004},
   volume={3027},
   pages={506--522},
   year={2004},
-  organization={Springer}
+  publisher={Springer},
+  editor={Cachin, Christian and Camenisch, Jan L.},
+  series={Lecture Notes in Computer Science}
 }
 
 %%%%%%%%%%%%%%
@@ -546,16 +593,20 @@
   booktitle={Insider Attack and Cyber Security},
   pages={69--90},
   year={2008},
-  publisher={Springer}
+  publisher={Springer},
+  volume={39},
+  editor={Stolfo, Salvatore J. and Bellovin, Steven M. and Keromytis, Angelos D. and Hershkop, Shlomo and Smith, Sean W. and Sinclair, Sara and and },
+  series={Advances in Information Security}
 }
 
 @inproceedings{buschkes1999privacy,
   title={{Privacy enhanced intrusion detection}},
   author={Büschkes, Roland and Kesdogan, Dogan},
-  booktitle={Proceedings of the Conference on Multilateral Security for Global Communication},
+  booktitle={Proceedings of the Conference on Multilateral Security in Communications},
   pages={187--207},
   year={1999},
-  organization={Citeseer}
+  publisher={Addison-Wesley},
+  editor={Rannenberg, Kai and Müller, Günter}
 }
 
 @online{lundin1999privacy,
@@ -580,10 +631,13 @@
 @inproceedings{park2007ppids,
   title={{PPIDS: privacy preserving intrusion detection system}},
   author={Park, Hyun-A and Lee, Dong Hoon and Lim, Jongin and Cho, Sang Hyun},
-  booktitle={Pacific-Asia Workshop on Intelligence and Security Informatics},
+  booktitle={Intelligence and Security Informatics},
   pages={269--274},
   year={2007},
-  organization={Springer}
+  publisher={Springer},
+  volume={4430},
+  editor={Yang, Christopher C. and Zeng, Daniel and Chau, Michael and Chang, Kuiyu and Yang, Qing and Cheng, Xueqi and Wang, Jue and Wang, Fei-Yue },
+  series={Lecture Notes in Computer Science}
 }
 
 @incollection{sobirey1997pseudonymous,
@@ -592,7 +646,8 @@
   booktitle={Information Security in Research and Business},
   pages={151--163},
   year={1997},
-  publisher={Springer}
+  publisher={Springer},
+  series={IFIP — The International Federation for Information Processing}
 }
 
 @article{niksefat2017privacy,
@@ -601,8 +656,7 @@
   journal={Computer Science Review},
   year={2017},
   volume={25},
-  pages={69--78},
-  publisher={Elsevier}
+  pages={69--78}
 }
 
 @article{niksefat2013zids,
@@ -623,7 +677,8 @@
   pages={161--180},
   year={2001},
   editor={Federrath, Hannes},
-  organization={Springer}
+  publishers={Springer},
+  volume={2009}
 }
 
 @inproceedings{biskup2000threshold,
@@ -632,7 +687,8 @@
   booktitle={Proceedings of the 7th ACM Conference on Computer and Communications Security},
   pages={71--79},
   year={2000},
-  organization={ACM}
+  publisher={ACM},
+  editor={Samarati, Pierangela}
 }
 
 % -----------------------BEISPIELE----------------------------------------------
