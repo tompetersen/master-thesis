@@ -1,0 +1,244 @@
+% ===============================================================================
+% = LaTeX Beamer Template des Arbeitsbereichs Sicherheit in verteilten Systemem
+% = (c) 2016 Prof. Dr. Hannes Federrath, Uni Hamburg, Fachbereich Informatik
+% = https://svs.informatik.uni-hamburg.de
+% =
+% = Weitgehend in Übereinstimmung mit dem Corporate Design 2016 der UHH:
+% = https://www.uni-hamburg.de/beschaeftigtenportal/services/oeffentlichkeitsarbeit/corporate-design.html
+% = 
+% ===============================================================================
+%
+\documentclass[t]{beamer} 
+% Option t              Place text of slides at the (vertical) top of the slides.
+% Option handout        Ein PDF ohne Pausen und Overlayeffekte erzeugen.
+% Option aspectratio=43 169 => 16:9, 1610 => 16:10, 43 => 4:3
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{graphicx,xcolor}
+\usepackage[T1]{fontenc} % 8-Bit-Zeichen; ermöglicht korrektes Kopieren von Umlauten aus dem pdf 
+
+% SVS-Theme benutzen
+\usetheme{svs2016}
+
+
+% =============================
+% = Ab hier Inhalte ändern... 
+% =============================
+
+\title{Datenschutzfreundliche Speicherung unternehmensinterner Überwachungsdaten mittels Pseudonymisierung und kryptographischer Schwellwertschemata}
+% \subtitle{Ein Vorschlag}
+\author[Federrath]{Tom Petersen}
+\institute[Uni Hamburg]{Universität Hamburg\\ Fachbereich Informatik}
+\date{}
+
+\begin{document}
+
+\begin{frame}[plain]
+	% Die Titelseite erscheit nach erneutem Übersetzen korrekt.
+	\maketitle
+\end{frame}
+
+
+\begin{frame}{Agenda}
+	% Die Gliederung erscheit nach erneutem Übersetzen korrekt.
+	\tableofcontents
+\end{frame}
+
+
+\section{Motivation}
+
+  \begin{frame}
+  	\frametitle{Insider attacks}
+    
+    examples
+    
+    \begin{itemize}
+      \item Serious threat for companies
+      \item IBM, Bitkom TODO
+      \item regular access control, intrusion detection systems, ... not usable, because users are allowed too perform actions
+      \item -> anomaly-based detection = comparing current user behaviour with common user behaviour (statistical approach/machine learning)
+      \item requires a lot of data
+      \item But storing and processing this data can collide with the privacy of employees
+    \end{itemize}
+  \end{frame}
+  
+  \begin{frame}
+  \frametitle{BDSG, § 32, Absatz 1.}
+  
+    \begin{block}
+        Personenbezogene Daten eines Beschäftigten dürfen für Zwecke des Beschäftigungsverhältnisses erhoben, verarbeitet oder genutzt werden, wenn dies für die Entscheidung über die Begründung eines Beschäftigungsverhältnisses oder nach Begründung des Beschäftigungsverhältnisses für dessen Durchführung oder Beendigung erforderlich ist.\\
+        Zur Aufdeckung von Straftaten dürfen personenbezogene Daten eines Beschäftigten nur dann erhoben, verarbeitet oder genutzt werden, wenn zu dokumentierende tatsächliche Anhaltspunkte den Verdacht begründen, dass der Betroffene im Beschäftigungsverhältnis eine Straftat begangen hat, die Erhebung, Verarbeitung oder Nutzung zur Aufdeckung erforderlich ist und das schutzwürdige Interesse des Beschäftigten an dem Ausschluss der Erhebung, Verarbeitung oder Nutzung nicht überwiegt, insbesondere Art und Ausmaß im Hinblick auf den Anlass nicht unverhältnismäßig sind.}
+    \end{block}
+  \end{frame}
+  
+  \begin{frame}
+  
+  \end{frame}
+
+\section{Architecture}
+
+\section{Pseudonymisation}
+
+\section{Threshold decryption}
+
+\section{Identifying existing pseudonyms}
+
+\section{Evaluation}
+
+\section{Conclusion}
+
+
+
+
+
+
+
+
+
+\end{document}
+
+\endinput
+
+\section{Der Arbeitsbereich SVS} % erscheint in Agenda
+\subsection{Mission} % erscheint in Agenda
+\subsection{Themen} % erscheint in Agenda
+\subsection{Kontakt} % erscheint in Agenda
+
+\begin{frame}
+	\frametitle{Der Arbeitsbereich Sicherheit in Verteilten Systemen (SVS)}
+	\begin{block}{Lorem ipsum dolor}
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+	\end{block}
+	\begin{itemize}
+		\item Themen
+			\begin{enumerate}
+				\item Privacy Enhancing Technologies (PET)
+				\item Security Management \& Risk Management
+				\item Security of Mobile Systems
+			\end{enumerate}
+		\item Weitere Informationen
+			\begin{itemize}
+				\item http://www.informatik.uni-hamburg.de/svs
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\section{Beispiel für eine Abbildung} % erscheint in Agenda
+
+\subsection{Zugangskontrolle} % erscheint in Agenda
+\begin{frame}
+	\frametitle{Beispiel für eine Abbildung}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+	\pause % Das Nachfolgende erst nach Klick einblenden...
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{./pic/abbildung1.pdf}
+	\end{center}
+\end{frame}
+
+\subsection{DRM-Systeme} % erscheint in Agenda
+
+\begin{frame}
+	\transwipe % funktioniert nur bei Anzeige mit Acrobat Reader
+	\frametitle{Beispiel für eine Abbildung}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Einem Kunden \emph{\color[RGB]{0,128,0} K} einen Inhalt \emph{\color{red} I} in einer bestimmten Weise zugänglich machen, ihn aber daran hindern, \emph{alles} damit tun zu können.
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{./pic/abbildung2.pdf}
+	\end{center}
+\end{frame}
+
+\section{Weiteres Beispiel für eine Abbildung} % erscheint in Agenda
+
+\begin{frame}
+	\frametitle{Weiteres Beispiel für eine Abbildung}
+	\framesubtitle{[John Doe, 1966] }
+	\begin{itemize}
+		\item Voraussetzung: {\color{black} Angreifer} 
+			\begin{itemize}
+				\item betreibt täuschend echte Webseite der Bank
+				\item bewegt den Kunden zum Besuch dieser Seite
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+	\begin{center}
+		\includegraphics[width=\textwidth]{./pic/abbildung3.pdf}
+	\end{center}
+\end{frame}
+
+\section{Ebenen} % erscheint in Agenda
+
+\begin{frame}
+	\frametitle{Ebenen}
+	\begin{itemize}
+		\item Erste Ebene
+			\begin{itemize}
+				\item Zweite Ebene
+				\begin{itemize}
+					\item Dritte Ebene
+				\end{itemize}
+				\item Zweite Ebene
+			\end{itemize}
+		\item Erste Ebene
+	\end{itemize}
+	\begin{enumerate}	
+		\item Erste Ebene
+			\begin{enumerate}
+				\item Zweite Ebene
+				\begin{enumerate}
+					\item Dritte Ebene
+				\end{enumerate}
+				\item Zweite Ebene
+			\end{enumerate}
+		\item Erste Ebene
+	\end{enumerate}
+\end{frame}
+
+\section{Spalten} % erscheint in Agenda
+
+\begin{frame}{Spalten}
+	\begin{columns}[T]
+		\begin{column}{.6\textwidth}
+			\begin{itemize}
+				\item Linke Spalte
+				\begin{itemize}
+					\item Lorem ipsum dolor sit amet, 
+					\item consectetur adipisicing elit, 
+					\item sed do eiusmod tempor incididunt ut 
+					\item labore et dolore magna aliqua. 
+				\end{itemize}
+				\item Erste Ebene
+				\begin{itemize}
+					\item Zweite Ebene
+					\item Zweite Ebene
+				\end{itemize}
+				\item Erste Ebene
+				\begin{itemize}
+					\item Zweite Ebene
+					\item Zweite Ebene
+				\end{itemize}
+			\end{itemize}
+		\end{column}		
+		\begin{column}{.4\textwidth}
+			\begin{center}
+				\vspace{1cm}
+				\includegraphics[width=2.2cm]{./pic/svs_logo_uhhred.png} \\
+				\small
+				Das alte SVS-Logo wird seit 2016 aufgrund der CI-Richtlinien der UHH nicht mehr verwendet.
+			\end{center}
+		\end{column}
+	\end{columns}	
+\end{frame}
+
+\end{document}
