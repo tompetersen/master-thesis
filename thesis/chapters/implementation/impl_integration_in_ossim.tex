@@ -12,7 +12,7 @@
 %
 %- Plugins (leichte Erweiterbarkeit, ...)
 
-Wie in Abschnitt \ref{sec_state_siem} beschrieben erlaubt OSSIM eine verteilte Installation am Empfang von Logdaten beteiligter Komponenten durch die Einführung optionaler Sensoren, die den Empfang und das Parsen von Logdaten übernehmen. Dadurch bieten sich gegenüber den in Abschnitt \ref{sec_over_dataflow_siem} beschriebenen Möglichkeiten zum Eingriff in den Datenfluss eines SIEM-Systems zwei weitere OSSIM-spezifische Möglichkeiten, die folgend als mögliche Alternativen beschrieben werden. Eine Übersicht über den entstehenden Datenfluss bietet Abbildung \ref{fig:ossim_data_access_point}. Die Ziffern beschreiben die Stelle des Eingriffs wie in der Abbildung gekennzeichnet:
+Wie in Abschnitt \ref{sec_state_siem} beschrieben, erlaubt OSSIM eine verteilte Installation am Empfang von Logdaten beteiligter Komponenten durch die Einführung optionaler Sensoren, die den Empfang und das Parsen von Logdaten übernehmen. Dadurch bieten sich gegenüber den in Abschnitt \ref{sec_over_dataflow_siem} beschriebenen Möglichkeiten zum Eingriff in den Datenfluss eines SIEM-Systems zwei weitere OSSIM-spezifische Möglichkeiten, die folgend als mögliche Alternativen beschrieben werden. Eine Übersicht über den entstehenden Datenfluss bietet Abbildung \ref{fig:ossim_data_access_point}. Die Ziffern beschreiben die Stelle des Eingriffs, wie in der Abbildung gekennzeichnet:
 
 \begin{figure}[]
     \centering
@@ -25,7 +25,7 @@ Wie in Abschnitt \ref{sec_state_siem} beschrieben erlaubt OSSIM eine verteilte I
 \setcounter{enumi}{3}
 
 \item \textbf{Patchen des OSSIM-Sensor-Agents}\\
-  Bei dieser Lösung müsste der OSSIM-Agent des Sensors so verändert werden, dass vor dem Senden der Events an den Server die Pseudonymisierung stattfindet. Daten erreichen den OSSIM-Server nur pseudonymisiert und mehrfaches Parsender Logdaten wird verhindert. Auf der anderen Seite erfordert diese Lösung einen Eingriff in die Funktionsweise von OSSIM, was beispielsweise bei Updates von OSSIM zu Problemen führen kann. Außerdem liegen die Daten zu Beginn in nicht-pseudonymisierter Form im Sensor vor -- ein Nachteil der bereits in Abschnitt \ref{sec_state_siem} ausführlich diskutiert wurde. Zusätzlich erfordert diese Lösung die verteilte Installation von OSSIM-Sensor und -Server, schließt also die All-In-One-Installation aus.
+  Bei dieser Lösung müsste der OSSIM-Agent des Sensors so verändert werden, dass vor dem Senden der Events an den Server die Pseudonymisierung stattfindet. Daten erreichen den OSSIM-Server nur pseudonymisiert und mehrfaches Parsen der Logdaten wird verhindert. Auf der anderen Seite erfordert diese Lösung einen Eingriff in die Funktionsweise von OSSIM, was beispielsweise bei Updates von OSSIM zu Problemen führen kann. Außerdem liegen die Daten zu Beginn in nicht-pseudonymisierter Form im Sensor vor -- ein Nachteil der bereits in Abschnitt \ref{sec_state_siem} ausführlich diskutiert wurde. Zusätzlich erfordert diese Lösung die verteilte Installation von OSSIM-Sensor und -Server, schließt also die All-In-One-Installation aus.
   
 \item \textbf{Sensor-Server-Proxy}\\
   Hier wird ein Proxy zwischen Sensor und Server geschaltet, der bereits geparste Events pseudonymisiert und anschließend an den Server sendet. Dieser Ansatz würde mehrfaches Parsen verhindern und dafür sorgen, dass nur pseudonymisierte Logdaten den OSSIM-Server erreichen. Wie die vorhergehende Lösung würde er jedoch nur in der verteilten Installation funktionieren und zusätzlich in die Kommunikation zwischen Sensor und Server aktiv eingreifen, was im Hinblick auf die Nachrichtenintegrität\footnote{
@@ -45,7 +45,7 @@ Weiterhin wird sich auf den am häufigsten\footnote{
   Die in OSSIM bereits mitgelieferten Plugins bestätigen dies. Unter den Hunderten Plugins ist nur ein einziges, das einen anderen Mechanismus als das Syslog-Protokoll nutzt. Auch wenn beispielsweise Plugins, die eine Datenbankabfrage enthalten, immer dem Anwendungsfall angepasst und daher nicht in OSSIM inkludiert werden können, so unterstützt dies doch die Annahme des Syslog-Protokolls als am häufigsten genutzten Weg und damit als geeignet für den Fokus dieser Arbeit.
 } genutzten Weg des Datenerhalts in OSSIM beschränkt: das Entgegennehmen der Daten über das Syslog-Protokoll (siehe Abschnitt \ref{sec_basics_siem_syslog}). Lösungen für weitere Wege (siehe Abschnitt \ref{subsec_state_siem_parsing}) sind bei Bedarf jedoch auf vergleichbarem Weg zu implementieren.
 
-Der entwickelte Log-Proxy nimmt Logdaten über das Syslog-Protokoll entgegen. Verschiedene Datenquellen und Eventformate können mithilfe von Konfigurationsdateien angelegt werden wie im nächsten Abschnitt beschrieben. Für einzelne Felder eines Logdatums können dabei Plugins angegeben werden, die die Behandlung des Feldes übernehmen. Der Proxy-Server kann durch einfach zu entwickelnde Plugins leicht um weitere Datenschutztechniken erweitert werden. Dies wird im übernächsten Abschnitt beschrieben. Nach der Behandlung eines Logdatums wird es anschließend über das Syslog-Protokoll an den OSSIM-Server oder -Sensor geschickt.
+Der entwickelte Log-Proxy nimmt Logdaten über das Syslog-Protokoll entgegen. Verschiedene Datenquellen und Eventformate können mithilfe von Konfigurationsdateien angelegt werden, wie im nächsten Abschnitt beschrieben. Für einzelne Felder eines Logdatums können dabei Plugins angegeben werden, die die Behandlung des Feldes übernehmen. Der Proxy-Server kann durch einfach zu entwickelnde Plugins leicht um weitere Datenschutztechniken erweitert werden. Dies wird im übernächsten Abschnitt beschrieben. Nach der Behandlung eines Logdatums wird es anschließend über das Syslog-Protokoll an den OSSIM-Server oder -Sensor geschickt.
 
 \subsection{Konfiguration von Datenquellen}
 \label{sec_integration_in_ossim_datasource_config}
@@ -72,7 +72,7 @@ Eine Konfigurationsdatei kann aus mehreren Bereichen bestehen. Der \texttt{gener
 \subsection{Umsetzung von Datenschutztechniken durch Plugins}
 \label{sec_integration_in_ossim_plugins}
 
-Die Erweiterbarkeit um neue Datenschutztechniken wird durch leicht erweiterbare Plugins ermöglicht. Ein Plugin muss lediglich die Methode \texttt{handle\_data} implementieren, die die originalen Daten und alle in der Konfiguration angegebenen Parameter erhält. Ein einfaches Plugin, das die Daten durch ein in der Konfiguration angegebenen Wert ersetzt, könnte so aussehen:
+Die Erweiterbarkeit um neue Datenschutztechniken wird durch leicht erweiterbare Plugins ermöglicht. Ein Plugin muss lediglich die Methode \texttt{handle\_data} implementieren, die die originalen Daten und alle in der Konfiguration angegebenen Parameter erhält. Ein einfaches Plugin, das die Daten durch einen in der Konfiguration angegebenen Wert ersetzt, könnte so aussehen:
 
 \begin{lstlisting}[language=Python]
 class Substitute(AbstractPlugin):

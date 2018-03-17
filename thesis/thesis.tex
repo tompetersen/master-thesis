@@ -200,7 +200,7 @@
 
 % ================================Content==============================
 
-
+\pagenumbering{gobble}
 
 \input{chapters/task.tex}
 
@@ -209,6 +209,9 @@
 \input{chapters/abstract.tex}
 
 \tableofcontents
+
+\newpage
+\pagenumbering{arabic}
 
 \input{chapters/introduction.tex}
 
@@ -232,6 +235,8 @@
   \label{sec:literaturverzeichnis}
 \end{raggedright}
 
+\newpage
+\pagenumbering{gobble}
 
 \chapter*{Eidesstattliche Versicherung}
 

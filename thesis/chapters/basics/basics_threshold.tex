@@ -7,7 +7,7 @@
 %- Was ist das? (siehe auch Paper für Definition)
 %- Fünde (RSA, Paillier, ...) und Desmedt/Frankel evtl. hier schon Pedersen/...
 
-Mit der Verbreitung technischer Systeme, die kryptographische Verfahren nutzen, in den 70er Jahren musste auch das Problem der sicheren Aufbewahrung und Verteilung kryptographischer Schlüssel betrachtet werden. Die Sicherheit dieser Schlüssel ist essentiell für den Betrieb solcher Systemen. Das einfache Speichern eines Schlüssels an einem einzigen Ort resultiert in einer hohen Verlustwahrscheinlichkeit, da ein einzelner Fehler wie z.B. unbeabsichtigtes Löschen oder Speichermedienausfall den Schlüssel unwiederbringlich verloren gehen lassen kann. Das mehrfache Speichern eines Schlüssels an verschiedenen Orten erhöht hingegen die Gefahr eines Schlüsseldiebstahls oder -missbrauchs, da auch die Angriffsoberfläche vergrößert wird. Bei möglichen Lösungen dieses Problems müssen also immer die Integrität und die Vertraulichkeit eines Schlüssels gegeneinander abgewogen werden \cite{gemmell1997}.
+Mit der Verbreitung technischer Systeme, die kryptographische Verfahren nutzen, in den 70er Jahren musste auch das Problem der sicheren Aufbewahrung und Verteilung kryptographischer Schlüssel betrachtet werden. Die Sicherheit dieser Schlüssel ist essentiell für den Betrieb solcher Systeme. Das einfache Speichern eines Schlüssels an einem einzigen Ort resultiert in einer hohen Verlustwahrscheinlichkeit, da ein einzelner Fehler, wie z. B. unbeabsichtigtes Löschen oder Speichermedienausfall, den Schlüssel unwiederbringlich verloren gehen lassen kann. Das mehrfache Speichern eines Schlüssels an verschiedenen Orten erhöht hingegen die Gefahr eines Schlüsseldiebstahls oder -missbrauchs, da auch die Angriffsoberfläche vergrößert wird. Bei möglichen Lösungen dieses Problems müssen also immer die Integrität und die Vertraulichkeit eines Schlüssels gegeneinander abgewogen werden \cite{gemmell1997}.
 
 Ausgehend von diesen Überlegungen entwickelte Shamir das erste \((t,n)\)-Schwellwertschema: Ein Geheimnis \(D\) wird so in \(n\) Teile \(D_1, \dots, D_n\) (engl. \textit{Shares}) zerlegt, dass durch Kenntnis von mindestens \(t\) Teilen das Geheimnis wieder aufgedeckt werden kann, aber jede Kombination aus höchstens \(t-1\) Teilen keine Informationen über \(D\) liefert \cite{shamir1979}.\footnote{
   Im selben Jahr veröffentlichte auch Blakley eine Lösung dieses Problems, die auf den Schnittpunkten von Hyperebenen über endlichen Feldern beruht \cite{blakley1979}.
@@ -21,7 +21,7 @@ Shamirs Verfahren wird nachfolgend im Detail beschrieben, da es auch im später 
 
 \label{sec_basics_threshold_shamir}
 
-Die Menge aller Ganzzahlen modulo einer Primzahl \(p\) bilden den (endlichen) Körper \(\mathbb{Z}_p\), dessen Eigenschaften für das Verfahren entscheidend sind. Soll das Geheimnis \(D\) (das o.B.d.A. als Ganzzahl angenommen wird) aufgeteilt werden, so wird eine Primzahl \(p\) mit \(p > D\) und \(p > n\), wobei \(n\) die Anzahl an späteren Share-Besitzern bezeichnet, gewählt. Weiterhin wird ein Polynom 
+Die Menge aller Ganzzahlen modulo einer Primzahl \(p\) bilden den (endlichen) Körper \(\mathbb{Z}_p\), dessen Eigenschaften für das Verfahren entscheidend sind. Soll das Geheimnis \(D\) (das o.~B.~d.~A. als Ganzzahl angenommen wird) aufgeteilt werden, so wird eine Primzahl \(p\) mit \(p > D\) und \(p > n\), wobei \(n\) die Anzahl an späteren Share-Besitzern bezeichnet, gewählt. Weiterhin wird ein Polynom 
 \[q(x) = a_0 + a_1x + \dots + a_{t-1}x^{t-1} \text{ mit } a_0 = D\] 
 derart gewählt, dass \(a_1, \dots, a_{t-1}\) zufällig gleichverteilt aus der Menge \(\mathbb{Z}_p^* = \mathbb{Z}_p \setminus \{0\}\) stammen. Die einzelnen \textit{Shares} werden nun als
 \[D_1=(x_1,q(x_1)), \dots, D_i=(x_i,q(x_i)), \dots, D_n=(x_n,q(x_n))\]
@@ -47,7 +47,7 @@ Das Problem dieser Lösung bezogen auf den in dieser Arbeit behandelten Anwendun
 
 In \cite{desmedt1987} wird das Verfahren der Schwellwertschemata das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird die zentrale Forderung an mögliche Lösungen des Problems aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. 
 
-In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{Threshold Decryption} und fordert weiterhin, dass praktisch einsatzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Besitzern der \textit{Shares} notwendig machen.
+In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{Threshold Decryption} und fordert weiterhin, dass praktisch einsetzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Besitzern der \textit{Shares} notwendig machen.
 
 \begin{figure}[]
     \centering
@@ -105,10 +105,10 @@ Ein Message Authentication Code (MAC) ist ein symmetrisches Verfahren, das dazu 
 
 \label{sec_basics_hybrid}
 
-Als hybrides Kryptosystem wird die Kombination von symmetrischen und asymmetrischen Kryptoverfahren zur Verschlüsselung bzw. Entschlüsselung einer Nachricht bezeichnet. Ein Schlüssel \(k_{symm}\) für die Verwendung im symmetrischen Verfahren wird zufällig erzeugt und mithilfe des öffentlichen Schlüssels eines asymmetrischen Verfahren als \(c_{public}\) verschlüsselt. Der zu verschlüsselnde Klartext \(m\) wird anschließend mithilfe des symmetrischen Verfahrens und des erzeugten Schlüssels \(k_{symm}\) als Chiffretext \(c_{symm}\) verschlüsselt. \\
+Als hybrides Kryptosystem wird die Kombination von symmetrischen und asymmetrischen Kryptoverfahren zur Verschlüsselung bzw. Entschlüsselung einer Nachricht bezeichnet. Ein Schlüssel \(k_{symm}\) für die Verwendung im symmetrischen Verfahren wird zufällig erzeugt und mithilfe des öffentlichen Schlüssels eines asymmetrischen Verfahrens als \(c_{public}\) verschlüsselt. Der zu verschlüsselnde Klartext \(m\) wird anschließend mithilfe des symmetrischen Verfahrens und des erzeugten Schlüssels \(k_{symm}\) als Chiffretext \(c_{symm}\) verschlüsselt. \\
 Zur Entschlüsselung wird \(c_{public}\) mit dem geheimen Schlüssel des asymmetrischen Verfahrens entschlüsselt. Der hieraus erhaltene Schlüssel \(k_{symm}\) kann nun zur Entschlüsselung von \(c_{symm}\) genutzt werden, um \(m\) zu erhalten \cite{katz2014}.
 
-Der Vorteil dieser Lösung beruht darin, dass Vorteile symmetrischer und asymmetrischer Verfahren kombiniert werden: Symmetrische Verfahren sind im Allgemeinen deutlich schneller als asymmetrische, die jedoch das bei symmetrischen Systemen bestehende Problem des Schlüsselaustauschs lösen.
+Der Vorteil dieser Lösung beruht darin, dass Vorteile symmetrischer und asymmetrischer Verfahren kombiniert werden: Symmetrische Verfahren sind im Allgemeinen deutlich schneller als asymmetrische, die jedoch das bei symmetrischen Systemen bestehende Problem des Schlüs\-sel\-aus\-tauschs lösen.
 
 \subsection{Authenticated Encryption Schemes}
 
@@ -122,7 +122,7 @@ Ein solches System kann durch Berechnung eines MACs zusätzlich zur Verschlüsse
 
 \label{sec_basics_threshold_elgamal}
 
-Das ElGamal-Kryptosystem ist ein von Taher ElGamal entwickeltes asymmetrisches Kryptosystem, das zur Verschlüsselung und der Erstellung von Signaturen genutzt werden kann \cite{elgamal1985}. Im Folgenden wird die Ver- und Entschlüsselung beschrieben, die für das in dieser Arbeit verwendete Skryptographische Schwellwertschema relevant ist.
+Das ElGamal-Kryptosystem ist ein von Taher ElGamal entwickeltes asymmetrisches Kryptosystem, das zur Verschlüsselung und der Erstellung von Signaturen genutzt werden kann \cite{elgamal1985}. Im Folgenden wird die Ver- und Entschlüsselung beschrieben, die für das in dieser Arbeit verwendete kryptographische Schwellwertschema relevant ist.
 
 Im Folgenden sei \(\mathbb{G}\) eine zyklische Gruppe der primen Ordnung \(p\) und \(g\) ein Generator dieser Gruppe. Diese Parameter können öffentlich bekannt gegeben werden. Alle folgenden Berechnungen werden in \(\mathbb{G}\) (also modulo \(p\)) ausgeführt.
 

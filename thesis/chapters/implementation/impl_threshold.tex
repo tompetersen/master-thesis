@@ -2,7 +2,7 @@
 
 \label{sec_impl_threshold}
 
-In diesem Abschnitt wird zuerst die entwickelte Bibliothek zur Nutzung eines kryptographischen Schwellwertschemas dargetsellt und anschließend ihre Nutzung in den unterschiedlichen Systemkomponenten beschrieben.
+In diesem Abschnitt wird zuerst die entwickelte Bibliothek zur Nutzung eines kryptographischen Schwellwertschemas dargestellt und anschließend ihre Nutzung in den unterschiedlichen Systemkomponenten beschrieben.
 
 \subsection{Bibliothek für kryptographisches Schwellwertschema}
 
@@ -10,10 +10,10 @@ In diesem Abschnitt wird zuerst die entwickelte Bibliothek zur Nutzung eines kry
 %
 %- Interface
 
-Um die Funktionen des Schwellwertschema unterschiedlichen Systemteilen einfach zur Verfügung zu stellen, wurde eine Bibliothek entwickelt, die in den verschiedenen Komponenten genutzt werden kann. Das öffentliche Interface der Bibliothek stellt folgende Funktionen bereit:
+Um die Funktionen des Schwellwertschemas unterschiedlichen Systemteilen einfach zur Verfügung zu stellen, wurde eine Bibliothek entwickelt, die in den verschiedenen Komponenten genutzt werden kann. Das öffentliche Interface der Bibliothek stellt folgende Funktionen bereit:
 
 \begin{itemize}
-  \item \textbf{Parametergenerierung: } Diese Funktion dient dem Erhalt der benötigten sicheren Primzahl bzw. des Generator (siehe Abschnitt \ref{sec_state_threshold_scheme}). Hierbei kann zwischen Neugenerierung und Verwendung vorberechneter Parameter verschiedener Schlüsselstärken entschieden werden. Näheres dazu ist im Unterabschnitt \textit{Parametegenerierung} zu finden.
+  \item \textbf{Parametergenerierung: } Diese Funktion dient dem Erhalt der benötigten sicheren Primzahl bzw. des Generator (siehe Abschnitt \ref{sec_state_threshold_scheme}). Hierbei kann zwischen Neugenerierung und Verwendung vorberechneter Parameter verschiedener Schlüsselstärken entschieden werden. Näheres dazu ist im Unterabschnitt \textit{Parametergenerierung} zu finden.
   \item \textbf{Schlüssel- und Sharegenerierung: } Durch diese Funktion wird ein zufälliger geheimer Schlüssel erzeugt und aus ihm der öffentliche Schlüssel sowie die einzelnen \textit{Shares} erzeugt. 
   \item \textbf{Verschlüsselung einer Nachricht: } Diese Funktion verschlüsselt mithilfe des öffentlichen Schlüssels eine Nachricht (siehe auch Unterabschnitt \textit{Hybride Kryptographie}). Sie wird im Proxy verwendet.
   \item \textbf{Berechnung einer partiellen Entchlüsselung: } Mithilfe eines \textit{Shares} wird die zugehörige partielle Entschlüsselung einer verschlüsselten Nachricht berechnet. Diese Funktion wird in den Threshold-Clients genutzt.
@@ -31,7 +31,7 @@ Neben den Funktionen werden noch einige Klassen zur Verfügung gestellt, die das
   \item \textbf{PartialDecryption: } Enthält die zu einer partiellen Entschlüsselung gehörenden Werte, die zum Entschlüsseln der vollständigen Nachricht genutzt werden.
 \end{itemize}
 
-Im Folgenden soll kurz auf zwei Kernelemente des implementierten Verfahrens eingegangen werden.
+Im Folgenden wird auf zwei Kernelemente des implementierten Verfahrens eingegangen.
 
 \subsubsection{Parametergenerierung}
   
@@ -44,7 +44,7 @@ Im Folgenden soll kurz auf zwei Kernelemente des implementierten Verfahrens eing
 % Sharing of parameters: Introduction to modern cryptography ElGamal implementation issues (pdf 425)
 
 Die für das Verfahren benötigten sicheren Primzahlen \(p\) und \(q\) lassen sich mithilfe eines einfachen Ansatzes finden \cite{hoc1996}: Es wird solange eine Primzahl \(q\) im Bereich der vorgegebenen Schlüsselstärke zufällig gewählt, bis \(2q + 1\) ebenfalls eine Primzahl ist. Zur Überprüfung der Primalität der entsprechenden Zahlen wird der Miller-Rabin-Test\footnote{
-  Der Miller-Rabin-Primzahltest ist ein Algorithmus, der basierend auf probabilistischen Annahmen die Primalität einer Zahl mit durch Angabe von einer Rundenzahl beliebig hoher Wahrscheinlichkeit bestätigen kann.
+  Der Miller-Rabin-Primzahltest ist ein Algorithmus, der basierend auf probabilistischen Annahmen die Primalität einer Zahl mit durch Angabe einer Rundenzahl beliebig hoher Wahrscheinlichkeit überprüfen kann.
 } genutzt.
 
 Zusätzlich benötigt das Verfahren einen Generator \(g\) einer Untergruppe der Ordnung \(q\) von \(\mathbb{Z}_p^*\). Hierzu wird lediglich solange ein zufälliges Element \(g\) aus \(\mathbb{Z}_p^*\) gewählt bis 
@@ -70,7 +70,7 @@ Nach \cite{katz2014} beeinträchtigt es nicht die Sicherheit des ElGamal-Verfahr
 %  - schnell
 %  - Beliebiger Nachrichteninhalt ohne Auswirkungen auf die Verschlüsselung
 
-Die Verschlüsselung bzw. Entschlüsselung wurden in Form eines hybriden Verschlüsselungsverfahrens umgesetzt (siehe Abschnitt \ref{sec_basics_hybrid}): Bei der Verschlüsselung wird ein zufälliger Schlüssel \(k^{symm}\) für ein symmetrisches Verfahren \(E^{symm}\) erzeugt und dazu genutzt den Klartext \(m\) zu verschlüsseln. Das kryptographische Schwellwertschema wird lediglich dazu verwendet, \(k^{symm}\) zu verschlüsseln. Ein Schlüsseltext besteht daher aus drei Teilen: 
+Die Verschlüsselung bzw. Entschlüsselung wurde in Form eines hybriden Verschlüsselungsverfahrens umgesetzt (siehe Abschnitt \ref{sec_basics_hybrid}): Bei der Verschlüsselung wird ein zufälliger Schlüssel \(k^{symm}\) für ein symmetrisches Verfahren \(E^{symm}\) erzeugt und dazu genutzt, den Klartext \(m\) zu verschlüsseln. Das kryptographische Schwellwertschema wird lediglich dazu verwendet, \(k^{symm}\) zu verschlüsseln. Ein Schlüsseltext besteht daher aus drei Teilen: 
 \begin{itemize}
   \item \(v = g^k\): Der erste Teil der ElGamal-Verschlüsselung des symmetrischen Schlüssels (siehe Abschnitte \ref{sec_basics_threshold_elgamal} und \ref{sec_state_threshold_scheme})
   \item \(c^{tc} = k^{symm} \cdot g^{ak}\): Der zweite Teil der ElGamal-Verschlüsselung des symmetrischen Schlüssels (siehe Abschnitte \ref{sec_basics_threshold_elgamal} und \ref{sec_state_threshold_scheme})
@@ -81,7 +81,7 @@ Bei der Entschlüsselung wird ähnlich vorgegangen: Das kryptographische Schwell
 
 Das Vorgehen ermöglicht es beliebige Nachrichten relativ einfach zu verschlüsseln, da die Beschränkung des asymmetrischen Verfahrens bezogen auf die Nachrichtenlänge (die in kodierter Form kleiner sein muss als der Parameter \(p\)) nur noch für den Schlüssel des symmetrischen Verfahrens erfüllt werden muss. Dies stellt kein Problem dar, da symmetrische Verfahren für vergleichbare Sicherheit geringere Schlüssellängen benötigen als asymmetrische Verfahren, die auf dem Diskreten-Logarithmus-Problem beruhen.
 
-Weiterhin kann für die symmetrische Verschlüsselung ein Verfahren genutzt werden, dass neben der Verschlüsselung auch die Validität der Daten überprüft - ein sogenanntes \textit{Authenticated Encryption} (AE) Schema (siehe Abschnitt \ref{sec_basics_ae}). \\
+Weiterhin kann für die symmetrische Verschlüsselung ein Verfahren genutzt werden, das neben der Verschlüsselung auch die Validität der Daten überprüft - ein sogenanntes \textit{Authenticated Encryption} (AE) Schema (siehe Abschnitt \ref{sec_basics_ae}). \\
 In der Implementierung wird die Standardfunktion zur symmetrischen Verschlüsselung aus der Kryptographie-Bibliothek NaCl\footnote{
   NaCl: Networking and Cryptography library: https://nacl.cr.yp.to
 } 
@@ -94,7 +94,7 @@ Als Gegenmaßnahme wird die Vorverarbeitung der symmetrischen Schlüssel empfohl
 \begin{itemize}
   \item \(v = g^k\): wie vorhergehend beschrieben
   \item \(c^{tc} = r \cdot g^{ak}\): Anstelle des symmetrischen Schlüssels wird das Untergruppenelement \(r\) durch das ElGamal-Verfahren verschlüsselt.
-  \item \(c^{symm} = E^{symm}_{H(r)}(m)\): Als symmetrischer Schlüssel wird nun der durch \(H\) berechnete Hashwert von \(r\) genutzt
+  \item \(c^{symm} = E^{symm}_{H(r)}(m)\): Als symmetrischer Schlüssel wird nun der durch \(H\) berechnete Hash\-wert von \(r\) genutzt
 \end{itemize}
 
 Zusätzlich schreibt das Schema nach \cite{abdalla1999} die Benutzung eines MACs zur Sicherung der Integrität der Nachricht vor. Auf diesen Schritt kann in dem in dieser Arbeit implementierten Schema verzichtet werden, da die Integrität bereits durch das verwendete AE-Schema geschützt ist. Einen Überblick über das letztlich umgesetzte Schema, das auch diesen Angriff verhindert, bietet Abbildung \ref{fig:hybrid_scheme}.
@@ -102,7 +102,7 @@ Zusätzlich schreibt das Schema nach \cite{abdalla1999} die Benutzung eines MACs
 \begin{figure}[]
     \centering
         \includegraphics[width=0.4\textwidth]{dia/hybrid_scheme.pdf}
-    \caption{Übersicht über das umgesetzte hybride Verschlüsselungsschema.}
+    \caption{Übersicht zu dem umgesetzten hybriden Verschlüsselungsschema.}
     \label{fig:hybrid_scheme}
 \end{figure}
 
@@ -113,7 +113,7 @@ Zusätzlich schreibt das Schema nach \cite{abdalla1999} die Benutzung eines MACs
 
 Um die Parameter für das kryptographische Schwellwertschema setzen zu können, wurde die Konfigurationsoberfläche erweitert. Hier müssen nun Angaben zur Schlüsselstärke, zu beteiligten Teilnehmern und erforderlichen Anzahl an Teilnehmern für die Entschlüsselung eines Datenbankeintrages gemacht werden.
 
-Anschließend können berechtigte Benutzer die Aufdeckung eines Pseudonyms über das Webinterface anfragen. Anschließend werden von den teilnehmenden Clients die partiellen Entschlüsselungen entgegengenommen. Liegen ausreichend partielle Verschlüsselungen vor, so werden diese mithilfe der Bibliothek kombiniert und damit der Halter des Pseudonyms entschlüsselt und aufgedeckt. 
+Anschließend können berechtigte Benutzer die Aufdeckung eines Pseudonyms über das Webinterface anfragen. Danach werden von den teilnehmenden Clients die partiellen Entschlüsselungen entgegengenommen. Liegen ausreichend partielle Verschlüsselungen vor, so werden diese mithilfe der Bibliothek kombiniert und damit der Halter des Pseudonyms entschlüsselt und aufgedeckt. 
 
 \subsection{Client-Anwendung}
 
@@ -123,9 +123,9 @@ Anschließend können berechtigte Benutzer die Aufdeckung eines Pseudonyms über
 
 Für Teilnehmer, die an dem Schwellwertschema beteiligt sind, wurde eine konsolenbasierte Anwendung entwickelt, die die folgende Funktionalität bereitstellt:
 
-Clients melden sich zu Beginn an dem Pseudonym-Service an und können in der anschließenden Setup-Phase mit in das Verfahren integriert werden. Jeder teilnehmende Client empfängt nach der Generierung das für ihn bestimmte Share vom Server und speichert dieses verschlüsselt lokal ab. Hierzu enthält die Anwendung einen lokalen Webserver. Dies ermöglicht es dem Pseudonym-Service die \textit{Shares} nicht speichern und nach der Generierung sofort entfernen zu können. 
+Clients melden sich zu Beginn an dem Pseudonym-Service an und können in der anschließenden Setup-Phase mit in das Verfahren integriert werden. Jeder teilnehmende Client empfängt nach der Generierung das für ihn bestimmte Share vom Server und speichert dieses verschlüsselt lokal ab. Hierzu enthält die Anwendung einen lokalen Webserver. Dies ermöglicht es dem Pseudonym-Service die \textit{Shares} nicht zu speichern und nach der Generierung sofort entfernen zu können. 
 
-Anschließend können sich Teilnehmer regelmäßig nach neuen Anfragen zur Aufdeckung eines Pseudonyms erkundigen. Wurde eine neue Anfrage empfangen, so kann der Teilnehmen diese annehmen oder ablehnen. Die Annahme führt zur Berechnung einer partiellen Entschlüsselung mithilfe der Bibliotheksfunktion, die anschließend an den Pseudonym-Service gesendet wird.
+Anschließend können sich Teilnehmer regelmäßig nach neuen Anfragen zur Aufdeckung eines Pseudonyms erkundigen. Wurde eine neue Anfrage empfangen, so kann der Teilnehmer diese annehmen oder ablehnen. Die Annahme führt zur Berechnung einer partiellen Entschlüsselung mithilfe der Bibliotheksfunktion, die anschließend an den Pseudonym-Service gesendet wird.
 
 \subsection{Proxy}
 

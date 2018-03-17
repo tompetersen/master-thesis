@@ -1,7 +1,7 @@
 \chapter{Überblick und Entwurf}
 \label{cha_overview}
 
-Das Ziel dieser Arbeit ist es ein System zu entwickeln, das mithilfe von Pseudonymisierung die datenschutzgerechte Speicherung von Überwachungsdaten ermöglicht, wobei die Identität eines Pseudonymhalters im Bedarfsfall durch die Kollaboration verschiedener Akteure unter Nutzung eines kryptographischen Schwellwertschemas aufdeckbar sein muss. Um eine Basis für die Erarbeitung von Anforderungen und eines Systementwurfs zu erhalten, soll nun kurz dargelegt werden, wie die verschiedenen Verfahren ineinander greifen. 
+Das Ziel dieser Arbeit ist es, ein System zu entwickeln, das mithilfe von Pseudonymisierung die datenschutzgerechte Speicherung von Überwachungsdaten ermöglicht, wobei die Identität eines Pseudonymhalters im Bedarfsfall durch die Kollaboration verschiedener Akteure unter Nutzung eines kryptographischen Schwellwertschemas aufdeckbar sein muss. Um eine Basis für die Erarbeitung von Anforderungen und eines Systementwurfs zu erhalten, soll nun kurz dargelegt werden, wie die verschiedenen Verfahren ineinander greifen. 
 
 Aus Datenquellen wie Firewalls, Zugriffsprotokollen von Dateisystemen oder auch elektronischen Türschlössern werden personenbeziehbare Logdaten\footnote{
   Da im Bereich technischer Systeme eher von Logdaten oder Protokolldaten im Gegensatz zu Überwachungsdaten gesprochen wird, wird diese Terminologie hier verwendet. Im Rahmen dieser Arbeit sind die Begriffe jedoch synonym zu verstehen.
@@ -10,12 +10,12 @@ Aus Datenquellen wie Firewalls, Zugriffsprotokollen von Dateisystemen oder auch 
 \begin{figure}[]
     \centering
         \includegraphics[width=0.9\textwidth]{dia/overview.pdf}
-    \caption{Übersicht über das angestrebte Verfahren.}
+    \caption{Übersicht zu dem angestrebten Verfahren.}
     \label{fig:overview_initial}
 \end{figure}
 
-Anschaulich wird der Vorgang noch einmal in Abbildung \ref{fig:overview_initial} dargestellt: Die Benutzerin Eve agiert in dem Unternehmensnetzwerk. Ihre Aktionen werden protokolliert und Logdaten, die ihren Benutzernamen enthalten, werden versendet. Dieser Benutzername wird durch das Pseudonym ps01 ersetzt. Die Zuordnung des Pseudonyms wird nun mithilfe eines kryptographischen Schwellwertschemas verschlüsselt und in einer Datenbank abgelegt. Das pseudonymisierte Logdatum wird nun im SIEM-System gespeichert.\\
-Eingesetzte Anomalieerkennungsverfahren können nun auf die Daten des SIEM-Systems zugreifen. Wird ein möglicher Insider-Angriff durch einen Benutzer mit dem Pseudonym ps01 erkannt, so kann die Zuordnung zu dem ursprünglichen Benutzernamen mithilfe des Schwellwertschemas wieder aufgedeckt werden. Hierzu ist jedoch die Mitarbeit Alice, Bob und Carol notwendig, die jeweils im Besitz eines Teils des Entschlüsselungsschlüssels sind. Stimmen Sie der Aufdeckung zu, so wird Eve als Halter des Pseudonyms ps01 und damit als möglicher Innentäter aufgedeckt.
+Anschaulich wird der Vorgang in Abbildung \ref{fig:overview_initial} dargestellt: Die Benutzerin Eve agiert in dem Unternehmensnetzwerk. Ihre Aktionen werden protokolliert und Logdaten, die ihren Benutzernamen enthalten, werden versendet. Dieser Benutzername wird durch das Pseudonym ps01 ersetzt. Die Zuordnung des Pseudonyms wird nun mithilfe eines kryptographischen Schwellwertschemas verschlüsselt und in einer Datenbank abgelegt. Das pseudonymisierte Logdatum wird nun im SIEM-System gespeichert.\\
+Eingesetzte Anomalieerkennungsverfahren können nun auf die Daten des SIEM-Systems zugreifen. Wird ein möglicher Insider-Angriff durch einen Benutzer mit dem Pseudonym ps01 erkannt, so kann die Zuordnung zu dem ursprünglichen Benutzernamen mithilfe des Schwellwertschemas wieder aufgedeckt werden. Hierzu ist jedoch die Mitarbeit von Alice, Bob und Carol notwendig, die jeweils im Besitz eines Teils des Entschlüsselungsschlüssels sind. Stimmen sie der Aufdeckung zu, so wird Eve als Halter des Pseudonyms ps01 und damit als möglicher Innentäter aufgedeckt.
 
 In diesem Kapitel werden nun zentrale Anforderungen an ein solches System entwickelt und eine abstrakte Architektur für ein solches entworfen. Anschließend wird aufbauend darauf ein Angreifermodell für das System definiert.
 
