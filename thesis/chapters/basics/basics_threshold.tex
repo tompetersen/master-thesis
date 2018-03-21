@@ -21,7 +21,9 @@ Shamirs Verfahren wird nachfolgend im Detail beschrieben, da es auch im später 
 
 \label{sec_basics_threshold_shamir}
 
-Die Menge aller Ganzzahlen modulo einer Primzahl \(p\) bilden den (endlichen) Körper \(\mathbb{Z}_p\), dessen Eigenschaften für das Verfahren entscheidend sind. Soll das Geheimnis \(D\) (das o.~B.~d.~A. als Ganzzahl angenommen wird) aufgeteilt werden, so wird eine Primzahl \(p\) mit \(p > D\) und \(p > n\), wobei \(n\) die Anzahl an späteren Share-Besitzern bezeichnet, gewählt. Weiterhin wird ein Polynom 
+Die Menge aller Ganzzahlen modulo einer Primzahl \(p\) bilden den (endlichen) Körper \(\mathbb{Z}_p\), dessen Eigenschaften für das Verfahren entscheidend sind. Soll das Geheimnis \(D\) (das o.~B.~d.~A. als Ganzzahl angenommen wird) aufgeteilt werden, so wird eine Primzahl \(p\) mit \(p > D\) und \(p > n\) gewählt, wobei \(n\) die Anzahl an späteren Share-Besitzern bezeichnet. 
+
+Weiterhin wird ein Polynom 
 \[q(x) = a_0 + a_1x + \dots + a_{t-1}x^{t-1} \text{ mit } a_0 = D\] 
 derart gewählt, dass \(a_1, \dots, a_{t-1}\) zufällig gleichverteilt aus der Menge \(\mathbb{Z}_p^* = \mathbb{Z}_p \setminus \{0\}\) stammen. Die einzelnen \textit{Shares} werden nun als
 \[D_1=(x_1,q(x_1)), \dots, D_i=(x_i,q(x_i)), \dots, D_n=(x_n,q(x_n))\]
@@ -29,7 +31,9 @@ jeweils modulo \(p\) berechnet, wobei die \(x_i\) paarweise unterschiedlich aus 
 
 Um nun aus diesen einzelnen Teilen wieder das ursprüngliche Geheimnis zu erhalten, wird das Verfahren der Langrange'schen Polynominterpolation verwendet, das ausgehend von einer Menge von Punkten ein Polynom findet, das durch diese Punke verläuft. Hierbei wird die Tatsache ausgenutzt, dass jedes Polynom vom maximalen Grad \(t-1\) in einem mathematischen Körper durch \(t\) Punkte exakt bestimmt wird.
 
-Für die zur Rekonstruktion verwendeten \(t\) Teile \(D_1'=(x_1',q(x_1')),\dots,D_t'=(x_t',q(x_t'))\) werden \(t\) Werte %\todo{mod p irgendwo erwähnen}
+Für die zur Rekonstruktion verwendeten \(t\) Teile 
+\[D_1'=(x_1',q(x_1')),\dots,D_t'=(x_t',q(x_t'))\] 
+werden \(t\) Werte %\todo{mod p irgendwo erwähnen}
 \[\lambda_i := \prod_{j=1, j \not= i}^{t} \; \frac{- x_j'}{x_i' - x_j'} \text{ für } i \in \{1,\dots,t\}\] 
 definiert, die auch als Lagrange-Koeffizienten bezeichnet werden. Das gesuchte Geheimnis \(D\) kann nun als
 \[D = \sum_{i=1}^{t}\lambda_i \cdot q(x_i')\]
@@ -45,7 +49,7 @@ Das Problem dieser Lösung bezogen auf den in dieser Arbeit behandelten Anwendun
 
 \label{sec_basics_threshold_thresholddecryption}
 
-In \cite{desmedt1987} wird das Verfahren der Schwellwertschemata das erste Mal im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hier wird die zentrale Forderung an mögliche Lösungen des Problems aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. 
+In \cite{desmedt1987} wird das Verfahren der Schwellwertschemata erstmals im Kontext von verschlüsselten Nachrichten an Gruppen betrachtet: Ein Sender möchte eine Nachricht an eine Gruppe von Empfängern senden, die nur in Zusammenarbeit die Nachricht entschlüsseln können sollen. Hierbei wird die zentrale Forderung an mögliche Lösungen des Problems aufgestellt, den mehrfachen Nachrichtenaustausch zwischen Sender und Empfänger(n) bei der Entschlüsselung (sogenannte Ping-Pong-Protokolle) zu vermeiden. 
 
 In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \textit{Threshold Decryption} und fordert weiterhin, dass praktisch einsetzbare Systeme auch \textit{non-interactive} sein sollten, also bei der Entschlüsselung keinen aufwendigen Datenaustausch zwischen den Besitzern der \textit{Shares} notwendig machen.
 
@@ -59,16 +63,16 @@ In \cite{desmedt1993} spricht der Autor bei dieser Klasse von Verfahren von \tex
 In \cite{boneh2016} werden diese Systeme formalisiert. Ein \textit{Threshold-Public-Key-Decryption}-Schema \(\epsilon = (G, E, D, C)\) besteht aus vier Algorithmen: 
 
 \begin{itemize}
-  \item \(G(t, n, r)\) ist der Algorithmus zur Generation des öffentlichen Schlüssels \(pk\) und der \(n\) \textit{Shares} des geheimen Schlüssels \(\{sk_1, \dots, sk_n\}\). \(t\) steht für die Anzahl der zur Entschlüsselung benötigten \textit{Shares}. \(r\) ist als stellvertretend für die einfließenden Zufallswerte zu betrachten.
+  \item \(G(t, n, r)\) ist der Algorithmus zur Generierung des öffentlichen Schlüssels \(pk\) und der \(n\) \textit{Shares} des geheimen Schlüssels \(\{sk_1, \dots, sk_n\}\). \(t\) steht für die Anzahl der zur Entschlüsselung benötigten \textit{Shares}. \(r\) ist als stellvertretend für die einfließenden Zufallswerte zu betrachten.
   
   \item \(E(pk, m, r)\) steht für den Algorithmus, der der Verschlüsselung eines Klartexts \(m\) mit dem öffentlichen Schlüssel \(pk\) dient. Der einfließende Zufall \(r\) verhindert Wörterbuchangriffe. Näheres dazu ist in Abschnitt \ref{sec_state_se_deterministic} zu finden.
   
-  \item \(D(sk_i, c)\) ist der Algorithmus der für einen bestimmten \textit{Share} und einen Schlüsseltext \(c\) eine partielle Entschlüsselung \(d_j'\) liefert. \(j\) stellt dabei den Index der partiellen Entschlüsselung in der Gruppe von an der Entschlüsselung beteiligter Shares dar.
+  \item \(D(sk_i, c)\) ist der Algorithmus, der für einen bestimmten \textit{Share} und einen Schlüsseltext \(c\) eine partielle Entschlüsselung \(d_j'\) liefert. \(j\) stellt dabei den Index der partiellen Entschlüsselung in der Gruppe von an der Entschlüsselung beteiligter Shares dar.
   
   \item \(C(c, d_1', \dots, d_t')\) ist der Algorithmus, der aus dem Schlüsseltext \(c\) und aus \(t\) durch \(D\) generierten partiellen Entschlüsselungen wieder den Klartext \(m\) liefert. Dieser Algorithmus wird auch \textit{Combiner} genannt. 
 \end{itemize}
 
-Zusätzlich wird von diesen Algorithmen die folgende Eigenschaft verlangt. Sie beschreibt die korrekte Entschlüsselung von validen Schlüsseltexten im Kontext eines Schwellwertschemas: Für alle möglichen Ergebnisse \((pk, \{sk_1, \dots, sk_n\})\) von \(G\), alle möglichen Nachrichten \(m\) und alle \(t\)-elementigen Teilmengen der \textit{Shares} \(\{sk_1', \dots, sk_t'\}\) soll für alle möglichen Schlüsseltexte \(c=E(pk, m, r)\) gelten: \(C(c, D(sk_1', c), \dots, D(sk_t', c)) = m\).
+Von diesen Algorithmen wird eine weitere Eigenschaft verlangt; sie beschreibt die korrekte Entschlüsselung von validen Schlüsseltexten im Kontext eines Schwellwertschemas: Für alle möglichen Ergebnisse \((pk, \{sk_1, \dots, sk_n\})\) von \(G\), alle möglichen Nachrichten \(m\) und alle \(t\)-elementigen Teilmengen der \textit{Shares} \(\{sk_1', \dots, sk_t'\}\) soll für alle möglichen Schlüsseltexte \(c=E(pk, m, r)\) gelten: \(C(c, D(sk_1', c), \dots, D(sk_t', c)) = m\).
 
 Eine Übersicht über den Entschlüsselungsvorgang ist in Abbildung \ref{fig:threshold_decryption_combiner} zu finden. Dort sind die partiellen Entschlüsselungen und der \textit{Combine}-Vorgang eines \((3,5)\)-Schwellwertschemas dargestellt. Der Algorithmus \(D\) für die partielle Entschlüsselung läuft dabei auf den einzelnen \textit{Key-Servern} ab.
 
@@ -80,41 +84,45 @@ In \cite{boneh2006} werden diese Algorithmen noch um einen fünften erweitert, d
 	\item \(V(pk, vk, c, c_j')\) überprüft die \(j\)-te partielle Entschlüsselungen auf Validität.
 \end{enumerate}
 
-Weiterhin wird für den neuen Algorithmus eine weitere Eigenschaft verlangt. Für jeden Schlüsseltext \(c\) und \(c_j' = D(sk_i,c)\), wobei \(sk_i\) der \(i\)-te von \(G\) erstellte \textit{Share} ist, gelte: \(V(pk, vk, c, c_j')\) liefert ein valides Ergebnis.
+Darüber hinaus wird für den neuen Algorithmus eine weitere Eigenschaft verlangt. Für jeden Schlüsseltext \(c\) und \(c_j' = D(sk_i,c)\), wobei \(sk_i\) der \(i\)-te von \(G\) erstellte \textit{Share} ist, gelte: \(V(pk, vk, c, c_j')\) liefert ein valides Ergebnis.
 
 
 
 \section{Weitere kryptographische Verfahren und Techniken}
 
-In diesem Abschnitt werden die Grundlagen weiterer kryptographischer Verfahren und Techniken vorgestellt, die in dieser Arbeit verwendet werden.
+Dieser Abschnitt stellt die Grundlagen weiterer kryptographischer Verfahren und Techniken vor, die in dieser Arbeit verwendet werden.
 
 % Aus der BA
 
 \subsection{Hashfunktionen}
 
-Eine Hashfunktion ist eine Funktion, die eine Eingabe variabler Länge auf eine Ausgabe fester Länge (den Hashwert) abbildet.\\
-In der Kryptographie werden meist kryptographisch sichere Hashfunktionen eingesetzt. Bei dieser Art von Hashfunktionen handelt es sich um Einwegfunktionen, d.h. es ist leicht, aus einer Eingabe den Hashwert zu berechnen, jedoch nicht mit vertretbarem Aufwand möglich, zu einem gegebenen Hashwert eine Eingabe zu finden, die auf diesen Wert abgebildet wird. Zusätzlich müssen die Hashfunktionen kollisionsresistent sein: Für einen gegebenen Wert ist es praktisch nicht möglich einen zweiten Wert zu finden, der den gleichen Hashwert besitzt \cite{Schneier2006}.
+Eine Hashfunktion ist eine Funktion, die eine Eingabe variabler Länge auf eine Ausgabe fester Länge (den Hashwert) abbildet.
+
+In der Kryptographie werden meist kryptographisch sichere Hashfunktionen eingesetzt. Bei dieser Art von Hashfunktionen handelt es sich um Einwegfunktionen, d.h. es ist leicht, aus einer Eingabe den Hashwert zu berechnen, jedoch nicht mit vertretbarem Aufwand möglich, zu einem gegebenen Hashwert eine Eingabe zu finden, die auf diesen Wert abgebildet wird.\\
+Zusätzlich müssen die Hashfunktionen kollisionsresistent sein: Für einen gegebenen Wert ist es praktisch nicht möglich einen zweiten Wert zu finden, der den gleichen Hashwert besitzt \cite{Schneier2006}.
 
 \subsection{Message Authentication Codes}
 
 \label{sec_mac}
 
-Ein Message Authentication Code (MAC) ist ein symmetrisches Verfahren, das dazu dient, die Authentizität und die Integrität einer Nachricht sicherzustellen. Dazu wird vom Sender aus einem geheimen Schlüssel \(k\) und der Nachricht \(m\) eine Art Prüfsumme generiert und zusammen mit der Nachricht versendet. Ein Empfänger kann den MAC überprüfen, wenn er im Besitz des gleichen geheimen Schlüssels ist, und so sicher sein, dass die Nachricht nicht verändert wurde \cite{Schneier2006}.
+Ein Message Authentication Code (MAC) ist ein symmetrisches Verfahren, das dazu dient, die Authentizität und die Integrität einer Nachricht sicherzustellen. Dazu wird vom Sender aus einem geheimen Schlüssel \(k\) und der Nachricht \(m\) eine Art Prüfsumme generiert und zusammen mit der Nachricht versendet. Ein Empfänger kann den MAC überprüfen, wenn er im Besitz des gleichen geheimen Schlüssels ist, und kann somit sicher sein, dass die Nachricht nicht verändert wurde \cite{Schneier2006}.
 
 \subsection{Hybride Kryptosysteme}
 
 \label{sec_basics_hybrid}
 
-Als hybrides Kryptosystem wird die Kombination von symmetrischen und asymmetrischen Kryptoverfahren zur Verschlüsselung bzw. Entschlüsselung einer Nachricht bezeichnet. Ein Schlüssel \(k_{symm}\) für die Verwendung im symmetrischen Verfahren wird zufällig erzeugt und mithilfe des öffentlichen Schlüssels eines asymmetrischen Verfahrens als \(c_{public}\) verschlüsselt. Der zu verschlüsselnde Klartext \(m\) wird anschließend mithilfe des symmetrischen Verfahrens und des erzeugten Schlüssels \(k_{symm}\) als Chiffretext \(c_{symm}\) verschlüsselt. \\
+Als hybrides Kryptosystem wird die Kombination von symmetrischen und asymmetrischen Kryptoverfahren zur Verschlüsselung bzw. Entschlüsselung einer Nachricht bezeichnet. Ein Schlüssel \(k_{symm}\) für die Verwendung im symmetrischen Verfahren wird zufällig erzeugt und mithilfe des öffentlichen Schlüssels eines asymmetrischen Verfahrens als \(c_{public}\) verschlüsselt. Der zu verschlüsselnde Klartext \(m\) wird anschließend mithilfe des symmetrischen Verfahrens und des erzeugten Schlüssels \(k_{symm}\) als Chiffretext \(c_{symm}\) verschlüsselt. 
+
 Zur Entschlüsselung wird \(c_{public}\) mit dem geheimen Schlüssel des asymmetrischen Verfahrens entschlüsselt. Der hieraus erhaltene Schlüssel \(k_{symm}\) kann nun zur Entschlüsselung von \(c_{symm}\) genutzt werden, um \(m\) zu erhalten \cite{katz2014}.
 
-Der Vorteil dieser Lösung beruht darin, dass Vorteile symmetrischer und asymmetrischer Verfahren kombiniert werden: Symmetrische Verfahren sind im Allgemeinen deutlich schneller als asymmetrische, die jedoch das bei symmetrischen Systemen bestehende Problem des Schlüs\-sel\-aus\-tauschs lösen.
+Der Vorteil dieser Lösung besteht darin, dass Vorteile symmetrischer und asymmetrischer Verfahren kombiniert werden: Einerseits sind symmetrische Verfahren im Allgemeinen deutlich schneller als asymmetrische, andererseits lösen diese jedoch das bei symmetrischen Verfahren bestehende Problem des Schlüs\-sel\-aus\-tauschs.
 
 \subsection{Authenticated Encryption Schemes}
 
 \label{sec_basics_ae}
 
-Symmetrische Kryptosysteme sorgen erst einmal nur für den Schutz der Vertraulichkeit einer Nachricht. Wird zusätzlich die Integrität einer Nachricht durch das System geschützt, so spricht man von einem \textit{Authenticated Encryption Scheme}. Hierdurch wird erreicht, dass Änderungen am Schlüsseltext bei der Entschlüsselung erkannt werden und der Vorgang abgebrochen werden kann.\\
+Symmetrische Kryptosysteme sorgen zunächst einmal nur für den Schutz der Vertraulichkeit einer Nachricht. Wird zusätzlich die Integrität einer Nachricht durch das System geschützt, so spricht man von einem \textit{Authenticated Encryption Scheme}. Hierdurch wird erreicht, dass Änderungen am Schlüsseltext bei der Entschlüsselung erkannt werden und der Vorgang abgebrochen werden kann.
+
 Ein solches System kann durch Berechnung eines MACs zusätzlich zur Verschlüsselung erreicht werden. Alternativ dazu gibt es Schemata, die direkt auf einer Blockchiffre aufbauen \cite{boneh2016}. Ein Beispiel hierzu ist der GCM-Betriebsmodus, der in Kombination mit AES in vielen verbreiteten Protokollen wie TLS zu finden ist.
 
 
@@ -126,9 +134,11 @@ Das ElGamal-Kryptosystem ist ein von Taher ElGamal entwickeltes asymmetrisches K
 
 Im Folgenden sei \(\mathbb{G}\) eine zyklische Gruppe der primen Ordnung \(p\) und \(g\) ein Generator dieser Gruppe. Diese Parameter können öffentlich bekannt gegeben werden. Alle folgenden Berechnungen werden in \(\mathbb{G}\) (also modulo \(p\)) ausgeführt.
 
-Ein Teilnehmer wählt nun ein zufälliges Element \(x \in \mathbb{Z}_p\). Dies ist der private Schlüssel des Teilnehmers. Er berechnet zusätzlich seinen öffentlichen Schlüssel \(h = g^x\).\\
-Um eine Nachricht \(m\), die an den Teilnehmer geschickt werden soll, zu verschlüsseln, wird zuerst ein zufälliges Element \(y \in \mathbb{Z}_p\) gewählt. Anschließend kann die Nachricht verschlüsselt als \((v, c) = (g^y, h^y \cdot m)\) versendet werden.\\
-Zur Entschlüsselung berechnet der Empfänger \(k' = (v^x)^{(-1)}\) und kann die Nachricht \(m = c \cdot k'\) entschlüsseln. Dies funktioniert, da 
+Ein Teilnehmer wählt nun ein zufälliges Element \(x \in \mathbb{Z}_p\). Dies ist der private Schlüssel des Teilnehmers. Er berechnet zusätzlich seinen öffentlichen Schlüssel \(h = g^x\).
+
+Um eine Nachricht \(m\), die an den Teilnehmer geschickt werden soll, zu verschlüsseln, wird zuerst ein zufälliges Element \(y \in \mathbb{Z}_p\) gewählt. Anschließend kann die Nachricht verschlüsselt als \((v, c) = (g^y, h^y \cdot m)\) versendet werden.
+
+Zur Entschlüsselung berechnet der Empfänger \(k' = (v^x)^{(-1)}\) und kann die Nachricht \(m = c \cdot k'\) entschlüsseln. Dies gelingt, da 
 \[c \cdot k' = (h^y \cdot m) \cdot (v^x)^{(-1)} = g^{xy} \cdot m \cdot g^{(-yx)} = m\]
 gilt. Weitere Details und Beweise zu dem ElGamal-Kryptosystem sind beispielsweise in \cite{katz2014} zu finden.
 

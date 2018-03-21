@@ -2,27 +2,27 @@
 
 \label{sec_basics_siem}
 
-SIEM-Systeme dienen dazu Daten in Netzwerken zu sammeln, um so einen zentralisierten Überblick über das Netzwerk zu erhalten und Bedrohungen erkennen und verhindern zu können. 
-
+SIEM-Systeme dienen dazu, Daten in Netzwerken zu sammeln, um so einen zentralisierten Überblick über das Netzwerk zu erhalten und damit auch Bedrohungen erkennen und verhindern zu können. 
 Der Begriff \textit{Security Information and Event Management} (SIEM) wurde von zwei Analysten des IT-Marktforschungsunternehmens Gartner geprägt, das auch jährlich einen Bericht über aktuelle Trends im Bereich der SIEM-Systeme veröffentlicht.
 Er setzt sich zusammen aus \textit{Security Event Management} (SEM), das sich mit Echtzeitüberwachung und Ereigniskorrelation befasst, sowie \textit{Security Information Management} (SIM), in dessen Fokus Langzeiterfassung und Analyse von Log-Daten steht \cite{gartner2011}. 
 
 Ein SIEM-System sollte nach \cite{detken2015} die folgenden Aufgaben erfüllen können: 
 \begin{itemize}
-	\item \textbf{Network Behaviour Anomaly Detection:} Beschreibt die Erkennung von Anomalien auf Netzwerkebene durch die Erkennung von vom Normalzustand abweichenden Kommunikationsverhalten.
+	\item \textbf{Network Behaviour Anomaly Detection:} Anomalie-Erkennung auf Netzwerkebene durch die Messung von vom Normalzustand abweichendem Kommunikationsverhalten.
 	\item \textbf{Identity Mapping:} Abbildung von Netzwerkadressen auf Nutzeridentitäten. 
 	\item \textbf{Key Performance Indication:} Zentrale Analyse sicherheitsrelevanter Informationen und Netzwerkdetails.
 	\item \textbf{Compliance Reporting:} Überprüfung der Einhaltung von durch Regelungen vorgeschriebenen Anforderungen wie Integrität, Risiko und Effektivität.
-	\item \textbf{API:} Bereitstellung von Schnittstellen zur Integration heterogener Systeme im Netzwerk.
-	\item \textbf{Role based access control:} Zuständigkeitsabhängige Sichten auf sicherheitsrelevante Ereignisse.
+	\item \textbf{API:} Bereitstellung von Schnittstellen zur Integration von Systemen in das Netzwerk.
+	\item \textbf{Role based access control:} Zuständigkeitsabhängige Sichten auf Ereignisse.
   \item \textbf{Event Correlation:} siehe unten.
 \end{itemize} 
 
-Eine besondere Bedeutung im Kontext dieser Arbeit kommt hier der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detectionen-Systemen oder aus den Log-Daten von Firewalls, Switches oder anderen Netzwerkgeräten stammen können. 
+Eine besondere Bedeutung im Kontext dieser Arbeit kommt der Behandlung von sicherheitsrelevanten Ereignissen (Events) zu, die beispielsweise von Intrusion-Detection-Systemen oder aus den Log-Daten von Firewalls, Switches oder anderen Netzwerkgeräten stammen können. 
 
-Um diese Ereignisse zu erhalten, muss ein SIEM-System nach \cite{detken2014} vor ihrer Speicherung insbesondere drei Aufgaben wahrnehmen. Zu Beginn werden die Daten aus Logeinträgen oder empfangenen Systemmeldungen herausgelesen (Extraktion).\\
+Um diese Ereignisse zu erhalten, muss ein SIEM-System nach \cite{detken2014} vor deren Speicherung insbesondere drei Aufgaben wahrnehmen.\\
+Zu Beginn werden die Daten aus Logeinträgen oder empfangenen Systemmeldungen herausgelesen (Extraktion).\\
 Anschließend müssen die extrahierten Daten in ein SIEM-spezifisches Format übersetzt werden, um eine sinnvolle Weiterverarbeitung zu gewährleisten (Homogenisierung). Hierbei werden relevante Felder eines SIEM-Events wie Zeitpunkte, Adressen oder Aktionen aus den empfangenen Daten befüllt. Dieser Schritt wird in anderen Quellen auch als Normalisierung oder Mapping bezeichnet.\\
-Optional können darauf folgend gleichartige Events in bestimmten Fällen anschließend zusammengefasst werden, um aussagekräftigere Informationen zu erhalten (Aggregation).
+Optional können darauf folgend gleichartige Events in bestimmten Fällen zusammengefasst werden, um aussagekräftigere Informationen zu erhalten (Aggregation).
 
 Liegen die Events nun in einem vorgebenen Format im System vor, so können sie weiterhin mit dem System bekannten Umgebungsdaten über Benutzer, Geräte oder Bedrohungen verknüpft werden, um ihre Relevanz besser einschätzen zu können. 
 
@@ -32,4 +32,4 @@ Anschließend lassen sich vorgegebene Regeln anwenden, um aus der Korrelation vo
 
 \label{sec_basics_siem_syslog}
 
-Das Syslog-Protokoll wird in dieser Arbeit als Grundlage für den Empfang von Logdaten im SIEM-System genutzt und soll daher hier kurz dargestellt werden. Das Protokoll wird weitverbreitet für die Übertragung von Logdaten in Rechnernetzen genutzt. Nachrichten enthalten drei Felder: die \textit{Priority}, die die Schwere des gemeldeten Vorfalls beschreibt, die \textit{Facility}, die die Komponente beschreibt, in der der Vorfall auftrat, und die eigentliche Nachricht in textueller Form. Logdaten werden häufig über UDP übertragen, es gibt jedoch auch Erweiterungen, in denen TCP oder TLS genutzt wird \cite{rfc5424}.
+Das Syslog-Protokoll wird weitverbreitet für die Übertragung von Logdaten in Rechnernetzen genutzt und in dieser Arbeit als Grundlage für den Empfang von Logdaten im SIEM-System genutzt. Daher wird es hier kurz dargestellt. Nachrichten enthalten drei Felder: die \textit{Priority}, die die Schwere des gemeldeten Vorfalls beschreibt, die \textit{Facility}, die die Komponente beschreibt, in der der Vorfall auftrat, und die eigentliche Nachricht in textueller Form. Logdaten werden häufig über UDP übertragen, es gibt jedoch auch Erweiterungen, in denen TCP oder TLS genutzt wreden \cite{rfc5424}.

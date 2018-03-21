@@ -1,13 +1,16 @@
 \chapter{Überblick und Entwurf}
 \label{cha_overview}
 
-Das Ziel dieser Arbeit ist es, ein System zu entwickeln, das mithilfe von Pseudonymisierung die datenschutzgerechte Speicherung von Überwachungsdaten ermöglicht, wobei die Identität eines Pseudonymhalters im Bedarfsfall durch die Kollaboration verschiedener Akteure unter Nutzung eines kryptographischen Schwellwertschemas aufdeckbar sein muss. Um eine Basis für die Erarbeitung von Anforderungen und eines Systementwurfs zu erhalten, soll nun kurz dargelegt werden, wie die verschiedenen Verfahren ineinander greifen. 
+Das Ziel dieser Arbeit ist es, ein System zu entwickeln, das mithilfe von Pseudonymisierung die datenschutzgerechte Speicherung von Überwachungsdaten ermöglicht, wobei die Identität eines Pseudonymhalters im Bedarfsfall durch die Kollaboration verschiedener Akteure unter Nutzung eines kryptographischen Schwellwertschemas aufdeckbar sein muss. Um eine Basis für die Erarbeitung von Anforderungen und für einen Systementwurfs zu erhalten, soll nun kurz dargelegt werden, wie die verschiedenen Verfahren ineinander greifen. 
 
 Aus Datenquellen wie Firewalls, Zugriffsprotokollen von Dateisystemen oder auch elektronischen Türschlössern werden personenbeziehbare Logdaten\footnote{
   Da im Bereich technischer Systeme eher von Logdaten oder Protokolldaten im Gegensatz zu Überwachungsdaten gesprochen wird, wird diese Terminologie hier verwendet. Im Rahmen dieser Arbeit sind die Begriffe jedoch synonym zu verstehen.
-} an ein SIEM-System gesendet und dort gespeichert. In diesen Datenfluss wird nun durch ein zu entwickelndes System eingegriffen, das die personenbeziehbaren Informationen des Logdatums\footnote{
+} an ein SIEM-System gesendet und dort gespeichert.\\
+In diesen Datenfluss wird nun durch ein zu entwickelndes System eingegriffen, das die personenbeziehbaren Informationen des Logdatums\footnote{
   Um Missverständnisse auszuschließen, sei darauf hingewiesen, dass das Wort Datum in dieser Arbeit als Beschreibung einer Informationseinheit und nicht eines Zeitpunkts verwendet wird. 
-} durch ein Pseudonym ersetzt. Die Zuordnung zwischen dem gesetzten Pseudonym und der personenbeziehbaren Information wird durch ein kryptographisches Schwellwertschema verschlüsselt und in dem System gespeichert. Damit die anschließend auf den pseudonymisierten Logdaten stattfindende Anomalieerkennung Aktionen eines Mitarbeiters verknüpfen kann, muss sichergestellt werden, dass für einen speziellen Benutzer das gleiche Pseudonym verwendet wird. Wird nun durch die Anomalieerkennung ein Angriff erkannt, so können berechtigte Benutzer durch kollaborative Entschlüsselung der Pseudonymzuordnung den hinter dem Pseudonym stehenden Benutzer wieder aufdecken.
+} durch ein Pseudonym ersetzt. Die Zuordnung zwischen dem gesetzten Pseudonym und der personenbeziehbaren Information wird durch ein kryptographisches Schwellwertschema verschlüsselt und in dem System gespeichert.
+
+Damit die anschließend auf den pseudonymisierten Logdaten stattfindende Anomalieerkennung Aktionen eines Mitarbeiters verknüpfen kann, muss sichergestellt werden, dass für einen speziellen Benutzer das gleiche Pseudonym verwendet wird. Wird nun durch die Anomalieerkennung ein Angriff erkannt, so können berechtigte Benutzer durch kooperative Entschlüsselung der Pseudonymzuordnung den hinter dem Pseudonym stehenden Benutzer wieder aufdecken.
 
 \begin{figure}[]
     \centering
@@ -16,10 +19,11 @@ Aus Datenquellen wie Firewalls, Zugriffsprotokollen von Dateisystemen oder auch 
     \label{fig:overview_initial}
 \end{figure}
 
-Anschaulich wird der Vorgang in Abbildung \ref{fig:overview_initial} dargestellt: Die Benutzerin Eve agiert in dem Unternehmensnetzwerk. Ihre Aktionen werden protokolliert und Logdaten, die ihren Benutzernamen enthalten, werden versendet. Dieser Benutzername wird durch das Pseudonym ps01 ersetzt. Die Zuordnung des Pseudonyms wird nun mithilfe eines kryptographischen Schwellwertschemas verschlüsselt und in einer Datenbank abgelegt. Das pseudonymisierte Logdatum wird nun im SIEM-System gespeichert.\\
-Eingesetzte Anomalieerkennungsverfahren können nun auf die Daten des SIEM-Systems zugreifen. Wird ein möglicher Insider-Angriff durch einen Benutzer mit dem Pseudonym ps01 erkannt, so kann die Zuordnung zu dem ursprünglichen Benutzernamen mithilfe des Schwellwertschemas wieder aufgedeckt werden. Hierzu ist jedoch die Mitarbeit von Alice, Bob und Carol notwendig, die jeweils im Besitz eines Teils des Entschlüsselungsschlüssels sind. Stimmen sie der Aufdeckung zu, so wird Eve als Halter des Pseudonyms ps01 und damit als möglicher Innentäter aufgedeckt.
+Anschaulich wird der Vorgang in Abbildung \ref{fig:overview_initial} dargestellt: Die Benutzerin Eve agiert in dem Unternehmensnetzwerk. Ihre Aktionen werden protokolliert und Logdaten, die ihren Benutzernamen enthalten, werden versendet. Dieser Benutzername wird durch das Pseudonym ps01 ersetzt. Die Zuordnung des Pseudonyms wird nun mithilfe eines kryptographischen Schwellwertschemas verschlüsselt und in einer Datenbank abgelegt. Das pseudonymisierte Logdatum wird im SIEM-System gespeichert.
 
-In diesem Kapitel werden nun zentrale Anforderungen an ein solches System entwickelt und eine abstrakte Architektur für ein solches entworfen. Anschließend wird aufbauend darauf ein Angreifermodell für das System definiert.
+Eingesetzte Anomalieerkennungsverfahren können anschließend auf die Daten des SIEM-Systems zugreifen. Wird ein möglicher Insider-Angriff durch einen Benutzer mit dem Pseudonym ps01 erkannt, so kann die Zuordnung zu dem ursprünglichen Benutzernamen mithilfe des Schwellwertschemas wieder aufgedeckt werden. Hierzu ist jedoch die Mitarbeit von Alice, Bob und Carol notwendig, die jeweils im Besitz eines Teils des Entschlüsselungsschlüssels sind. Stimmen sie der Aufdeckung zu, so wird Eve als Halter des Pseudonyms ps01 und damit als möglicher Innentäter aufgedeckt.
+
+In diesem Kapitel werden zentrale Anforderungen an ein solches System entwickelt und eine abstrakte Architektur für ein solches entworfen. Anschließend wird darauf aufbauend ein Angreifermodell für das System definiert.
 
 \input{chapters/overview/over_requirements}
 

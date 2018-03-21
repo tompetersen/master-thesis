@@ -2,13 +2,13 @@
 
 \label{sec_impl_requirements}
 
-Neben den primären Anforderungen, die sich direkt aus der Funktionsbeschreibung des Systems und dem Zusammenspiel der enthaltenen Verfahren ergeben, sollte das System noch weitere Eigenschaften wie beispielsweise die Erweiterbarkeit um weitere Datenschutztechniken erfüllen. Alle diese Anforderungen sollen im folgenden Abschnitt aufgestellt und näher erläutert werden.
+Neben den primären Anforderungen, die sich direkt aus der Funktionsbeschreibung des Systems und dem Zusammenspiel der enthaltenen Verfahren ergeben, sollte das System noch weitere Eigenschaften wie beispielsweise die Erweiterbarkeit um zusätzliche Datenschutztechniken erfüllen. All diese Anforderungen sollen im folgenden Abschnitt aufgestellt und näher erläutert werden.
 
 \subsection{Integration in das SIEM-System}
 
 \label{subsec_impl_requirements_ossimintegration}
 
-Es muss eine geeignete Stelle für den Eingriff in den Datenfluss der Logdaten in dem verwendeten SIEM-System gefunden werden. Hierzu müssen Auswirkungen des Eingriffs betrachtet und Vor- bzw. Nachteile der verschiedenen Möglichkeiten gegeneinander abgewogen werden. 
+Für den Eingriff in den Datenfluss der Logdaten zwischen ihrer Quelle und dem verwendeten SIEM-System muss eine geeignete Stelle gefunden werden. Hierzu müssen Auswirkungen des Eingriffs betrachtet sowie die Vor- bzw. Nachteile der verschiedenen Möglichkeiten gegeneinander abgewogen werden. 
 
 \subsection{Pseudonymisierung}
 
@@ -19,9 +19,9 @@ Es muss eine geeignete Stelle für den Eingriff in den Datenfluss der Logdaten i
 %- Durchsuchbar (mim Hinblick auf threshold)
 %- Anwendungsfallabhängige Parameter für Nutzzeit, ... (Rückblick auf Kapitel 3)
 
-Die Pseudonymisierung muss es ermöglichen, nach Aufdecken eines Eintrags wieder auf den ursprünglichen Dateninhalt schließen zu können. Daher müssen die Pseudonyme für die Zeit ihrer Speicherung eindeutig sein, d.h. es darf zu keiner gleichzeitigen Mehrfachverwendung von Pseudonymen kommen. 
+Die Pseudonymisierung muss es ermöglichen, nach Aufdecken eines Eintrags wieder auf den ursprünglichen Dateninhalt schließen zu können. Daher müssen die Pseudonyme für die Zeit ihrer Speicherung eindeutig sein, d.h. es darf zu keiner Mehrfachverwendung von Pseudonymen kommen. 
 
-Weiterhin muss es eine Möglichkeit beim Pseudonymisieren von Logeinträgen geben, zu überprüfen, ob für ein Datum bereits ein Pseudonym vergeben wurde. So kann sichergestellt werden, dass in einem bestimmten Zeitraum Logeinträge zu einer Person mit dem gleichen Pseudonym versehen werden, um mithilfe der Verknüpfung von Einträgen Anomalieerkennungsverfahren sinnvoll einsetzen zu können. Auf diese Anforderung wird in Abschnitt \ref{sec_state_se} noch genauer eingegangen.
+Weiterhin muss es beim Pseudonymisieren von Logeinträgen eine Möglichkeit geben, zu überprüfen, ob für ein Datum bereits ein Pseudonym vergeben wurde. So kann sichergestellt werden, dass in einem bestimmten Zeitraum Logeinträge zu einer Person stets mit dem gleichen Pseudonym versehen werden, um mithilfe der Verknüpfung von Einträgen Anomalieerkennungsverfahren sinnvoll einsetzen zu können. Auf diese Anforderung wird in Abschnitt \ref{sec_state_se} noch genauer eingegangen.
 
 Außerdem muss es eine Möglichkeit geben, die Parameter der Pseudonymisierung, wie den Zeitraum ihrer Verwendung, konfigurierbar zu machen (siehe Abschnitt \ref{sec_state_pseudonymity}).
 
@@ -34,17 +34,17 @@ Außerdem muss es eine Möglichkeit geben, die Parameter der Pseudonymisierung, 
 %- Schlüsselmanagement
 %- ...
 
-Der Einsatz eines kryptographischen Schwellwertschemas setzt eine verteilte Anwendung voraus, die den Zugriff für die Pseudonymisierungskomponente sowie für die bei der Entschlüsselung eines Eintrags beteiligten Akteure bereitstellt. Die für das Schwellwertschema nötigen, in Abschnitt \ref{sec_basics_threshold} beschriebenen Parameter \(t\) und \(n\)  sowie die beteiligten Share-Besitzer müssen in dem System initial konfigurierbar sein.
+Der Einsatz eines kryptographischen Schwellwertschemas setzt eine verteilte Anwendung voraus, die den Zugriff für die Pseudonymisierungskomponente sowie für die bei der Entschlüsselung eines Eintrags beteiligten Akteure bereitstellt. Die für das Schwellwertschema nötigen, in Abschnitt \ref{sec_basics_threshold} beschriebenen Parameter \(t\) und \(n\) und auch die beteiligten Share-Besitzer müssen in dem System initial konfigurierbar sein.
 
-In der Phase der Schlüsselgenerierung muss das System die Kommunikation und Koordination aller Beteiligten unterstützen. Die hier erstellten Schlüssel und \textit{Shares} müssen an geeigneten Stellen sicher gespeichert und abrufbar sein. Es existieren zwei Möglichkeiten für diese Phase:
+In der Phase der Schlüsselgenerierung muss das System die Kommunikation und Koordination aller Beteiligten unterstützen. Die hier erstellten Schlüssel und \textit{Shares} müssen an geeigneten Stellen sicher gespeichert und abrufbar sein. Für diese Phase gibt es zwei Möglichkeiten:
 \begin{itemize}
   \item \textbf{Zentrale Generierung von öffentlichem Schlüssel und Shares}: Eine vertrauenswürdige Komponente generiert ein Schlüsselpaar und zerlegt den geheimen Schlüssel in die einzelnen Shares, die anschließend verteilt werden können. 
-  \item \textbf{Verteilte Schlüsselgenerierung}: Hierbei generieren die einzelnen Share-Besitzer jeweils ihre Shares. Durch verteilte Berechnungen kann hieraus der gemeinsame öffentliche Schlüssel generiert werden. Der geheime Schlüssel liegt dadurch niemals an einer Stelle vor und ein vertrauenswürdiger Dritter ist nicht notwendig. Aus diesem Grund ist diese Lösung zu bevorzugen.
+  \item \textbf{Verteilte Schlüsselgenerierung}: Hierbei generieren die einzelnen Share-Besitzer jeweils ihre eigenen Shares. Durch verteilte Berechnungen kann hieraus der gemeinsame öffentliche Schlüssel erzeugt werden. Der geheime Schlüssel liegt auf diese Weise niemals an einer Stelle vor und ein vertrauenswürdiger Dritter ist nicht notwendig. Aus diesem Grund ist diese Lösung zu bevorzugen.
 \end{itemize}
 
 Der für die Verschlüsselung erforderliche öffentliche Schlüssel muss so vorliegen, dass er bei der Verschlüsselung eines Pseudonym-Datensatzes genutzt werden kann.
 
-Bei der Entschlüsselung eines Eintrags, also der Aufdeckung eines Pseudonyms, muss das System wiederum die beteiligten Akteure koordinieren. Anschließend muss eine Komponente die Rolle des \textit{Combiners} übernehmen, so dass anschließend der den Pseudonymhalter beschreibende entschlüsselte Datensatz im System  vorliegt.
+Bei der Entschlüsselung eines Eintrags, also der Aufdeckung eines Pseudonyms, muss das System wiederum die beteiligten Akteure koordinieren. Anschließend muss eine Komponente die Rolle des \textit{Combiners} übernehmen, so dass anschließend der den Pseudonymhalter beschreibende, entschlüsselte Datensatz im System  vorliegt.
 
 \subsection{Benutzerinteraktion}
 
@@ -58,18 +58,19 @@ Bei der Entschlüsselung eines Eintrags, also der Aufdeckung eines Pseudonyms, m
 
 Die zu entwickelnde verteilte Anwendung wird an verschiedenen Stellen Benutzerinteraktion erfordern.
 
-Das Konfigurieren des Systems zur Integration verschiedener Datenquellen und deren Beschreibung muss einem berechtigten Nutzer zugänglich gemacht werden. Ebenso sollte es im Hinblick auf die in der Aufgabenstellung geforderte Erweiterbarkeit im Bezug auf weitere Datenschutztechniken relativ leicht sein, diese Techniken im System nutzen zu können. 
+Das Konfigurieren des Systems zur Integration verschiedener Datenquellen muss einem berechtigten Nutzer zugänglich gemacht werden. Ebenso sollte es für die -- in der Aufgabenstellung geforderte -- Erweiterbarkeit um weitere Datenschutztechniken relativ leicht sein, diese Techniken im System nutzen zu können. 
 
 Für pseudonymisierte Datensätze muss es berechtigten Benutzern ermöglicht werden, Anfragen zur Aufdeckung eines Pseudonyms zu stellen und sich über ihren Status informiert zu halten.
 
-Für die Benutzung eines kryptographischen Schwellwertschemas sollte es einem Administrator des Systems ermöglicht werden, grundlegende Parameter des Systems wie die Schwellwertparameter und die beteiligten Nutzer auszuwählen sowie die Initialisierung des Schemas anzustoßen. \\
+Einem Administrator des Systems sollte es für die Benutzung eines kryptographischen Schwellwertschemas ermöglicht werden, grundlegende Parameter des Systems wie die Schwellwertparameter und die beteiligten Nutzer auszuwählen sowie die Initialisierung des Schemas anzustoßen. 
+
 Die am Schwellwertschema beteiligten Nutzer müssen die Möglichkeit erhalten, eine Übersicht über sie betreffende Anfragen zur Aufdeckung eines Pseudonym-Datensatzes zu bekommen sowie einzelne Anfragen abzulehnen oder sich am Prozess des Aufdeckens mithilfe des Schwellwertschemas zu beteiligen. 
 
 \subsection{Erweiterbarkeit um neue Datenquellen}
 
 \label{subsec_impl_requirements_differentsources}
 
-Das umzusetzende System sollte es ermöglichen, Daten aus verschiedenen Quellen und (abhängig vom gewählten Eingriffspunkt in OSSIM auch) in verschiedenen Formaten entgegenzunehmen und mithilfe der umgesetzten Datenschutztechniken verändern zu können. Dabei muss das Format der Logdaten grundsätzlich beibehalten werden, um die Behandlung der Daten in dem verwendeten SIEM-System weiterhin zu ermöglichen.
+Das umzusetzende System sollte es ermöglichen, Daten aus verschiedenen Quellen und (abhängig vom gewählten Eingriffspunkt in OSSIM) auch in verschiedenen Formaten entgegenzunehmen und mithilfe der umgesetzten Datenschutztechniken verändern zu können. Dabei muss das Format der Logdaten grundsätzlich beibehalten werden, um die Behandlung der Daten in dem verwendeten SIEM-System weiterhin zu ermöglichen.
 
 \subsection{Erweiterbarkeit um neue Datenschutztechniken}
 
@@ -83,14 +84,14 @@ Das System sollte es, eingesetzt in einem Unternehmensnetzwerk, ermöglichen ein
 
 \subsection{Übersicht}
 
-Zusammenfassend sollte ein System, wie es in dieser Arbeit angestrebt wird, also folgende Anforderungen erfüllen:
+Ein System, wie es in dieser Arbeit angestrebt wird, sollte also folgende Eigenschaften aufweisen:
 
 \begin{itemize}
-  \item Geeignete Stelle zum Eingriff in den Datenfluss zwischen Logdatenquelle und SIEM-System
-  \item Parameterabhängige Generierung eindeutiger, aber in gewissem Rahmen verknüpfbarer Pseudonyme
-  \item Sicherer, verteilter Einsatz eines anpassbaren kryptographischen Schwellwertschemas -- vorzugsweise mit verteilter Schlüsselgenerierung
-  \item Geeignete Benutzerinteraktion mit dem System an notwendigen Stellen
-  \item Erweiterbarkeit um unbekannte Datenquellen
-  \item Erweiterbarkeit um weitere Datenschutztechniken
-  \item Performanz
+  \item Geeignete Stelle zum Eingriff in den Datenfluss zwischen Logdatenquelle und SIEM-System,
+  \item parameterabhängige Generierung eindeutiger, aber in gewissem Rahmen verknüpfbarer Pseudonyme,
+  \item sicherer, verteilter Einsatz eines anpassbaren kryptographischen Schwellwertschemas -- vorzugsweise mit verteilter Schlüsselgenerierung,
+  \item geeignete Benutzerinteraktion mit dem System an notwendigen Stellen,
+  \item Erweiterbarkeit um unbekannte Datenquellen,
+  \item Erweiterbarkeit um weitere Datenschutztechniken,
+  \item Performanz.
 \end{itemize}
