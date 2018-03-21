@@ -98,8 +98,8 @@ Als Gegenmaßnahme wird die Vorverarbeitung der symmetrischen Schlüssel empfohl
 
 \begin{itemize}
   \item \(v = g^k\): wie vorhergehend beschrieben.
-  \item \(c^{tc} = r \cdot g^{ak}\): Anstelle des symmetrischen Schlüssels wird das Untergruppenelement \(r\) durch das ElGamal-Verfahren verschlüsselt.
-  \item \(c^{symm} = E^{symm}_{H(r)}(m)\): Als symmetrischer Schlüssel wird nun der durch \(H\) berechnete Hash\-wert von \(r\) genutzt.
+  \item \(c_{tc} = r \cdot g^{ak}\): Anstelle des symmetrischen Schlüssels wird das Untergruppenelement \(r\) durch das ElGamal-Verfahren verschlüsselt.
+  \item \(c_{symm} = E^{symm}_{H(r)}(m)\): Als symmetrischer Schlüssel wird nun der durch \(H\) berechnete Hash\-wert von \(r\) genutzt.
 \end{itemize}
 
 Zusätzlich schreibt das Schema nach \cite{abdalla1999} die Benutzung eines MACs zur Sicherung der Integrität der Nachricht vor. Auf diesen Schritt kann in dem in dieser Arbeit implementierten Schema verzichtet werden, da die Integrität bereits durch das verwendete AE-Schema geschützt ist. Einen Überblick über das letztlich umgesetzte Schema, das auch diesen Angriff verhindert, bietet Abbildung \ref{fig:hybrid_scheme}.
