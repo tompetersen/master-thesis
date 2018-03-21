@@ -4,18 +4,18 @@
 
 %- Innentäter
 
-Liest man von erfolgreichen Angriffen auf Unternehmensnetzwerke, so ist die implizite Annahme von externen, unternehmensfremden Angreifern weit verbreitet. Doch häufig sind die Angreifer bereits im Netzwerk ansässig. Es handelt sich um (ehemalige) Mitarbeiter oder Personen mit legitimem Zugriff auf das Netzwerk, wie Geschäftspartnern oder Kunden. Hierbei spricht man von Insider-Angriffen, die ganz unterschiedlich ausfallen können:
+Liest man von erfolgreichen Angriffen auf Unternehmensnetzwerke, so ist die implizite Annahme von externen, unternehmensfremden Angreifern weit verbreitet. Doch häufig sind die Angreifer bereits im Unternehmensnetzwerk selbst ansässig. Es handelt sich um (ehemalige) Mitarbeiter oder Personen mit legitimem Zugriff auf das Netzwerk, wie Geschäftspartnern oder Kunden. Hierbei spricht man von Insider-Angriffen, die ganz unterschiedlich ausfallen können:
 \begin{itemize}
-  \item Mitarbeiter, die die Kundendatenbank kopieren, um diese als Einstellungsgrund für den nächsten Arbeitgeber zu nutzen
-  \item Mitarbeiter, die aus Frust über ihre bevorstehende Kündigung Projekte durch Datenlöschung sabotieren
-  \item Mitarbeiter, die einem Konkurrenten Details über das Angebot der eigenen Firma zu einer Ausschreibung liefern, an der der Konkurrent ebenfalls Interesse besitzt
+  \item Mitarbeiter, die die Kundendatenbank des Unternehmens kopieren, um diese als Einstellungsgrund für den nächsten Arbeitgeber zu nutzen;
+  \item Mitarbeiter, die aus Verärgerung über ihre bevorstehende Kündigung Projekte durch Datenlöschung sabotieren;
+  \item Mitarbeiter, die einem Konkurrenten Details über das Angebot der eigenen Firma zu einer Ausschreibung liefern, an der der Konkurrent ebenfalls Interesse besitzt;
   \item ...
-\end{itemize}
+\end{itemize}\todo{Im Fließtext?}
 Bei dieser Art von Angriffen handelt es sich keineswegs nur um zu vernachlässigende Einzelfälle:
-In dem \textit{IBM Cyber Security Intelligence Report} von 2015 werden 55\% der Angriffe als aus dem internen Netz stammend angegeben \cite{ibm2015}.\footnote{
+In dem \textit{IBM Cyber Security Intelligence Report} von 2015 werden 55 \% der Angriffe als aus dem internen Netz stammend angegeben \cite{ibm2015}.\footnote{
   Zu beachten ist allerdings, dass nicht nur mit Absicht ausgeführte Angriffe hierunter erfasst wurden, sondern auch unbeabsichtigte wie das versehentliche Veröffentlichen schützenswerter Kundendaten.
 }
-Auch der Branchenverband bitkom führt in seiner \textit{Spezialstudie Wirtschaftsschutz} aus dem Jahr 2016 nach einer Befragung von über 1000 Unternehmen aus, dass etwa 60\% der erfolgten Handlungen aus dem Bereich Datendiebstahl, Industriespionage oder Sabotage durch (ehemalige) Mitarbeiter erfolgten \cite{bitkom2016}.
+Auch der Branchenverband bitkom führt in seiner \textit{Spezialstudie Wirtschaftsschutz} aus dem Jahr 2016 nach einer Befragung von über 1000 Unternehmen aus, dass etwa 60\% der erfolgten Handlungen aus den Bereichen Datendiebstahl, Industriespionage oder Sabotage durch (ehemalige) Mitarbeiter erfolgten \cite{bitkom2016}.
 
 Auch wenn die genauen Zahlen aufgrund von unterschiedlichen Annahmen und der in diesem Bereich nicht zu vernachlässigenden Dunkelziffer mit Vorsicht zu betrachten sind,\footnote{
 	Insbesondere die Angst vor Imageschäden, die auch in der \textit{Spezialstudie Wirtschaftsschutz} erwähnt wird, könnte ein Grund für das Geheimhalten von Vorfällen sein.
@@ -23,11 +23,11 @@ Auch wenn die genauen Zahlen aufgrund von unterschiedlichen Annahmen und der in 
 
 %- Lösung: Anomalieerkennung (zB QRadar, etc.)
 
-Geht es darum Insider-Angriffe zu erkennen oder zu verhindern, so sind viele bestehende Lösungen im Netzwerksicherheitsbereich nicht geeignet. Verbreitete Zugriffskontrollmechanismen, Firewalllösungen oder Intrusion Detection/Prevention Systeme konzentrieren sich oftmals lediglich auf die Erkennung oder Verhinderung externer Angriffe. Angriffe, die von legitimen Benutzern eines Netzwerks ausgeführt werden, indem sie erlaubte Handlungen tätigen, sind jedoch auf diese Weise oftmals nicht adäquat zu behandeln.
+Geht es darum, Insider-Angriffe zu erkennen oder zu verhindern, so sind viele bestehende Lösungen im Netzwerksicherheitsbereich nicht geeignet. Verbreitete Zugriffskontrollmechanismen, Firewalllösungen oder Intrusion-Detection/Prevention-Systeme konzentrieren sich oftmals lediglich auf die Erkennung oder Verhinderung externer Angriffe. Angriffe, die von legitimen Benutzern eines Netzwerks ausgeführt werden, wobei sie erlaubte Handlungen tätigen, sind jedoch auf diese Weise oftmals nicht adäquat zu behandeln.
 
 Ein Ansatz, der diese Art von Angriffen entdecken kann, ist die sogenannte Anomalieerkennung. Dabei werden statistische Verfahren oder Verfahren aus dem Bereich des maschinellen Lernens benutzt, um Verhalten eines Nutzers, das vom erwarteten Verhalten abweicht, zu erkennen. 
   %Lösungen dieser Art sind beispielsweise in den SIEM-Systemen splunk oder IBM QRadar enthalten.
-Für diese Verfahren werden jedoch umfangreiche Daten über die Tätigkeiten und das Verhalten von Mitarbeitern benötigt.
+Für diese Verfahren werden allerdings umfangreiche Daten über die Tätigkeiten und das Verhalten von Mitarbeitern benötigt.
 
 %- Überwachungsskandale, Datenschutzgrundlagen
 
@@ -41,23 +41,23 @@ Im Jahr 2017 wurde durch das Bundesarbeitsgericht ein Urteil gefällt, das die p
 %- Warum Schwellwertschema
 
 Es gilt also, den Bedarf nach Überwachungsdaten zum Zweck der Anomalieerkennung dem Recht auf informationelle Selbstbestimmung des Arbeitnehmers gegenüberzustellen. 
-Ein Ansatz, der diesen Konflikt beheben kann, ist die Entfernung des direkten Pesonenbezugs der Daten durch die Verwendung von Pseudonymen. Die Anomalieerkennung kann auf den pseudonymisierten Daten normal arbeiten und im Fall des Verdachts auf einen erfolgten Angriff statt Überwachungsdaten, die Mitarbeiternamen im Klartext enthalten, nun ein pseudonymisierte Daten ausgeben. % Dieses Vorgehen wurde bereits in einigen Forschungsarbeiten eingesetzt...
-Nachdem die Anomalie überprüft und ein Insider-Angriff für möglich gehalten wurde, muss der Halter des Pseudonyms aufgedeckt werden. Die Nutzung eines kryptographischen Schwellwertschemas kann diese Aufdeckung vor Missbrauch durch Einzelne technisch schützen.\\
-Das Schwellwertschema ermöglicht die Aufdeckung eines Pseudonyms erst durch Kollaboration mehrerer Beteiligter -- denkbar wären beispielsweise je nach Unternehmensform und -größe Personen der Arbeitgeberseite, der Datenschutzbeauftragte oder Mitglieder des Betriebsrats, so dass die Interessen aller Beteiligten gewahrt werden können. Hierbei spricht man auch vom Mehraugenprinzip. Auf der anderen Seite verhindert ein Schwellwertschema auch die Blockadehaltung Einzelner, da für die Aufdeckung nicht alle Beteiligten zustimmen müssen, sondern nur ein im Vorwege bestimmter Anteil.
+Ein Ansatz, der diesen Konflikt beheben kann, ist die Entfernung des direkten Pesonenbezugs der Daten durch die Verwendung von Pseudonymen. Die Anomalieerkennung kann mit den pseudonymisierten Daten normal arbeiten und im Fall des Verdachts auf einen erfolgten Angriff anstelle von Überwachungsdaten, die Mitarbeiternamen im Klartext enthalten, nun pseudonymisierte Daten ausgeben. % Dieses Vorgehen wurde bereits in einigen Forschungsarbeiten eingesetzt...
+Nachdem die Anomalie überprüft wurde und ein Insider-Angriff für wahrscheinlich gehalten wird, muss der Halter des Pseudonyms aufgedeckt werden. Die Nutzung eines kryptographischen Schwellwertschemas kann diese Aufdeckung vor Missbrauch durch Einzelne technisch schützen.\\
+Das Schwellwertschema ermöglicht die Aufdeckung eines Pseudonyms erst durch Kooperation mehrerer Beteiligter -- denkbar wären beispielsweise je nach Unternehmensform und -größe Personen der Arbeitgeberseite, der Datenschutzbeauftragte oder Mitglieder des Betriebsrats, so dass die Interessen aller Beteiligten gewahrt werden können. Hierbei spricht man auch vom Mehraugenprinzip. Auf der anderen Seite verhindert ein Schwellwertschema auch die Blockadehaltung Einzelner, da für die Aufdeckung nicht alle Beteiligten zustimmen müssen, sondern nur ein im Vorwege bestimmter Anteil.
 
-In dieser Arbeit soll ein System entworfen und prototypisch implementiert werden, das diese Art der datenschutzfreundlichen Speicherung umsetzt\footnote{
+In dieser Arbeit soll ein System entworfen und prototypisch implementiert werden, das diese Art der datenschutzfreundlichen Speicherung umsetzt.\footnote{
   Die Betrachtung der anschließend auf den gespeicherten Daten ausführbaren Anomalieerkennung wird in dieser Arbeit nicht behandelt. 
-}. Hierfür sind detaillierte Betrachtungen der beteiligten Komponenten und ihres Zusammenspiels notwendig. Die Umsetzung soll auf Basis eines Security-Information-Event-Management-Systems (SIEM-System) geschehen -- Systeme, die dem Sammeln und der Analyse von Ereignissen in Netzwerken dienen, die insbesondere Sicherheitsaspekte betreffen.
+} Hierfür sind detaillierte Betrachtungen der beteiligten Komponenten und ihres Zusammenspiels notwendig. Die Umsetzung soll auf Basis eines Security-Information-Event-Management-Systems (SIEM-System) geschehen. Hierbei handelt es sich um Systeme, die dem Sammeln und der Analyse von Ereignissen in Netzwerken dienen, die insbesondere Sicherheitsaspekte betreffen.
 
 %- Aufbau der Arbeit
-Die Arbeit ist dabei wie folgt aufgebaut:
+Diese Arbeit ist dabei wie folgt aufgebaut:
 In Kapitel \ref{cha_basics} werden Grundlagen für die in dieser Arbeit verwendeten Verfahren dargestellt.  
 Kapitel \ref{cha_overview} stellt das zu entwickelnde System auf einer abstrakten Ebene dar. Es werden Anforderungen an ein solches System herausgearbeitet und darauf basierend eine verfahrensunabhängige Architektur entwickelt.
-Die zu verwendenden Verfahren werden in Kapitel \ref{cha_state} betrachtet. Es werden mögliche Alternativen dargestellt und bewertet sowie Entscheidungen für den umzusetzenden Prototypen getroffen.
-Das anschließende \ref{cha_implementation}. Kapitel befasst sich mit der Implementation des Prototypen und seiner Evaluation. 
-In Kapitel \ref{cha_alternatives} werden ergänzende Datenschutztechniken und ihre Integration in den Prototypen betrachtet.
+Die zu verwendenden Verfahren werden in Kapitel \ref{cha_state} betrachtet, dabei werden mögliche Alternativen dargestellt und bewertet sowie Entscheidungen für den umzusetzenden Prototyp getroffen.
+Das anschließende \ref{cha_implementation}. Kapitel befasst sich mit der Implementation des Prototyp und seiner Evaluation. 
+In Kapitel \ref{cha_alternatives} werden ergänzende Datenschutztechniken und ihre Integration in den Prototyp betrachtet.
 
-\section{Related work}
+\section*{Related work}
 \label{related_work}
 
 %\cite{salem2008survey}, A Survey of Insider Attack Detection Research, 2008, 195
@@ -66,15 +66,15 @@ In Kapitel \ref{cha_alternatives} werden ergänzende Datenschutztechniken und ih
 %How might a system alert a supervisor of a possible attack without disclosing
 %an employee’s true identity unless and until an attack has been validated?
 
-Im Bereich der Erkennung von Insiderangriffen fand bereits einige Forschungsarbeit statt. In \cite{salem2008survey} bieten die Autoren einen Überblick über Forschungsergebnisse basierend auf unterschiedlichen Verfahren aus der Statistik und des maschinellen Lernens sowohl auf Host- als auch auf Netzwerkebene. Hier wird auch die Frage nach Erhalt der Privatsphäre eines Nutzers als Feld weiterer notwendiger Forschung dargestellt:
+Im Bereich der Erkennung von Insiderangriffen fand bereits einige Forschungsarbeit statt. In \cite{salem2008survey} bieten die Autoren einen Überblick über Forschungsergebnisse basierend auf unterschiedlichen Verfahren aus der Statistik und aus dem Bereich des maschinellen Lernens sowohl auf Host- als auch auf Netzwerkebene. Hier wird auch die Frage nach Erhalt der Privatsphäre eines Nutzers als Feld weiterer notwendiger Forschung dargestellt:
 
 \begin{quotation}
-Hence, we also believe that any technologies developed
+\glqq Hence, we also believe that any technologies developed
 to detect insider attack have to include strong privacy-preserving guarantees
 to avoid making false claims that could harm the reputation of individuals
 whenever errors occur. [...] 
 How might a system alert a supervisor of a possible attack without disclosing
-an employee’s true identity unless and until an attack has been validated?
+an employee’s true identity unless and until an attack has been validated?\grqq{}
 \cite{salem2008survey}
 \end{quotation}
 
@@ -92,7 +92,7 @@ an employee’s true identity unless and until an attack has been validated?
 
 Mit dieser Fragestellung beschäftigen sich weitere Veröffentlichungen im Bereich der Intrusion-Detection-Systeme. Oftmals wird -- wie in dieser Arbeit auch -- Pseudonymisierung als Verfahren zum Erhalt der Privatsphäre genutzt.\\
 In \cite{sobirey1997pseudonymous} werden zwei Ansätze zur \textit{Privacy Enhanced Intrusion Detection} vorgestellt. Die Pseudonymisierung wird jeweils bereits im Betriebssystem-Kernel vorgenommen und mithilfe symmetrischer Verschlüsselung erreicht. Auch die Nutzung des Mehraugenprinzips wird bei der Pseudonymaufdeckung bereits erwähnt. Die Autoren nennen hierzu die Aufteilung des symmetrischen Schlüssels auf mehrere Parteien als Ansatz.\\
-In \cite{buschkes1999privacy} stellt der Autor einen Architekturansatz für Intrusion-Detection-Systeme vor, der ebenfalls auf der Nutzung von Pseudonymen beruht. Es werden zwei Ansätze basierend auf Kerberos-Tickets bzw. dem MIX-Konzept vorgestellt. Für die Generierung bzw. Aufdeckung eines Pseudonyms wird eine \textit{Trusted Third Party} benötigt.\\
+In \cite{buschkes1999privacy} stellt der Autor einen Architekturansatz für Intrusion-Detection-Systeme vor, der ebenfalls auf der Nutzung von Pseudonymen beruht. Es werden zwei Ansätze basierend auf Kerberos-Tickets bzw. auf dem Mix-Konzept vorgestellt. Für die Generierung bzw. Aufdeckung eines Pseudonyms wird eine \textit{Trusted Third Party} benötigt.\\
 In \cite{lundin2000anomaly} wird von den Autoren ein System zur Anomalieerkennung auf Basis von Pseudonymen entwickelt und anhand von Logdaten einer Firewall überprüft. Das Aufdecken von Pseudonymen wird hier als durch organisatorische Maßnahmen zu regelnder Prozess verstanden.\\
 In \cite{biskup2000threshold} und \cite{biskup2001pseudonymization} nutzen die Verfasser Shamir's Secret Sharing zur Erzeugung von Pseudonymen. Jeder Share bildet ein Pseudonym. Hierdurch wird sichergestellt, dass ein Pseudonym erst aufgedeckt werden kann, wenn eine einen Schwellwert übertreffende Anzahl von Warnmeldungen zu einem Nutzer im System eingetroffen ist.
 
@@ -103,7 +103,8 @@ In \cite{biskup2000threshold} und \cite{biskup2001pseudonymization} nutzen die V
 %\cite{niksefat2013zids}, ZIDS: A Privacy-Preserving Intrusion Detection System Using Secure Two-Party Computation Protocols, 2013, 11
 %Client-Server Lösung zur Privacy-Preserving Intrusion Detection mit Geheimhaltungsgarantien für Clients (im Bezug auf zur Erkennung notwendige Daten) und Server (im Bezug auf Signaturen von Zero-Day-Exploits)
 
-Neben den Pseudonym-basierten Lösungen gibt es weitere auf anderen Verfahren basierende Forschungsergebnisse zur datenschutzgerechten Erkennung von Angriffen. In \cite{park2007ppids} beispielsweise werden von den Autoren die Eigenschaften homomorpher Verschlüsselung zur Privatsphäre-erhaltenden Angriffserkennung eingesetzt, in \cite{niksefat2013zids} wird eine Art der Mehrparteienberechnung genutzt, um mehrseitigen Datenschutz insbesondere im Hinblick auf Zero-Day-Lücken in einem Intrusion-Detection-System zu garantieren.\\
+Neben den Pseudonym-basierten Lösungen gibt es weitere auf anderen Verfahren basierende Forschungsergebnisse zur datenschutzgerechten Erkennung von Angriffen. In \cite{park2007ppids} beispielsweise werden von den Autoren die Eigenschaften homomorpher Verschlüsselung zur privatsphäreerhaltenden Angriffserkennung eingesetzt. \cite{niksefat2013zids} verwendet eine Art der Mehrparteienberechnung, um mehrseitigen Datenschutz insbesondere im Hinblick auf Zero-Day-Lücken in einem Intrusion-Detection-System zu garantieren.
+
 In \cite{niksefat2017privacy} bieten die Autoren einen Überblick über weitere existierende Lösungen im Bereich der \textit{Privacy Enhanced Intrusion Detection}.
 
 %\cite{niksefat2017privacy}, Privacy issues in intrusion detection systems: A taxonomy, survey and future directions, 2017, 0
