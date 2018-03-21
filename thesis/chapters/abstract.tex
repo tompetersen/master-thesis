@@ -1,10 +1,18 @@
 \chapter*{Zusammenfassung}
 
-\todo{TBW}
+%- Insiderangriffe
+%- Zielkonflikt: Anomalieerkennung vs. Arbeitnehemrdatenschutz
+%- Zusammenspiel von Pseudonymen und kryptogrpahischen SChwellwerrtschema (Suchproblem)
+%- Ausprägungen/Eigenschaften
+%- abstrakter Systementwurf und Implementierung/Evaluation eines (erweiterbaren) Prototypen (basierend auf SIEM-system)
+%- Implementierung Schwellwertschema
 
-- Insiderangriffe
-- Zielkonflikt: Anomalieerkennung vs. Arbeitnehemrdatenschutz
-- Zusammenspiel von Pseudonymen und kryptogrpahischen SChwellwerrtschema (Suchproblem)
-- Ausprägungen/Eigenschaften
-- abstrakter Systementwurf und Implementierung/Evaluation eines (erweiterbaren) Prototypen (basierend auf SIEM-system)
-- Implementierung Schwellwertschema
+
+
+In dieser Arbeit wird ein Ansatz zur Speicherung von Überwachungsdaten erarbeitet, der dazu genutzt werden kann, die anomaliebasierte Erkennung von Insiderangriffen datenschutzgerecht zu gestalten. Dabei kommt eine Kombination von Pseudonymisierung und kryptographischem Schwellwertschema zum Einsatz. Dies ermöglicht die Speicherung und Verarbeitung pseudonymisierter Daten, wobei der Pseudonymhalter erst durch Kooperation einer bestimmten Anzahl von Benutzern wieder aufgedeckt werden kann.
+
+Es werden Eigenschaften der Pseudonymisierung insbesondere in Bezug auf notwendige regelmäßige Pseudonymwechsel betrachtet und Grundlagen sowie Erweiterungen kryptographischer Schwellwertschemata für den Anwendungsfall evaluiert. Außerdem werden Lösungen für das durch die Kombination beider Verfahren entstehende Problem der Suche nach bereits bestehenden Pseudonymen betrachtet.
+
+Weiterhin wird ein System entworfen und auch prototypisch implementiert und evaluiert, das in Kombination mit einem SIEM-System die Umsetzbarkeit des Ansatzes zeigt. Hierzu wird aufgrund mangelnder Alternativen eine (eventuell auch in anderen Bereichen nutzbare) kryptographische Bibliothek entwickelt, die das genutzte Schwellwertschema umsetzt.
+
+Insgesamt ermöglicht der Ansatz dieser Arbeit eine Vermittlung zwischen der Notwendigkeit Daten über Angestellte für die Anomalierkennung zu speichern und dem Arbeitnehmerdatenschutz, der die bedingungslose Speicherung und Verarbeitung dieser Daten verbietet.

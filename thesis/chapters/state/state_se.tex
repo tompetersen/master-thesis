@@ -1,4 +1,4 @@
-\section{Searchable Encryption}
+\section{Identifizierung existierender Pseudonyme}
 
 \label{sec_state_se}
 
@@ -61,7 +61,7 @@ Diese Möglichkeit ist jedoch durch den bereits erwähnten kleinen Wertebereich 
 
 Eine andere Möglichkeit ist die Anlage einer vor externem Zugriff geschützten Zuordungstabelle zwischen Datum und Pseudonym am Ort der Ersetzung. Bei Eintreffen eines neuen Datums kann in der Tabelle das zugehörige Pseudonym ermittelt werden oder -- falls es noch nicht existiert -- ein neues Pseudonym erstellt und zusammen mit dem verschlüsselten Datum gespeichert werden. Diese Lösung wird auch in \cite{goh2003} erwähnt.
 
-Ein Nachteil bezogen auf das für diese Arbeit zu entwickelnde System ist jedoch die notwendige Generierung von Pseudonymen und die Speicherung der Zuordnungstabelle an der Stelle, an der neue Daten eintreffen. Hierdurch wird die Verwendung eines leichtgewichtigen Log-Proxys, wie es in der Architektur vorhergesehen ist (siehe Abschnitt \ref{sec_impl_architecture}), verhindert. Außerdem würde eine Kompromittierung dieser Komponente direkt zur Aufdeckung des Pseudonymzusammenhanges führen. \todo{Verhindert verteiltes System - diesen Aspekt betonen (mehrere Proxies, ...)}
+Ein Nachteil bezogen auf das für diese Arbeit zu entwickelnde System ist jedoch die notwendige Generierung von Pseudonymen und die Speicherung der Zuordnungstabelle an der Stelle, an der neue Daten eintreffen. Hierdurch wird die Verwendung eines leichtgewichtigen Log-Proxys, wie es in der Architektur vorhergesehen ist (siehe Abschnitt \ref{sec_impl_architecture}), verhindert. Außerdem würde eine Kompromittierung dieser Komponente direkt zur Aufdeckung des Pseudonymzusammenhanges führen. Zusätzlich könnte ein verteilter Ansatz, bei dem mehrere Log-Proxys eine gemeinsame Datenbank und gleiche Pseudonyme für ein Datum nutzen, nicht umgesetzt werden.
 
 \subsection{Message Authentication Codes}
 
@@ -75,7 +75,8 @@ Ausgehend von den Anforderungen des umzusetzenden Systems eignet sich dieser Ans
 
 Die Nutzung von deterministischer Verschlüsselung (mit der hier beschriebenen Verwendung eines MACs als Sonderfall) wird erstmals in \cite{bellare2007deterministic} beschrieben. Dort werden auch einige Schwächen dieser Lösung diskutiert: Die Datenbank erfährt durch den Suchindex bereits einiges über die gespeicherten Dokumente, da durch die deterministische Struktur gleiche Suchwörter auf gleiche Trapdoor-Elemente abgebildet werden. Diese Schwäche ist im Bezug auf den besonderen Anwendungsfall dieser Arbeit jedoch zu vernachlässigen, da Dokumente (meint Benutzernamen, ...) nur einmalig vorliegen dürfen.\\
 Eine weitere Schwäche, die auch in dieser Arbeit beachtet werden muss, ist, dass die Datenbank etwas über die Häufigkeit verschiedener Suchanfragen erfährt, da die Trapdoor-Elemente für ein bestimmtes Datum immer gleich sind. Durch Kombination mit Hintergrundwissen könnte so möglicherweise in bestimmten Fällen der Inhaber eines Pseudonyms herausgefunden werden. 
-\todo{Hash-Kollisionen und Geburtstags-Paradoxon hier erwähnen?}
+
+Ein zusätzliches, zumindest in der Theorie bestehendes Problem ist, dass verschiedene Daten den gleichen MAC erzeugen könnten. In der Praxis ist die Wahrscheinlichkeit hierfür jedoch zu vernachlässigen: Bei einer MAC-Länge von 256 Bit tritt nach dem Geburtstagsparadoxon selbst bei \(2^{80}\) MAC-Berechnungen eine Kollision nur mit einer Wahrscheinlichkeit von \(2^{-80}\) auf \cite{boneh2016}.
 
 \subsection{Weitere Möglichkeiten der Searchable Encryption}
 \label{sec_state_se_furtherpossibilities}
@@ -85,7 +86,7 @@ Eine weitere Schwäche, die auch in dieser Arbeit beachtet werden muss, ist, das
 %- goh \cite{goh2003}
 %- chang \cite{chang2005}
 
-Die im letzten Abschnitt betrachtete MAC-basierte Lösung funktioniert für den in dieser Arbeit behandelten Anwendungsfall. Bei der Abbildung Pseudonym zu Datum (wie Benutzernamen) handelt es sich um eine 1:1-Abbildung, die lediglich von einer Komponente -- dem zu entwickelnden Log-Proxy -- abgefragt wird. 
+Die im letzten Abschnitt betrachtete MAC-basierte Lösung funktioniert für den in dieser Arbeit behandelten Anwendungsfall. Bei der Abbildung Pseudonym zu Datum (wie Benutzernamen) handelt es sich um eine 1:1-Abbildung, die lediglich von einer Komponente -- dem zu entwickelnden Log-Proxy -- abgefragt wird.
 
 In anderen Umgebungen bzw. Erweiterungen des in dieser Arbeit betrachteten Anwendungsfalls kann es jedoch auch andere Anforderungen geben. Vorstellbar wäre beispielsweise die verteilte Abfrage der Datenbank nach existierenden Pseudonymen. Für den MAC-basierten Ansatz müsste dazu zumindest der genutzte Schlüssel verteilt werden, was Kommunikation zwischen den verteilten, abfragenden Komponenten erfordert. Zusätzlich müssten auch die Sicherheitsauswirkungen dieser Lösung betrachtet werden.
 

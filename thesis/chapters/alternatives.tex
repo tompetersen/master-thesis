@@ -57,7 +57,7 @@ Die Maßnahme ist jedoch nur für bestimmte Felder bzw. Datenarten sinnvoll eins
 \section{Nutzung von Hashverfahren}
 
 Neben der zufälligen Generierung von Pseudonymen, wie es in dieser Arbeit genutzt wird, ist auch die Nutzung von Hashwerten als Pseudonym für Daten denkbar. Dies würde die Verknüpfbarkeit von Logdaten ermöglichen, da für gleiche Daten der gleiche Hashwert berechnet wird. Durch den geschickten Einsatz von zusätzlichen zeitabhängig wechselnden Eingaben für das Hashverfahren (sogenannte \textit{Salts}) ließe sich auch die nötige Verknüpfbarkeit für die Anomalieerkennung gegenüber dem Schutz der Privatsphäre eines Benutzers abstimmen.\\
-Auf der anderen Seite wäre der Einsatz von Hashverfahren bei einem kleinen Wertebereich für Eingaben wie Benutzernamen anfällig für Wörterbuchangriffe (vergleiche Abschnitt \ref{sec_state_se}). Außerdem wären auch Rückschlüsse auf den Pseudonymhalter nicht ohne zusätzlichen Aufwand möglich.
+Auf der anderen Seite wäre der Einsatz von Hashverfahren bei einem kleinen Wertebereich für Eingaben wie Benutzernamen anfällig für Wörterbuchangriffe (vgl. Abschnitt \ref{sec_state_se}). Außerdem wären auch Rückschlüsse auf den Pseudonymhalter nicht ohne zusätzlichen Aufwand möglich.
 
 Für Datenfelder, bei denen nur die Verknüpfbarkeit, jedoch nicht der ursprüngliche Wert, für die Anomalieerkennung entscheidend ist und deren Wertebereich ausreichend groß ist, können Hashverfahren sinnvoll sein. \todo{Beispiel}
 

@@ -8,8 +8,6 @@ In diesem Abschnitt wird basierend auf den Anforderungen aus Abschnitt \ref{sec_
 
 \label{sec_over_dataflow_siem}
 
-\todo{EZ: Hier interessieren insbesondere auch die Auswirkungen auf den Rest des Systems? Wie muss das Schwellwertschema angepasst werden? Welche Akteure wissen zu welchem Zeitpunkt was? Wer bekommt welche Schluessel? Usw... Der Abschnitt hat also wesentlich mehr Potential!}
-
 Für den Eingriff zur Pseudonymisierung der Logdaten bieten sich verschiedene Stellen im Datenfluss eines SIEM-Systems an. Im Folgenden werden diese Möglichkeiten dargestellt und bezogen auf die jeweils resultierenden Eigenschaften einer Möglichkeit bewertet:
 
 \begin{itemize}
@@ -55,7 +53,6 @@ Aus datenschutztechnischer Sicht ist eine frühestmögliche Pseudonymisierung zu
 Daher wäre eine Pseudonymisierung bereits in der Datenquelle der Optimalfall. Demgegenüber stehen jedoch die erwähnten Umsetzbarkeits-Nachteile des ersten Ansatzes, da hierzu jede mögliche Quelle von Logdaten verändert werden müsste. Eine erst im SIEM-System stattfindende Pseudonymisierung bringt jedoch die beschriebenen Risiken des Vorliegens pseudonymisierter Daten im Originalformat mit sich.
 
 Dies begründet die Entscheidung für den proxybasierten Ansatz. Dass die Lösung außerdem noch keine Anpassungen an dem SIEM-System selbst erfordert, wiegt den Nachteil des zusätzlichen Parsens und Wiederzusammensetzens der Lognachricht bei Weitem auf.
-\todo{Auch auf Angreifermodell beziehen?}
 
 \subsection{Architektur}
 
