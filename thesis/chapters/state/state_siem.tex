@@ -8,23 +8,24 @@ Zur Zeit gibt es eine vielfältige Auswahl an SIEM-Systemen auf dem Markt: Splun
   https://www.ibm.com/us-en/marketplace/ibm-qradar-siem
 } oder ArcSight von Micro Focus\footnote{
   https://software.microfocus.com/en-us/software/siem-security-information-event-management
-} sind nur einige Beispiele aus diesem Bereich. Neben den in Abschnitt \ref{sec_basics_siem} beschriebenen grundlegenden Funktionen eines SIEM-Systems, die von allen Kandidaten in unterschiedlichem Maße bereitgestellt werden, unterscheiden sie sich insbesondere in darüber hinausgehenden Techniken: Die Nutzung von Machine Learning zur Erkennung ungewöhnlichen Verhaltens oder die Automatisierung von Handlungen im Bedrohungsfall sind hier beispielhafte Möglichkeiten.
+} sind nur einige Beispiele aus diesem Bereich. Neben den in Abschnitt \ref{sec_basics_siem} beschriebenen grundlegenden Funktionen eines SIEM-Systems, die von allen Kandidaten in unterschiedlichem Maße bereitgestellt werden, unterscheiden sie sich insbesondere in darüber hinausgehenden Techniken: Beispielhafte Möglichkeiten sind hier die Nutzung von Machine Learning zur Erkennung ungewöhnlichen Verhaltens oder die Automatisierung von Handlungen im Bedrohungsfall.
 
-Die Auswahl an quelloffener Software in diesem Bereich ist jedoch sehr gering. Eine Ausnahme stellt OSSIM - ein SIEM-System der Firma AlienVault\footnote{
+In diesem Bereich ist die Auswahl an quelloffener Software jedoch sehr gering. Eine Ausnahme stellt OSSIM - ein SIEM-System der Firma AlienVault\footnote{
 	AlienVault OSSIM: The World’s Most Widely Used Open Source SIEM\\https://www.alienvault.com/products/ossim
 } - dar, das auf Basis weiterer quelloffener Lösungen aus dem Netzwerksicherheits-Bereich unter anderem die in Abschnitt \ref{sec_basics_siem} beschriebenen Funktionen bereitstellt. AlienVault bietet zusätzlich eine kommerzielle Variante seines Produkts namens USM an, das insbesondere in den Bereichen Event-Korrelation und Compliance-Reporting die Funktionalität von OSSIM übersteigt. Von der Entwicklungsarbeit die in USM fließt, profitiert jedoch auch OSSIM, beispielsweise durch die Aktualisierung von Plugins für die Einbindung von aktuellen Netzwerkgeräten.
 
-Da die Quelloffenheit auch die Möglichkeit bietet, Komponenten des SIEM-Systems direkt zu verändern, und außerdem gerade im Sicherheitsbereich generell zu bevorzugen ist, fiel die Entscheidung des in dieser Arbeit verwendeten SIEM-Systems auf OSSIM.
+Die Entscheidung des in dieser Arbeit verwendeten SIEM-Systems fiel im Wesentlichen aus zwei Gründen auf OSSIM:
+Zum einen ist die Quelloffenheit gerade im Sicherheitsbereich generell zu bevorzugen, da die Funktionalität von Komponenten jederzeit und durch jedermann überprüfbar ist. Zum anderen bietet dies auch die Möglichkeit, Komponenten des SIEM-Systems direkt zu verändern, falls es für diese Arbeit notwendig ist.
 
 \subsection{AlienVault OSSIM}
 
 \label{subsec_state_siem_overview}
 
-Im Folgenden soll eine Übersicht über die für diese Arbeit relevanten Komponenten von OSSIM und deren Zusammenspiel gegeben werden. Diese ist auch in Abbildung \ref{fig:ossim_log_flow} dargestellt.
+Zunächst soll eine Übersicht über die für diese Arbeit relevanten Komponenten von OSSIM und deren Zusammenspiel gegeben werden. Diese ist auch in Abbildung \ref{fig:ossim_log_flow} dargestellt.
 
-Den Kern des SIEM-Systems bildet der OSSIM-Server. Hier werden Events gespeichert sowie aggregiert und es findet die Korrelation von Events statt, die der Erkennung von Angriffen oder ungewöhnlichem Netzverhalten dient. Events und generierte Meldungen können über ein Web Interface betrachtet werden. Weiterhin können hier unter anderem Angaben zur Netzinfrastruktur bereitgestellt, Netzwerk- und Schwachstellenscanner bedient und sämtliche Informationen über den Netzwerkstatus eingesehen werden. 
+Den Kern des SIEM-Systems bildet der OSSIM-Server. Hier werden Events gespeichert sowie aggregiert und es findet die Korrelation von Events statt, die der Erkennung von Angriffen oder von ungewöhnlichem Netzverhalten dient. Events und generierte Meldungen können über ein Web-Interface betrachtet werden. Weiterhin können hier unter anderem Angaben zur Netzinfrastruktur bereitgestellt, Netzwerk- und Schwachstellenscanner bedient und sämtliche Informationen über den Netzwerkstatus eingesehen werden. 
 
-Der OSSIM-Agent ist dafür zuständig, vorliegende Logdaten zu parsen und in ein OSSIM-spezifisches Event-Format zu übersetzen. Auf diesen Vorgang wird im nächsten Abschnitt genauer eingegangen. Die erzeugten Events werden anschließend an den Server weitergeleitet. Der Agent befindet sich sowohl direkt auf dem Server als auch auf jedem installierten Sensor. 
+Der OSSIM-Agent ist dafür zuständig, vorliegende Logdaten zu parsen und in ein OSSIM-spezifisches Event-Format zu übersetzen -- auf diesen Vorgang wird im nächsten Abschnitt genauer eingegangen. Die erzeugten Events werden anschließend an den Server weitergeleitet. Der Agent befindet sich sowohl direkt auf dem Server als auch auf jedem installierten Sensor. 
 
 Eine OSSIM-Umgebung kann optional ein oder mehrere Sensoren nutzen, auf denen jeweils ein Agent seine Arbeit verrichtet. Dies wird im Folgenden verteilte Installation genannt. Der Vorteil dieser Lösung besteht darin, dass das aufwendige Parsen und Normalisieren von Logdaten verteilt stattfinden und dadurch die Serverlast in großen Umgebungen reduziert werden kann. Kommt kein externer Sensor zum Einsatz, so spricht man von einer All-In-One-Installation.
 
@@ -43,13 +44,14 @@ Eine OSSIM-Umgebung kann optional ein oder mehrere Sensoren nutzen, auf denen je
 % Quellenarten
 % Plugins
 % OSSIM-Events
-Besonders von Bedeutung für diese Arbeit ist die Verarbeitung von Logdaten. OSSIM ermöglicht es, Logdaten aus unterschiedlichen Quellen entgegenzunehmen bzw. aktiv selber abzurufen und in ein gemeinsames Event-Format zu übersetzen. Hierzu stehen verschiedene Möglichkeiten zur Verfügung:
+Von besonderer Bedeutung für diese Arbeit ist die Verarbeitung von Logdaten. OSSIM ermöglicht es, Logdaten aus unterschiedlichen Quellen entgegenzunehmen bzw. aktiv selbst abzurufen und in ein gemeinsames Event-Format zu übersetzen.\\
+Hierzu stehen verschiedene Möglichkeiten zur Verfügung:
 
 \begin{itemize}
-  \item Entgegennehmen von Daten über das Syslog-Protokoll
-  \item Beschaffen von Daten über das \textit{Simple Network Management Protocol} (SNMP)
-  \item Entgegennehmen von Daten über proprietäre Protokoll wie \textit{Security Device Event Exchange} (SDEE) oder \textit{Windows Management Instrumentation} (WMI)
-  \item Beschaffen von Daten durch Datenbankabfragen 
+  \item Entgegennehmen von Daten über das Syslog-Protokoll,
+  \item Beschaffen von Daten über das \textit{Simple Network Management Protocol} (SNMP),
+  \item Entgegennehmen von Daten über proprietäre Protokoll wie \textit{Security Device Event Exchange} (SDEE) oder \textit{Windows Management Instrumentation} (WMI),
+  \item Beschaffen von Daten durch Datenbankabfragen. 
 \end{itemize}
 
-Unabhängig von der Datenquelle funktioniert die Verarbeitung der Logdaten nach dem immer gleichen Schema. OSSIM bietet die Möglichkeit mitgelieferte oder selber entwickelte Plugins für verschiedene Datenquellen zu aktivieren. Für eintreffende Logdaten überprüft der Agent anhand von regulären Audrücken, ob ein Plugin für das entsprechende Datum zuständig ist. Ist so ein Plugin gefunden, so wird ein neues OSSIM-Event angelegt und anhand der Angaben im Plugin die entsprechenden vorgegebenen Felder des Events gesetzt. Hierbei kann es sich beispielsweise um den Zeitpunkt des Events, IP-Adresse und Port der Datenquelle, einen zu dem Event gehörigen Netzwerkbenutzer oder ereignisabhängige selbstgesetzte Felder handeln. Anschließend folgt die Weiterleitung des Events an den Server.
+Unabhängig von der Datenquelle funktioniert die Verarbeitung der Logdaten nach dem immer gleichen Schema. OSSIM bietet die Möglichkeit mitgelieferte oder selbst entwickelte Plugins für verschiedene Datenquellen zu aktivieren. Für eintreffende Logdaten überprüft der Agent anhand von regulären Ausdrücken, ob ein Plugin für das entsprechende Datum zuständig ist. Ist ein solches Plugin gefunden, so wird ein neues OSSIM-Event angelegt und anhand der Angaben im Plugin werden die entsprechenden vorgegebenen Felder des Events gesetzt. Hierbei kann es sich beispielsweise um Zeitpunkt des Events, IP-Adresse und Port der Datenquelle, einen zu dem Event gehörigen Netzwerkbenutzer oder ereignisabhängige selbstgesetzte Felder handeln. Anschließend folgt die Weiterleitung des Events an den Server.

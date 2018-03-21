@@ -19,19 +19,24 @@ Aufbauend auf den Ideen von Shamir und Blakley und den ersten Ideen zu kryptogra
 
 \subsection{Übersicht}
 
-Eine Vielzahl von Veröffentlichungen behandeln das Problem der verteilten Erstellung von Signaturen: Die in \cite{shoup2000practical} entwickelte Lösung basiert auf dem RSA-Verfahren, \cite{gennaro1996robustdss} erweitert den DSS-Standard um ein Schwellwertschema und \cite{stinson2001provably} entwickelt ein Schema zur verteilten Signatur mittels Schnorr-Signaturen.\\
-Weitere Forschungen haben sich mit der Entwicklung von RSA-basierten Schwellwertschemata zur verteilten Entschlüsselung beschäftigt, die im Kontext dieser Arbeit genutzt werden \cite{frankel1997proactive, gennaro1996robust, rabin1998simplified}. \\
-Ein zusätzliches Verfahren, das im Zusammenhang mit verteilter Entschlüsselung Aufmerksamkeit erfuhr, ist das Paillier-Kryptosystem. In \cite{damgard2001} und \cite{fouque2000sharing} entwickelten die Autoren auf diesem System basierte Schwellwertschemata, die insbesondere durch ihre homomorphe Eigenschaft hervorstechen und dadurch im Bereich der elektronischen Wahlsysteme genutzt werden können.\\
+Eine Vielzahl von Veröffentlichungen behandeln das Problem der verteilten Erstellung von Signaturen: Die in \cite{shoup2000practical} entwickelte Lösung basiert auf dem RSA-Verfahren, \cite{gennaro1996robustdss} erweitert den DSS-Standard um ein Schwellwertschema und \cite{stinson2001provably} entwickelt ein Schema zur verteilten Signatur mittels Schnorr-Signaturen.
+
+Weitere Forschungen haben sich mit der Entwicklung von RSA-basierten Schwellwertschemata zur verteilten Entschlüsselung beschäftigt, die im Kontext dieser Arbeit genutzt werden \cite{frankel1997proactive, gennaro1996robust, rabin1998simplified}. 
+
+Ein zusätzliches Verfahren, das im Zusammenhang mit verteilter Entschlüsselung Aufmerksamkeit erfuhr, ist das Paillier-Kryptosystem. In \cite{damgard2001} und \cite{fouque2000sharing} entwickelten die Autoren auf diesem System basierte Schwellwertschemata, die insbesondere durch ihre homomorphe Eigenschaft hervorstechen und dadurch im Bereich der elektronischen Wahlsysteme genutzt werden können.
+
 Einen Überblick über weitere Veröffentlichungen in diesem Bereich bieten beispielsweise \cite{desmedt1997some}, \cite{gemmell1997} und \cite{desmedt1993}.
 
 \subsection{ElGamal-basiertes Schwellwertschema}
 
 \label{sec_state_threshold_scheme}
 
-Ein Verfahren zur \textit{Threshold Decryption}, das auf auf einer geschickten Kombination von Shamir's Secret Sharing (Abschnitt \ref{sec_basics_threshold_shamir}) und des ElGamal-Kryptosystems (Abschnitt \ref{sec_basics_threshold_elgamal}) basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. Aufbereitete Darstellungen lassen sich in \cite{katz2014} und \cite{boneh2016} finden. \\
-Es ist eines der ersten veröffentlichten Schwellwertschemas und erfuhr dadurch viel Beachtung und entsprechend viele aufbauende Arbeiten, die Verbesserungen vorschlugen. Durch die zugrundeliegende Mathematik bietet das Schema einfachere Umsetzbarkeit (auch von Erweiterungen wie dezentraler Schlüsselgenerierung) gegenüber RSA\footnote{
+Ein Verfahren zur \textit{Threshold Decryption}, das auf auf einer geschickten Kombination von Shamir's Secret Sharing (Abschnitt \ref{sec_basics_threshold_shamir}) mit dem ElGamal-Kryptosystem (Abschnitt \ref{sec_basics_threshold_elgamal}) basiert, veröffentlichten die Autoren in \cite{DesmedtFrankel1990}. Aufbereitete Darstellungen lassen sich in \cite{katz2014} und \cite{boneh2016} finden. 
+
+Es ist eines der ersten veröffentlichten Schwellwertschemata und erfuhr dadurch viel Beachtung; entsprechend existieren viele aufbauende Arbeiten, die Verbesserungen vorschlagen. Durch die zugrundeliegende Mathematik bietet das Schema gegenüber RSA-basierten Verfahren einfachere Umsetzbarkeit (auch von Erweiterungen wie dezentraler Schlüsselgenerierung).\footnote{
   Das ElGamal-Verfahren nutzt zur Berechnung eine Untergruppe öffentlich bekannter Ordnung (sie ist Teil des öffentlichen Schlüssels). Im Gegensatz dazu werden Berechnungen bei RSA in \(\varphi(n)\) ausgeführt, das jedoch nicht öffentlich vorliegen darf \cite{nguyen2005}.
-}. Dies gilt ebenso gegenüber den Paillier-basierten Schemata -- deren homomorphe Eigenschaften in dieser Arbeit nicht benötigt werden. Aus diesen Gründen fiel die Wahl des in dieser Arbeit umzusetzenden Schemas auf das genannte Verfahren.\\
+} Dies gilt ebenso gegenüber den Paillier-basierten Schemata, deren homomorphe Eigenschaften in dieser Arbeit nicht benötigt werden. Aus diesen Gründen fiel die Wahl des in dieser Arbeit umzusetzenden Schemas auf das genannte Verfahren.
+
 Der Rest dieses Abschnitts stellt das Verfahren nun entsprechend den in Abschnitt \ref{sec_basics_threshold_thresholddecryption} aufgeführten Algorithmen eines Threshold-Public-Key-Decryption-Systems im Detail vor.
 
 %\subsection{Umzusetzendes kryptographisches Schwellwertschema}
@@ -46,10 +51,11 @@ Der Rest dieses Abschnitts stellt das Verfahren nun entsprechend den in Abschnit
 
 In dem Verfahren wird für die Schlüsselgenerierung eine zentrale, vertrauenswürdige Instanz vorausgesetzt, die den öffentlichen Schlüssel und die später benötigten Shares des geheimen Schlüssels erzeugt und verteilt. 
 
-Zur Erzeugung werden zwei Primzahlen \(p\) und \(q\) mit der Eigenschaft \(p = 2q + 1\) - bekannt als sichere Primzahl bzw. Sophie-Germain-Primzahl - benötigt. Weiterhin ist ein Generator der Untergruppe der Ordnung \(q\) von \(\mathbb{Z}_p^*\) notwendig.
+Zur Erzeugung werden zwei Primzahlen \(p\) und \(q\) mit der Eigenschaft \(p = 2q + 1\) -- bekannt als sichere Primzahl bzw. Sophie-Germain-Primzahl -- benötigt. Weiterhin ist ein Generator der Untergruppe der Ordnung \(q\) von \(\mathbb{Z}_p^*\) notwendig.
 
-Der (temporär erstellte) geheime Schlüssel \(a \in \mathbb{Z}_q\) wird analog zu der Schlüsselgenerierung im ElGamal-Verfahren zufällig gewählt. Aus ihm wird der öffentliche Schlüssel \(pk = g^a \mod p\) berechnet.\\
-Der geheime Schlüssel wird anschließend analog zu Shamirs Secret Sharing in \(\mathbb{Z}_q\) in einzelne Shares \((x_i, y_i) = (x_i, q(x_i))\) aufgeteilt und diese an die Teilnehmer verteilt. Anschließend werden diese Werte gelöscht, so dass nur noch die Teilnehmer im Besitz ihrer Shares und damit in der Lage sind, Schlüsseltexte zu entschlüsseln.
+Der (temporär erstellte) geheime Schlüssel \(a \in \mathbb{Z}_q\) wird analog zu der Schlüsselgenerierung im ElGamal-Verfahren zufällig gewählt. Aus ihm wird der öffentliche Schlüssel \(pk = g^a \mod p\) berechnet.
+
+Der geheime Schlüssel wird anschließend analog zu Shamirs Secret Sharing in \(\mathbb{Z}_q\) in einzelne Shares \((x_i, y_i) = (x_i, q(x_i))\) aufgeteilt und diese werden an die Teilnehmer verteilt. Anschließend werden diese Werte gelöscht, so dass nur noch die Teilnehmer im Besitz ihrer Shares und damit in der Lage sind, Schlüsseltexte zu entschlüsseln.
 
 \subsubsection*{Algorithmus E: Verschlüsselung}
 
@@ -80,7 +86,7 @@ berechnet werden. Dies funktioniert, da
 (g^k)^a
 \]
 
-gilt. Der letzte Schritt \((*)\) folgt direkt aus dem zugrundeliegenden Secret-Sharing-Schema und ist in dieser Form bereits in Abschnitt \ref{sec_basics_threshold_shamir} zu finden.
+gilt. Der letzte Schritt \((*)\) der Gleichung folgt direkt aus dem zugrundeliegenden Secret-Sharing-Schema und ist in dieser Form bereits in Abschnitt \ref{sec_basics_threshold_shamir} zu finden.
 
 Anschließend kann der Klartext als \(m = c \cdot (g^{ak})^{(-1)}\) wiederhergestellt werden. 
 
@@ -88,13 +94,14 @@ Anschließend kann der Klartext als \(m = c \cdot (g^{ak})^{(-1)}\) wiederherges
 
 \label{sec_state_threshold_distributed}
 
-Ein Nachteil dieses Verfahrens in der Phase der Schlüsselgenerierung ist, dass für die Generierung des geheimen Schlüssels und der daraus resultierenden Shares eine zentrale und vertrauenswürdige Instanz notwendig ist. Diese Problematik wurde bereits in Abschnitt \ref{subsec_impl_requirements_threshold} dargestellt und Auswirkungen in Abschnitt \ref{subsec_impl_requirements_attackermodel} betrachtet.
+Ein Nachteil dieses Verfahrens in der Phase der Schlüsselgenerierung ist, dass für die Generierung des geheimen Schlüssels und der daraus resultierenden Shares eine zentrale und vertrauenswürdige Instanz notwendig ist. Diese Problematik wurde bereits in Abschnitt \ref{subsec_impl_requirements_threshold} dargestellt und die Auswirkungen wurden in Abschnitt \ref{subsec_impl_requirements_attackermodel} betrachtet.
 
 In \cite{pedersen1991} wurde vom Autor eine Möglichkeit der verteilten Schlüsselgenerierung für das dargestellte Verfahren vorgeschlagen, die von den Autoren in \cite{gennaro1999} noch verbessert wurde. 
 
 Das Verfahren besteht aus zwei Phasen: In der ersten Phase wird von allen potentiellen Share-Besitzern ein \textit{Verifiable Secret Sharing Scheme}\footnote{
-  Verifiable Secret Sharing Schemes sind Secret Sharing Schemes, die es den Share-Besitzern erlauben zu überprüfen, ob ihre Shares konsistent sind, d.h. ob es möglich ist aus den Shares ein gemeinsames Geheimnis wiederherzustellen. Bei dem in Abschnitt \ref{sec_basics_threshold_shamir} vorgestellten Secret Sharing nach Shamir ist dies beispielsweise nicht der Fall. Ein bösartiger Erzeuger von Shares könnte für jeden Beteiligten ein anderes Geheimnis benutzen, sodass bei der Rekonstruktion abhängig von beteiligten Share-Besitzern unterschiedliche Geheimnisse erhalten werden.
-} (VSS) nach Pedersen ausgeführt, das dafür sorgt, dass anschließend alle ehrlichen Beteiligten jeweils im Besitz eines Shares sind, die zusammengenommen den geheimen Schlüssel \(x\) bilden (der jedoch nirgendwo vorliegt oder im Laufe des Verfahrens vorlag). In der zweiten Phase wird ein VSS nach Feldman dazu genutzt, den gemeinsamen öffentlichen Schlüssel \(y = g^x\) auf eine Weise zu berechnen, die wiederum dafür sorgt, dass der geheime Schlüssel nirgendwo vorliegen muss. Auf diese Weise wird die vertrauenswürdige Instanz vermieden und es ist trotzdem sichergestellt, dass die ehrlichen Beteiligten im Besitz von Shares sind, die die Verwendung des kryptographischen Schwellwertschemas so ermöglichen, wie im letzten Abschnitt für das Verfahren mit zentraler Schlüsselgenerierung vorgestellt.
+  Verifiable Secret Sharing Schemes sind Secret Sharing Schemes, die es den Share-Besitzern erlauben zu überprüfen, ob ihre Shares konsistent sind, d.h. ob es möglich ist, aus den Shares ein gemeinsames Geheimnis wiederherzustellen. Bei dem in Abschnitt \ref{sec_basics_threshold_shamir} vorgestellten Secret Sharing nach Shamir ist dies beispielsweise nicht der Fall. Ein bösartiger Erzeuger von Shares könnte für jeden Beteiligten ein anderes Geheimnis benutzen, sodass bei der Rekonstruktion abhängig von beteiligten Share-Besitzern unterschiedliche Geheimnisse erhalten werden.
+} (VSS) nach Pedersen ausgeführt, das dafür sorgt, dass anschließend alle ehrlichen Beteiligten jeweils im Besitz eines Shares sind, die zusammengenommen den geheimen Schlüssel \(x\) bilden (der jedoch weder irgendwo vorliegt noch im Laufe des Verfahrens vorlag). In der zweiten Phase wird ein VSS nach Feldman dazu genutzt, den gemeinsamen öffentlichen Schlüssel \(y = g^x\) auf eine Weise zu berechnen, die wiederum dafür sorgt, dass der geheime Schlüssel nirgendwo vorliegen muss.\\
+Auf diese Weise wird die vertrauenswürdige Instanz vermieden und es ist trotzdem sichergestellt, dass die ehrlichen Beteiligten im Besitz von Shares sind, die die Verwendung des kryptographischen Schwellwertschemas so ermöglichen, wie im letzten Abschnitt für das Verfahren mit zentraler Schlüsselgenerierung vorgestellt.
 
 \subsection{ECC-ElGamal}
 
@@ -102,14 +109,15 @@ Das Verfahren besteht aus zwei Phasen: In der ersten Phase wird von allen potent
 
 Eine andere Verbesserung für das Verfahren ist die Verwendung von \textit{Elliptic Curve Cryptography}. Hier werden die Berechnungen des ElGamal-Verfahrens nicht mehr in der beschriebenen Untergruppe von \(\mathbb{Z}_p^*\), sondern als Operationen auf elliptischen Kurven über endlichen Körpern ausgeführt \cite{koblitz1987elliptic}.
 
-Vorteil der Verwendung ist eine deutlich geringere benötigte Schlüssellänge für vergleichbare Sicherheit im Vergleich zu dem ursprünglichen Verfahren\footnote{
-  Das BSI gibt eine Schlüssellänge von etwa 250 Bits für ECC-Verfahren als vergleichbare Sicherheit erreichend zu 2000-Bit-Schlüsseln für Verfahren wie RSA oder auf dem Diskreten-Logarithmus-Problem beruhenden Verfahren an \cite{bsi2018}.
-}. Durch diese kürzeren Schlüssel werden auch Berechnungszeit und Speicherverbrauch trotz komplexerer Berechnungen eingespart werden.
+Der Vorteil der Verwendung liegt darin, dass im Vergleich zum ursprünglichen Verfahren eine deutlich geringere Schlüssellänge für vergleichbare Sicherheit benötigt wird.\footnote{
+  Das BSI gibt eine Schlüssellänge von etwa 250 Bit für ECC-Verfahren an, die eine vergleichbare Sicherheit zu 2000-Bit-Schlüsseln für Verfahren wie RSA oder auf dem Diskreten-Logarithmus-Problem beruhenden Verfahren bietet \cite{bsi2018}.
+} Durch diese kürzeren Schlüssel werden auch Berechnungszeit und Speicherverbrauch trotz komplexerer Berechnungen eingespart.
 
 \subsection{Komplexe Zugriffsstrukturen}
 \label{sec_state_threshold_access_structures}
 
-Das bisher beschriebene Verfahren ermöglicht genau eine Art von Schema zur Entschlüsselung: Mindestens \(t\) Benutzer, die im Besitz von mindestens \(t\) von \(n\) Shares sind, können eine verschlüsselte Nachrichten entschlüsseln. Hierbei spricht man auch von der Zugriffstruktur des Verfahrens.\\
+Das bisher beschriebene Verfahren ermöglicht genau eine Art von Schema zur Entschlüsselung: Mindestens \(t\) Benutzer, die im Besitz von mindestens \(t\) von \(n\) Shares sind, können eine verschlüsselte Nachrichten entschlüsseln. Hierbei spricht man auch von der Zugriffstruktur des Verfahrens.
+
 Durch die Vergabe unterschiedlich vieler Shares an verschiedene Benutzer lassen sich verschiedene Zugriffsstrukturen ermöglichen. In \cite{ito1989secret} erbringen die Autoren den Beweis, dass durch dieses Vorgehen beliebige Zugriffsstrukturen ermöglicht werden können -- auf Kosten einer (strukturabhängig) relativ großen Zahl von Shares.
 
 Auf diese Weise kann die zur Entschlüsselung notwendige Benutzergruppe abhängig von der Organisationsstruktur eines Unternehmens beliebig modelliert werden.
@@ -122,4 +130,4 @@ Auch nach umfangreicher Recherche ließ sich keine quelloffene, kryptographisch 
   Civitas -- A secure voting system. http://www.cs.cornell.edu/projects/civitas/
 } oder Helios\footnote{
   Helios Voting. https://heliosvoting.org/
-}, die jedoch alle eng mit dem Anwendungskontext der elektronischen Wahl verknüpft waren und dadurch andere Anforderungen erfüllten als sie für diese Arbeit erforderlich sind. Aus diesem Grund wird das beschriebene Schwellwertschema gezwungenermaßen in Teilen selbstständig implementiert.
+}, die jedoch alle eng mit dem Anwendungskontext der elektronischen Wahl verknüpft waren und dadurch andere Anforderungen erfüllten, als sie für diese Arbeit erforderlich sind. Aus diesem Grund wird das beschriebene Schwellwertschema notwendigerweise in Teilen selbstständig implementiert.

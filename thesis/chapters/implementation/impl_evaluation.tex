@@ -11,9 +11,10 @@
 %  \item Erweiterbarkeit um weitere Datenschutztechniken
 %\end{itemize}
 
-Grundsätzlich konnten die in Abschnitt \ref{sec_impl_requirements} aufgestellten Anforderungen in der Implementierung des Prototypen erfüllt werden. Mit der Entwicklung eines Log-Proxies wurde eine geeignete Stelle für den Eingriff in den Logdatenfluss gewählt. Die zeit-und nutzungsabhängige Generierung eindeutiger Pseudonyme wurde ebenso umgesetzt wie die Implementierung des ausgewählten Schwellwertschemas -- vorerst allerdings nur mit zentraler Schlüsselgenerierung. Die benötigten Parameter können während des Setup-Vorgangs über ein Webinterface gesetzt werden. Dieses ermöglicht auch die Erstellung von Anfragen zur Aufdeckung eines Pseudonymhalters. Besitzer eines Shares können diese Anfragen bearbeiten oder ablehnen (momentan allerdings noch eher unkomfortabel über eine Konsolenanwendung). Der entwickelte Log-Proxy ist einfach um weitere Datenschutztechniken und Datenquellen erweiterbar.
+Grundsätzlich konnten die in Abschnitt \ref{sec_impl_requirements} aufgestellten Anforderungen in der Implementierung des Prototyp erfüllt werden. Mit der Entwicklung eines Log-Proxies wurde eine geeignete Stelle für den Eingriff in den Logdatenfluss gewählt. Die zeit-und nutzungsabhängige Generierung eindeutiger Pseudonyme wurde ebenso umgesetzt wie die Implementierung des ausgewählten Schwellwertschemas -- vorerst allerdings nur mit zentraler Schlüsselgenerierung.\\
+Die benötigten Parameter können während des Setup-Vorgangs über ein Webinterface gesetzt werden. Dieses ermöglicht auch die Erstellung von Anfragen zur Aufdeckung eines Pseudonymhalters. Besitzer eines Shares können diese Anfragen bearbeiten oder ablehnen. Die derzeitige Umsetzung als Konsolenanwendung kann allerdings als eher unkomfortabel angesehen werden. Der entwickelte Log-Proxy ist um weitere Datenschutztechniken und Datenquellen einfach erweiterbar.
 
-In dem Prototypen bleiben allerdings auch noch einige Angriffsmöglichkeiten offen, die im nächsten Abschnitt dargestellt werden. Betrachtungen zur Performanz der entwickelten Lösung werden in dem darauf folgenden Abschnitt angestellt.
+In dem Prototyp bleiben allerdings auch noch einige Angriffsmöglichkeiten offen, die im nächsten Abschnitt dargestellt werden. Betrachtungen zur Performanz der entwickelten Lösung werden in dem darauf folgenden Abschnitt angestellt.
 
 \subsection{Angriffsmöglichkeiten}
 
@@ -22,7 +23,7 @@ In dem Prototypen bleiben allerdings auch noch einige Angriffsmöglichkeiten off
 
 \textbf{Zentrale Schlüsselgenerierung}
 
-Ein bereits in Abschnitt \ref{subsec_impl_requirements_threshold} betonter Punkt ist die Präferenz von verteilter gegenüber der zentralen Schlüsselgenerierung. In dem entwickelten Prototypen wurde jedoch aus Zeitgründen bisher nur die zentrale Schlüsselgenerierung umgesetzt. Dies ermöglicht einem Angreifer mit (legitimen oder nicht legitimen) Zugriff auf den Pseudonym-Service während der Schlüsselgenerierung den in Abschnitt \ref{subsec_impl_requirements_attackermodel} beschriebenen Angriff zur beliebigen Entschlüsselung von Pseudonymzuordnungen. Abhilfe würde ein Schema -- wie das in Abschnitt \ref{sec_state_threshold_distributed} beschriebene -- schaffen.
+Ein bereits in Abschnitt \ref{subsec_impl_requirements_threshold} betonter Punkt ist die Präferenz von verteilter gegenüber der zentralen Schlüsselgenerierung. In dem entwickelten Prototyp wurde jedoch aus Zeitgründen bisher nur die zentrale Schlüsselgenerierung umgesetzt. Dies ermöglicht einem Angreifer mit (legitimen oder nicht legitimen) Zugriff auf den Pseudonym-Service während der Schlüsselgenerierung den in Abschnitt \ref{subsec_impl_requirements_attackermodel} beschriebenen Angriff zur beliebigen Entschlüsselung von Pseudonymzuordnungen. Abhilfe würde ein Schema wie das in Abschnitt \ref{sec_state_threshold_distributed} beschriebene schaffen.
 
 %- Krypto nicht von Kryptographen überprüft (Sidechannel, ...)
 
@@ -34,21 +35,25 @@ Die Bibliotheksfunktionen des kryptographischen Schwellwertschemas wurden nach b
 
 \textbf{Schlüsseltexte offenbaren Klartextlänge}
 
-Eine Eigenschaft des entwickelten hybriden Kryptoschemas kann dazu führen, dass trotz der Verschlüsselung auf den Halter eines Pseudonyms geschlossen werden kann. Bei dem verwendeten symmetrischen Verschlüsselungsalgorithmus Salsa20 handelt es sich um eine Stromchiffre. Hierdurch hat der Schlüsseltext, der in der Datenbank für ein Pseudonym gespeichert wird, genau die gleiche Länge wie der Klartext. Unterscheiden sich die Klartexte (beispielsweise Benutzernamen) in Ihrer Länge, so kann durch Vergleich dieser Längen auf den Pseudonymhalter geschlossen werden.  Dieser Angriff erfordert Zugriff auf den Inhalt der Datenbank des Pseudonym-Service.\\
+Eine Eigenschaft des entwickelten hybriden Kryptoschemas kann dazu führen, dass trotz der Verschlüsselung auf den Halter eines Pseudonyms geschlossen werden kann. Bei dem verwendeten symmetrischen Verschlüsselungsalgorithmus Salsa20 handelt es sich um eine Stromchiffre. Hierdurch hat der Schlüsseltext, der in der Datenbank für ein Pseudonym gespeichert wird, genau die gleiche Länge wie der Klartext. Unterscheiden sich die Klartexte (beispielsweise Benutzernamen) in ihrer Länge, so kann durch Vergleich dieser Längen auf den Pseudonymhalter geschlossen werden.  Dieser Angriff erfordert Zugriff auf den Inhalt der Datenbank des Pseudonym-Service.
+
 Dieses Problem lässt sich durch Padding beheben, das alle Klartexte auf die gleiche Länge bringt. Die konkrete Umsetzung ist allerdings abhängig von dem Wertebereich der eintreffenden Daten.
 
 %- Reidentification-Problem (siehe auch Lundin 4.3)
 
 \textbf{Anwendung von Hintergrundwissen}
 
-In \cite{lundin1999privacy} wird das Problem der Identifikation eines Pseudonymhalters durch die Anwendung von Hintergrundwissen, wie Kenntnis über normales Nutzerverhalten, dargestellt. Dies ist auch in dem in dieser Arbeit entwickelten System der Fall, wie bereits in Abschnitt \ref{subsec_impl_requirements_attackermodel} erwähnt. Dieser Angriff lässt sich aus Sicht des Autors nicht vollständig verhindern, da Beobachtungen in der realen Welt nicht zu vermeiden sind.
-Regelmäßige, parameterabhängige Pseudonymwechsel, wie sie implementiert wurden, sollten diesen Angriff jedoch in seinen Auswirkungen beschränken.
+In \cite{lundin1999privacy} wird das Problem der Identifikation eines Pseudonymhalters durch die Anwendung von Hintergrundwissen, wie z. B. die Kenntnis über normales Nutzerverhalten, dargestellt. Dies ist auch in dem in dieser Arbeit entwickelten System der Fall, wie bereits in Abschnitt \ref{subsec_impl_requirements_attackermodel} erwähnt. 
+
+Dieser Angriff lässt sich aus Sicht des Autors nicht vollständig verhindern, da Beobachtungen in der realen Welt nicht zu vermeiden sind. Regelmäßige, parameterabhängige Pseudonymwechsel, wie sie implementiert wurden, sollten diesen Angriff jedoch in seinen Auswirkungen beschränken.
 
 
 
 \subsection{Performanz}
 
-Zu Beginn der Setup-Phase können vorberechnete Parameter gewählt werden oder diese Parameter neu generiert werden. Die (nicht optimierte) Umsetzung dieses Algorithmus wie in Abschnitt \ref{sec_impl_threshold_keyparams} beschrieben in Python erfordert lange Berechnungsdauern, deren Mittelwert und Standardabweichung in Tabelle \ref{tab_key_generation} zu finden sind. Die hohe Standardabweichung folgt aus einer geringen Messanzahl (den langen Zeiten geschuldet), aber insbesondere auch dem Einfließen von Zufallszahlen und der zufälligen Verteilung der Primzahlen. 
+Zu Beginn der Setup-Phase können vorberechnete Parameter gewählt werden oder diese Parameter neu generiert werden. Die (nicht optimierte) Umsetzung des in Abschnitt \ref{sec_impl_threshold_keyparams} beschriebenen Algorithmus in Python erfordert lange Berechnungsdauern, deren Mittelwerte und Standardabweichungen in Tabelle \ref{tab_key_generation} zu finden sind. Die hohe Standardabweichung folgt aus einer geringen Messanzahl,\footnote{
+  Wegen der langen Messzeiten musste die Anzahl von Messungen sehr beschränkt werden.
+} aber insbesondere auch aus dem Einfließen von Zufallszahlen und der zufälligen Verteilung der Primzahlen. 
 
 \begin{table}
   \centering
@@ -61,11 +66,11 @@ Zu Beginn der Setup-Phase können vorberechnete Parameter gewählt werden oder d
   \(\sigma\) & 28  & 297 & 6719 \\ 
   \hline 
   \end{tabular} 
-  \caption{Mittelwert(\(\mu\)) und Standardabweichung(\(\sigma\)) in Sekunden für die Dauer der Schlüsselgenerierung bei unterschiedlichen Schlüsselstärken.}
+  \caption{Mittelwert (\(\mu\)) und Standardabweichung (\(\sigma\)) in Sekunden für die Dauer der Schlüsselgenerierung bei unterschiedlichen Schlüsselstärken.}
   \label{tab_key_generation}
 \end{table}
 
-Es zeigt sich, dass die Zeiten für angemessende Schlüsselstärken um 2000 Bit nicht mehr geeignet für die interaktive Nutzung während der Setup-Phase des Systems sind. Diese ließen sich durch eine optimierte Implementierung sicherlich deutlich reduzieren. Wie in Abschnitt \ref{sec_impl_threshold_keyparams} bereits beschrieben sollte jedoch die Nutzung vorberechneter Parameter kein Sicherheitsrisiko darstellen. 
+Es zeigt sich, dass die Zeiten für angemessene Schlüsselstärken um 2000 Bit für die interaktive Nutzung während der Setup-Phase des Systems nicht mehr geeignet sind. Diese ließen sich durch eine optimierte Implementierung sicherlich deutlich reduzieren. Wie in Abschnitt \ref{sec_impl_threshold_keyparams} bereits beschrieben sollte jedoch die Nutzung vorberechneter Parameter kein Sicherheitsrisiko darstellen. 
 
 Die Schlüsselgenerierung muss nur einmalig während der Setup-Phase ausgeführt werden. Entscheidender für die Performanz des Systems im Betrieb sind die Betrachtungen zur Dauer der Logdatenbehandlung. Hierfür wurden Messungen an einem einfachen Aufbau aus zwei Rechnern vorgenommen, von denen der eine den Log-Proxy, der andere den Pseudonym-Service inklusive dessen Datenbank beherbergte. Gemessen wurde die Zeit des Empfangs von Logdaten in praxisnaher Größe (etwa 0.5 KB), die ohne Pseudonymisierung bzw. mit Pseudonymisierung in unterschiedlichen Schlüsselstärken durch den Log-Proxy verändert wurden. Die gemessenen Zeiten sind Abbildung \ref{fig:eval_barchart} zu entnehmen.
 
@@ -95,11 +100,11 @@ Die Schlüsselgenerierung muss nur einmalig während der Setup-Phase ausgeführt
     \label{fig:eval_barchart}
 \end{figure}
 
-Abbildung \ref{fig:eval_piecharts} zeigt zusätzlich die im für die Pseudonymisierung zuständigen Plugin des Log-Proxy gemessenen Zeitanteile, die die jeweiligen Teilfunktionen bei den unterschiedlichen Schlüssellängen benötigten:
+Abbildung \ref{fig:eval_piecharts} zeigt zusätzlich die Zeitanteile, die im für die Pseudonymisierung zuständigen Plugin des Log-Proxy gemessen wurden, wie sie die jeweiligen Teilfunktionen bei den unterschiedlichen Schlüssellängen benötigten:
 \begin{itemize}
-  \item \textbf{MAC}: Zeitanteil für die Berechnung des MACs, der für die Suche nach existierenden Pseudonymen genutzt wird %(siehe Abschnitt \ref{sec_state_se_mac})
-  \item \textbf{Schwellwert}: Zeitanteil für die Verschlüsselung durch das kryptographische Schwellwertschema %(siehe Abschnitt \ref{sec_impl_threshold})
-  \item \textbf{Pseudonym}: Zeitanteil für die Kommunikation mit dem Pseudonym-Service und die dort stattfindende Suche nach existierenden Pseudonymen
+  \item \textbf{MAC} -- Zeitanteil für die Berechnung des MACs, der für die Suche nach existierenden Pseudonymen genutzt wird, %(siehe Abschnitt \ref{sec_state_se_mac})
+  \item \textbf{Schwellwert} -- Zeitanteil für die Verschlüsselung durch das kryptographische Schwellwertschema, %(siehe Abschnitt \ref{sec_impl_threshold})
+  \item \textbf{Pseudonym} -- Zeitanteil für die Kommunikation mit dem Pseudonym-Service und die dort stattfindende Suche nach existierenden Pseudonymen.
 \end{itemize} 
 
 \begin{figure}[]
@@ -149,16 +154,17 @@ Abbildung \ref{fig:eval_piecharts} zeigt zusätzlich die im für die Pseudonymis
     \label{fig:eval_piecharts}
 \end{figure}
 
-Aus diesen Messungen ergibt sich, dass der größte Anteil an Bearbeitungszeit einer Lognachricht in der Abfrage des Pseudonym-Service nach einem existierenden Pseudonym und der Kommunikation zwischen dem Log-Proxy und dem Pseudonym-Service liegt. Sollte sich die benötigte Zeit für die Bearbeitung von Logdaten im produktiven Einsatz als zu lang herausstellen, könnten die Komponenten zusammengeführt werden -- unter Verzicht auf die in Abschnitt \ref{sec_over_architecture} beschriebenen Vorteile bezogen auf die Sicherheit des Pseudonymzusammenhangs durch ein verteiltes System.\\
-Mit steigenden Schlüssellängen steigt jedoch auch der Zeitanteil, den die Berechnungen des kryptographischen Schwellwertschemas benötigen, erheblich. Die Veränderung ist hier alleinig auf den asymmetrischen Teil des umgesetzten hybriden Schemas (siehe Abschnitt \ref{sec_impl_threshold_hybrid}) zurückzuführen, da sich der symmetrische Teil nicht verändert. Um die Performanz der Verschlüsselungsfunktion zu erhöhen, bietet sich die Nutzung von \textit{Elliptic Curve Cryptography} an (siehe Abschnitt \ref{sec_state_threshold_ecc}). Eine zusätzliche Möglichkeit ist auch die Implementierung dieser zeitkritischen Funktion durch eine maschinennähere Sprache als Python wie beispielsweise C. 
+Aus diesen Messungen ergibt sich, dass der größte Anteil an Bearbeitungszeit einer Lognachricht in der Abfrage des Pseudonym-Service nach einem existierenden Pseudonym und der Kommunikation zwischen dem Log-Proxy und dem Pseudonym-Service liegt.\\
+Sollte sich die benötigte Zeit für die Bearbeitung von Logdaten im produktiven Einsatz als zu lang herausstellen, könnten die Komponenten zusammengeführt werden -- unter Verzicht auf die in Abschnitt \ref{sec_over_architecture} beschriebenen Vorteile bezogen auf die Sicherheit des Pseudonymzusammenhangs durch ein verteiltes System.\\
+Mit steigenden Schlüssellängen steigt jedoch auch der Zeitanteil, den die Berechnungen des kryptographischen Schwellwertschemas benötigen, erheblich. Die Veränderung ist hier alleinig auf den asymmetrischen Teil des umgesetzten hybriden Schemas (siehe Abschnitt \ref{sec_impl_threshold_hybrid}) zurückzuführen, da sich der symmetrische Teil nicht verändert. Um die Performanz der Verschlüsselungsfunktion zu erhöhen, bietet sich die Nutzung von \textit{Elliptic Curve Cryptography} an (siehe Abschnitt \ref{sec_state_threshold_ecc}). Eine zusätzliche Möglichkeit ist auch die Implementierung dieser zeitkritischen Funktion durch eine maschinennähere Sprache als Python (wie beispielsweise C). 
 
-Für die Berechnung der partiellen Entschlüsselungen und der kompletten Entschlüsselung eines Schlüsseltextes (und damit Aufdeckung eines Pseudonyms) wurde auf Performanzmessungen verzichtet. Diese Aktionen sind im umgesetzten System nicht zeitkritisch. Zusätzlich werden sie nur in seltenen Fällen -- nämlich bei der Aufdeckung eines Pseudonyms -- eingesetzt.
+Für die Berechnung der partiellen Entschlüsselungen und der kompletten Entschlüsselung eines Schlüsseltextes (und damit für die Aufdeckung eines Pseudonyms) wurde auf Performanzmessungen verzichtet. Diese Aktionen sind im umgesetzten System nicht zeitkritisch. Zusätzlich werden sie nur in seltenen Fällen -- nämlich bei der Aufdeckung eines Pseudonyms -- eingesetzt.
 
 Insgesamt kam es bei den Messungen zu einigen Problemen, insbesondere wenn die Nachrichtenlast und damit die Rechenlast stieg:
 \begin{itemize}
-\item seltene Komplettausfälle des Systems aufgrund des Datenbanktreibers für die verwendete PostgreSQL-Datenbank
-\item Nicht-Behandlung von Nachrichten durch das unzuverlässige UDP-Protokoll
+\item seltene Komplettausfälle des Systems aufgrund des Datenbanktreibers für die verwendete PostgreSQL-Datenbank,
+\item Nicht-Behandlung von Nachrichten durch das unzuverlässige UDP-Protokoll.
 \end{itemize}
-Bessere (Mess-)Ergebnisse sollte das Deployment der Komponenten auf dafür ausgelegter Infrastruktur mit Standardlösungen für Python (Apache mit mod\_wsgi, uWSGI, ...) und enstsprechender Rechenleistung bringen. Auch die Nutzung von TCP-Verbindungen für das verwendete syslog-Protokoll sollte mehr Zuverlässigkeit bringen \footnote{
+Bessere (Mess-)Ergebnisse sollte das Deployment der Komponenten auf dafür ausgelegter Infrastruktur mit Standardlösungen für Python (Apache mit mod\_wsgi, uWSGI, ...) und entsprechender Rechenleistung bringen. Ebenso sollte die Nutzung von TCP-Verbindungen für das verwendete syslog-Protokoll mehr Zuverlässigkeit gewährleisten.\footnote{
   RFC 3195 (Reliable Delivery for syslog) beschreibt diese Erweiterung. Ob dies in der Praxis durch verbreitete Logdaten produzierende Geräte genutzt wird, bedarf allerdings weiterer Recherche.
-}. 
+}
