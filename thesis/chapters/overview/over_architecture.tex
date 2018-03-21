@@ -37,13 +37,13 @@ Eine Übersicht über die verschiedenen Stellen des Eingriffs bietet Abbildung \
 
 \begin{enumerate}
 
-\item \textbf{In der Quelle der Logdaten}\\
+\item \textbf{In der Quelle der Logdaten}:
   Bei diesem Ansatz werden die Daten bereits verädert, bevor sie die Datenquelle verlassen. Dieser Ansatz sorgt dafür, dass die Daten bereits pseudonymisiert auf der Übertragungsstrecke und im SIEM-System vorliegen. Es ist kein mehrfaches Parsen der Daten notwendig und der Ansatz ist unabhängig vom verwendeten SIEM-System zu realisieren. Auf der anderen Seite macht der Ansatz die Veränderung generell jeder Datenquelle notwendig. Dies kann bei Datenquellen, die auf ähnlichen gut erweiterbaren Plattformen beruhen, relativ einfach umzusetzen sein. Beispielsweise könnte die im nächsten Ansatz vorgestellte Proxy-Komponente lokal auf der Datenquelle eingesetzt werden. Schwierigkeiten würde dieser Ansatz hingegen bei Datenquellen bereiten, die beispielsweise aus Gründen abgespeckter zugrundeliegender Betriebssysteme oder wegen geringer Rechenleistung nur schwer erweiterbar sind. Außerdem würde der Ansatz in vielen Fällen die Kooperation des Herstellers voraussetzen, wenn es sich um nicht quelloffene \glqq{}Box\grqq{}-Lösungen handelt.
 
-\item \textbf{Proxy-basierter Ansatz}\\
+\item \textbf{Proxy-basierter Ansatz}:
   Dieser Ansatz pseudonymisiert die Daten vor dem ersten Kontakt mit dem SIEM-System, indem Datenquellen ihre Logdaten an einen Proxy senden, der die Daten pseudonymisiert und erst anschließend an das SIEM-System weiterreicht. Hierdurch wird erreicht, dass die Daten zu keiner Zeit nicht-pseudonymisiert im SIEM-System vorliegen. Der Ansatz ist unabhängig von den Datenquellen und dem SIEM-System und erfordert somit keinen direkte Eingriffe (abgesehen von geringen Konfigurationsanpassungen). Ein Nachteil dieser Lösung ist, dass sie das Parsen und Neuzusammensetzen der Logdaten im Proxy zusätzlich zu deren anschließender Behandlung im SIEM-System erfordert. Außerdem müssen für verschiedene Arten der Logdatenübermittlung (Protokolle wie Syslog oder SNMP) unterschiedliche Proxys entwickelt werden.
 
-\item \textbf{Patchen des SIEM-Systems}\\
+\item \textbf{Patchen des SIEM-Systems}:
   Die dritte Möglichkeit ist das Verändern des SIEM-Systems selbst. Hierzu wird in die Logdaten parsende Komponente eingegriffen, um vor, während oder nach diesem Vorgang die Logdaten zu pseudonymisieren. Dieser Ansatz erfordert kein mehrfaches Bearbeiten von Logdaten wie im proxybasierten Ansatz. Auf der anderen Seite ist er abhängig vom eingesetzten SIEM-System und erfordert seine Veränderung. Zusätzlich liegen die Daten erst einmal in nicht veränderter Form im SIEM-System vor, was die in Abschnitt \ref{subsec_impl_requirements_ossimintegration} erwähnten Nachteile mit sich bringt.
 
 \end{enumerate}

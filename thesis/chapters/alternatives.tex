@@ -31,6 +31,7 @@ Der in dieser Arbeit verfolgte Ansatz der Pseudonymisierung unter Einsatz krypto
 
 Daher werden in diesem Abschnitt ergänzende Techniken zum Erhalt der Privatspäre eines Arbeitnehmers bei der Speicherung von Logdaten dargestellt und erläutert, wie diese in den entwickelten Prototyp eingebunden werden können. Natürlich können auch mehrere kombinierte Techniken für einzelne Logdaten, die aus mehreren Feldern bestehen, sinnvoll sein. Mit Zeitstempeln versehene Logdaten eines Türschließsystems, die die Benutzerkennungen der Mitarbeiter enthalten, könnten so beispielsweise durch Pseudonymisierung der Benutzerkennungen und Verrauschung der Zeitstempel geschützt werden.
 
+Einen Ansatz für ein Framework zur stufenweisen Anonymisierung von Logdaten, in dem viele der im Folgenden beschriebenen Techniken Anwendung finden, beschreiben die Autoren in \cite{slagell2006flaim}. In der Veröffentlichung sind insbesondere Beispiele für die Behandlung bestimmter Datentypen gegeben, die über den Rahmen dieses Kapitel hinausgehen.\\
 Eine Übersicht über weitere in sehr speziellen Einsatzgebieten zu nutzende Datenschutztechniken wie Bloomfilter oder der Einsatz homomorpher Verschlüsselung sind in \cite{niksefat2017privacy} zu finden.
 
 \section{Unterdrückung} % Suppression
@@ -41,7 +42,7 @@ Ein Beispiel im Kontext dieser Arbeit ist die Unterdrückung von IP-Adressen ein
 
 \section{Generalisierung}
 
-Bei der Generalisierung wird der Feldinhalt durch einen Wert ersetzt, der das gleiche Konzept beschreibt, jedoch allgemeiner ist. Durch mehrfache Verallgemeinerung entstehen sogenannte Generalisierungshierarchien \todo{Beispiel, Diagramm?}, wobei die Stufe der höchsten Generalisierung hier gleichbedeutend mit der Unterdrückung ist, da jeder Wert durch den konstanten Wert der höchsten Generalisierungsstufe ersetzt wird.
+Bei der Generalisierung wird der Feldinhalt durch einen Wert ersetzt, der das gleiche Konzept beschreibt, jedoch allgemeiner ist. Durch mehrfache Verallgemeinerung entstehen sogenannte Generalisierungshierarchien, wobei die Stufe der höchsten Generalisierung hier gleichbedeutend mit der Unterdrückung ist, da jeder Wert durch den konstanten Wert der höchsten Generalisierungsstufe ersetzt wird.
 
 Ein Beispiel im Unternehmenskontext dieser Arbeit ist die Generalisierung eines Mitarbeiters zu seiner Arbeitsgruppe oder Abteilung -- eine Information, die für die Anomalieerkennung ausreichend sein könnte, wenn es beispielsweise um Zugriffe auf Ressourcen geht, die für bestimmte Abteilungen üblich, für andere jedoch ungewöhnlich sind. Dieses könnte zusätzlich zur Pseudonymisierung ausgeführt werden, um der Anomalieerkennung zusätzliche Daten zur Verfügung zu stellen, ohne die Identität eines Nutzers direkt offenzulegen.
 
@@ -59,7 +60,7 @@ Die Maßnahme ist jedoch nur für bestimmte Felder bzw. Datenarten sinnvoll eins
 Neben der zufälligen Generierung von Pseudonymen, wie es in dieser Arbeit genutzt wird, ist auch die Nutzung von Hashwerten als Pseudonym für Daten denkbar. Dies würde die Verknüpfbarkeit von Logdaten ermöglichen, da für gleiche Daten der gleiche Hashwert berechnet wird. Durch den geschickten Einsatz von zusätzlichen zeitabhängig wechselnden Eingaben für das Hashverfahren (sogenannte \textit{Salts}) ließe sich auch die nötige Verknüpfbarkeit für die Anomalieerkennung gegenüber dem Schutz der Privatsphäre eines Benutzers abstimmen.\\
 Auf der anderen Seite wäre der Einsatz von Hashverfahren bei einem kleinen Wertebereich für Eingaben wie Benutzernamen anfällig für Wörterbuchangriffe (vgl. Abschnitt \ref{sec_state_se}). Außerdem wären auch Rückschlüsse auf den Pseudonymhalter nicht ohne zusätzlichen Aufwand möglich.
 
-Für Datenfelder, bei denen nur die Verknüpfbarkeit, jedoch nicht der ursprüngliche Wert, für die Anomalieerkennung entscheidend ist und deren Wertebereich ausreichend groß ist, können Hashverfahren sinnvoll sein. \todo{Beispiel}
+Für Datenfelder, bei denen nur die Verknüpfbarkeit, jedoch nicht der ursprüngliche Wert, für die Anomalieerkennung entscheidend ist und deren Wertebereich ausreichend groß ist, können Hashverfahren sinnvoll sein.
 
 \section{Vorgehen zur Integration}
 

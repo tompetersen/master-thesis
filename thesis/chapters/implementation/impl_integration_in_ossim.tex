@@ -15,24 +15,24 @@
 Wie in Abschnitt \ref{sec_state_siem} beschrieben, erlaubt OSSIM eine verteilte Installation am Empfang von Logdaten beteiligter Komponenten durch die Einführung optionaler Sensoren, die den Empfang und das Parsen von Logdaten übernehmen. Dadurch bieten sich gegenüber den in Abschnitt \ref{sec_over_dataflow_siem} beschriebenen Möglichkeiten zum Eingriff in den Datenfluss eines SIEM-Systems zwei weitere OSSIM-spezifische Möglichkeiten, die folgend als mögliche Alternativen beschrieben werden.\\
 Eine Übersicht über den entstehenden Datenfluss bietet Abbildung \ref{fig:ossim_data_access_point}. Die Ziffern beschreiben die Stelle des Eingriffs, wie in der Abbildung gekennzeichnet:
 
+\begin{enumerate}
+\setcounter{enumi}{3}
+
+\item \textbf{Patchen des OSSIM-Sensor-Agents}:
+  Bei dieser Lösung müsste der OSSIM-Agent des Sensors so verändert werden, dass vor dem Senden der Events an den Server die Pseudonymisierung stattfindet. Daten erreichen den OSSIM-Server nur pseudonymisiert und mehrfaches Parsen der Logdaten wird verhindert. Auf der anderen Seite erfordert diese Lösung einen Eingriff in die Funktionsweise von OSSIM, was beispielsweise bei Updates von OSSIM zu Problemen führen kann. Außerdem liegen die Daten zu Beginn in nicht-pseudonymisierter Form im Sensor vor -- ein Nachteil, der bereits in Abschnitt \ref{sec_state_siem} ausführlich diskutiert wurde. Zusätzlich erfordert diese Lösung die verteilte Installation von OSSIM-Sensor und -Server, schließt also die All-In-One-Installation aus.
+  
+\item \textbf{Sensor-Server-Proxy}:
+  Hier wird ein Proxy zwischen Sensor und Server geschaltet, der bereits geparste Events pseudonymisiert und anschließend an den Server sendet. Dieser Ansatz würde mehrfaches Parsen verhindern und dafür sorgen, dass nur pseudonymisierte Logdaten den OSSIM-Server erreichen. Wie die vorhergehende Lösung würde er jedoch nur in der verteilten Installation funktionieren und zusätzlich in die Kommunikation zwischen Sensor und Server aktiv eingreifen, was im Hinblick auf die Nachrichtenintegrität\footnote{
+    In der aktuellen Version von OSSIM werden Nachrichten unverschlüsselt und nicht signiert zwischen Sensor und Server versendet, aber zu hoffen ist, dass dieser Zustand sich in zukünftigen Versionen noch ändert.
+  } und auch auf geändertes Verhalten nach Updates von OSSIM einen Nachteil darstellt.
+\end{enumerate}
+
 \begin{figure}[]
     \centering
         \includegraphics[width=0.9\textwidth]{dia/ossim_data_access_point.pdf}
     \caption{Mögliche Eingriffspunkte in den OSSIM-Datenfluss.}
     \label{fig:ossim_data_access_point}
 \end{figure}
-
-\begin{enumerate}
-\setcounter{enumi}{3}
-
-\item \textbf{Patchen des OSSIM-Sensor-Agents}\\
-  Bei dieser Lösung müsste der OSSIM-Agent des Sensors so verändert werden, dass vor dem Senden der Events an den Server die Pseudonymisierung stattfindet. Daten erreichen den OSSIM-Server nur pseudonymisiert und mehrfaches Parsen der Logdaten wird verhindert. Auf der anderen Seite erfordert diese Lösung einen Eingriff in die Funktionsweise von OSSIM, was beispielsweise bei Updates von OSSIM zu Problemen führen kann. Außerdem liegen die Daten zu Beginn in nicht-pseudonymisierter Form im Sensor vor -- ein Nachteil, der bereits in Abschnitt \ref{sec_state_siem} ausführlich diskutiert wurde. Zusätzlich erfordert diese Lösung die verteilte Installation von OSSIM-Sensor und -Server, schließt also die All-In-One-Installation aus.
-  
-\item \textbf{Sensor-Server-Proxy}\\
-  Hier wird ein Proxy zwischen Sensor und Server geschaltet, der bereits geparste Events pseudonymisiert und anschließend an den Server sendet. Dieser Ansatz würde mehrfaches Parsen verhindern und dafür sorgen, dass nur pseudonymisierte Logdaten den OSSIM-Server erreichen. Wie die vorhergehende Lösung würde er jedoch nur in der verteilten Installation funktionieren und zusätzlich in die Kommunikation zwischen Sensor und Server aktiv eingreifen, was im Hinblick auf die Nachrichtenintegrität\footnote{
-    In der aktuellen Version von OSSIM werden Nachrichten unverschlüsselt und nicht signiert zwischen Sensor und Server versendet, aber zu hoffen ist, dass dieser Zustand sich in zukünftigen Versionen noch ändert.
-  } und auch auf geändertes Verhalten nach Updates von OSSIM einen Nachteil darstellt.
-\end{enumerate}
 
 % Warum weiterhin Stelle 2?
 % Beschränkung auf Syslog, Erweiterung um weitere Protokolle ähnlich
@@ -59,8 +59,7 @@ Die Behandlung von verschiedenen Datenquellen wird durch Konfigurationsdateien e
 active=True
 
 [group1]
-pattern=^(?P<time>\w+ *\d{1,2} \d{2}:\d{2}:\d{2}) (?P<device>[^:]+): Testing my device USER=(?P<user>.+)$
-time=Substitute(substitute = 'somevalue_time')
+pattern=^\w+ *\d{1,2} \d{2}:\d{2}:\d{2} (?P<device>[^:]+): Testing my device USER=(?P<user>.+)$
 device=Substitute(substitute = 'somevalue_device')
 user=Pseudonymize()
 

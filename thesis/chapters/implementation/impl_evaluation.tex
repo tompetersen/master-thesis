@@ -51,10 +51,6 @@ Dieser Angriff lässt sich aus Sicht des Autors nicht vollständig verhindern, d
 
 \subsection{Performanz}
 
-Zu Beginn der Setup-Phase können vorberechnete Parameter gewählt werden oder diese Parameter neu generiert werden. Die (nicht optimierte) Umsetzung des in Abschnitt \ref{sec_impl_threshold_keyparams} beschriebenen Algorithmus in Python erfordert lange Berechnungsdauern, deren Mittelwerte und Standardabweichungen in Tabelle \ref{tab_key_generation} zu finden sind. Die hohe Standardabweichung folgt aus einer geringen Messanzahl,\footnote{
-  Wegen der langen Messzeiten musste die Anzahl von Messungen sehr beschränkt werden.
-} aber insbesondere auch aus dem Einfließen von Zufallszahlen und der zufälligen Verteilung der Primzahlen. 
-
 \begin{table}
   \centering
   \begin{tabular}{|c|c|c|c|}
@@ -69,6 +65,10 @@ Zu Beginn der Setup-Phase können vorberechnete Parameter gewählt werden oder d
   \caption{Mittelwert (\(\mu\)) und Standardabweichung (\(\sigma\)) in Sekunden für die Dauer der Schlüsselgenerierung bei unterschiedlichen Schlüsselstärken.}
   \label{tab_key_generation}
 \end{table}
+
+Zu Beginn der Setup-Phase können vorberechnete Parameter gewählt werden oder diese Parameter neu generiert werden. Die (nicht optimierte) Umsetzung des in Abschnitt \ref{sec_impl_threshold_keyparams} beschriebenen Algorithmus in Python erfordert lange Berechnungsdauern, deren Mittelwerte und Standardabweichungen in Tabelle \ref{tab_key_generation} zu finden sind. Die hohe Standardabweichung folgt aus einer geringen Messanzahl,\footnote{
+  Wegen der langen Messzeiten musste die Anzahl von Messungen sehr beschränkt werden.
+} aber insbesondere auch aus dem Einfließen von Zufallszahlen und der zufälligen Verteilung der Primzahlen. 
 
 Es zeigt sich, dass die Zeiten für angemessene Schlüsselstärken um 2000 Bit für die interaktive Nutzung während der Setup-Phase des Systems nicht mehr geeignet sind. Diese ließen sich durch eine optimierte Implementierung sicherlich deutlich reduzieren. Wie in Abschnitt \ref{sec_impl_threshold_keyparams} bereits beschrieben sollte jedoch die Nutzung vorberechneter Parameter kein Sicherheitsrisiko darstellen. 
 
